@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.eventsapp-mergeDebugResources-36:/values-ug/values-ug.xml",
+            "map": [
+                {
+                    "source": "/home/pritam/.gradle/caches/transforms-3/b01ac98f3c121e36403ad1c350d99164/transformed/jetified-ui-6.5.0.300/res/values-ug/values-ug.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6",
+                        "startColumns": "4,4,4,4,4",
+                        "startOffsets": "55,198,444,515,759",
+                        "endColumns": "142,245,70,243,69",
+                        "endOffsets": "193,439,510,754,824"
+                    }
+                }
+            ]
+        }
+    ]
+}

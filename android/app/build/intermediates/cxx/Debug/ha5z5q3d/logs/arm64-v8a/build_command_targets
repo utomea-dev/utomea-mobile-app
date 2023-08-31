@@ -1,0 +1,11 @@
+/home/pritam/Android/Sdk/cmake/3.18.1/bin/ninja \
+  -C \
+  /home/pritam/Desktop/EventsApp/EventsApp/android/app/.cxx/Debug/ha5z5q3d/arm64-v8a \
+  appmodules \
+  react_codegen_RNCGeolocation \
+  react_codegen_RNVectorIconsSpec \
+  react_codegen_rnasyncstorage \
+  react_codegen_rncameraroll \
+  react_codegen_rngesturehandler_codegen \
+  react_codegen_rnpermissions \
+  react_codegen_safeareacontext

@@ -1,0 +1,72 @@
+ninja: Entering directory `/home/pritam/Desktop/EventsApp/EventsApp/android/app/.cxx/Debug/ha5z5q3d/arm64-v8a'
+[0/2] Re-checking globbed directories...
+[1/2] Re-running CMake...
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/pritam/Desktop/EventsApp/EventsApp/android/app/.cxx/Debug/ha5z5q3d/arm64-v8a
+[0/2] Re-checking globbed directories...
+[1/54] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/rnasyncstorageJSI-generated.cpp.o
+[2/54] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/States.cpp.o
+[3/54] Building CXX object rncameraroll_autolinked_build/CMakeFiles/react_codegen_rncameraroll.dir/react/renderer/components/rncameraroll/EventEmitters.cpp.o
+[4/54] Building CXX object rncameraroll_autolinked_build/CMakeFiles/react_codegen_rncameraroll.dir/react/renderer/components/rncameraroll/Props.cpp.o
+[5/54] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/EventEmitters.cpp.o
+[6/54] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/Props.cpp.o
+[7/54] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/rnasyncstorage-generated.cpp.o
+[8/54] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/ShadowNodes.cpp.o
+[9/54] Linking CXX shared library /home/pritam/Desktop/EventsApp/EventsApp/android/app/build/intermediates/cxx/Debug/ha5z5q3d/obj/arm64-v8a/libreact_codegen_rnasyncstorage.so
+[10/54] Building CXX object rncameraroll_autolinked_build/CMakeFiles/react_codegen_rncameraroll.dir/react/renderer/components/rncameraroll/rncamerarollJSI-generated.cpp.o
+[11/54] Building CXX object rncameraroll_autolinked_build/CMakeFiles/react_codegen_rncameraroll.dir/react/renderer/components/rncameraroll/States.cpp.o
+[12/54] Building CXX object rncameraroll_autolinked_build/CMakeFiles/react_codegen_rncameraroll.dir/react/renderer/components/rncameraroll/ShadowNodes.cpp.o
+[13/54] Building CXX object RNCGeolocation_autolinked_build/CMakeFiles/react_codegen_RNCGeolocation.dir/react/renderer/components/RNCGeolocation/Props.cpp.o
+[14/54] Building CXX object RNCGeolocation_autolinked_build/CMakeFiles/react_codegen_RNCGeolocation.dir/react/renderer/components/RNCGeolocation/RNCGeolocationJSI-generated.cpp.o
+[15/54] Building CXX object RNCGeolocation_autolinked_build/CMakeFiles/react_codegen_RNCGeolocation.dir/react/renderer/components/RNCGeolocation/EventEmitters.cpp.o
+[16/54] Building CXX object rncameraroll_autolinked_build/CMakeFiles/react_codegen_rncameraroll.dir/rncameraroll-generated.cpp.o
+[17/54] Linking CXX shared library /home/pritam/Desktop/EventsApp/EventsApp/android/app/build/intermediates/cxx/Debug/ha5z5q3d/obj/arm64-v8a/libreact_codegen_rncameraroll.so
+[18/54] Building CXX object CMakeFiles/appmodules.dir/OnLoad.cpp.o
+[19/54] Building CXX object RNCGeolocation_autolinked_build/CMakeFiles/react_codegen_RNCGeolocation.dir/RNCGeolocation-generated.cpp.o
+[20/54] Building CXX object RNCGeolocation_autolinked_build/CMakeFiles/react_codegen_RNCGeolocation.dir/react/renderer/components/RNCGeolocation/States.cpp.o
+[21/54] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/react/renderer/components/rngesturehandler_codegen/rngesturehandler_codegenJSI-generated.cpp.o
+[22/54] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/react/renderer/components/rngesturehandler_codegen/EventEmitters.cpp.o
+[23/54] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/react/renderer/components/rngesturehandler_codegen/States.cpp.o
+[24/54] Building CXX object RNCGeolocation_autolinked_build/CMakeFiles/react_codegen_RNCGeolocation.dir/react/renderer/components/RNCGeolocation/ShadowNodes.cpp.o
+[25/54] Linking CXX shared library /home/pritam/Desktop/EventsApp/EventsApp/android/app/build/intermediates/cxx/Debug/ha5z5q3d/obj/arm64-v8a/libreact_codegen_RNCGeolocation.so
+[26/54] Building CXX object rnpermissions_autolinked_build/CMakeFiles/react_codegen_rnpermissions.dir/react/renderer/components/rnpermissions/rnpermissionsJSI-generated.cpp.o
+[27/54] Building CXX object rnpermissions_autolinked_build/CMakeFiles/react_codegen_rnpermissions.dir/react/renderer/components/rnpermissions/EventEmitters.cpp.o
+[28/54] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/rngesturehandler_codegen-generated.cpp.o
+[29/54] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/react/renderer/components/rngesturehandler_codegen/Props.cpp.o
+[30/54] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/react/renderer/components/rngesturehandler_codegen/ShadowNodes.cpp.o
+[31/54] Linking CXX shared library /home/pritam/Desktop/EventsApp/EventsApp/android/app/build/intermediates/cxx/Debug/ha5z5q3d/obj/arm64-v8a/libreact_codegen_rngesturehandler_codegen.so
+[32/54] Building CXX object rnpermissions_autolinked_build/CMakeFiles/react_codegen_rnpermissions.dir/react/renderer/components/rnpermissions/States.cpp.o
+[33/54] Building CXX object rnpermissions_autolinked_build/CMakeFiles/react_codegen_rnpermissions.dir/react/renderer/components/rnpermissions/Props.cpp.o
+[34/54] Building CXX object rnpermissions_autolinked_build/CMakeFiles/react_codegen_rnpermissions.dir/react/renderer/components/rnpermissions/ShadowNodes.cpp.o
+[35/54] Building CXX object rnpermissions_autolinked_build/CMakeFiles/react_codegen_rnpermissions.dir/rnpermissions-generated.cpp.o
+[36/54] Linking CXX shared library /home/pritam/Desktop/EventsApp/EventsApp/android/app/build/intermediates/cxx/Debug/ha5z5q3d/obj/arm64-v8a/libreact_codegen_rnpermissions.so
+[37/54] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/safeareacontextJSI-generated.cpp.o
+[38/54] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/States.cpp.o
+[39/54] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp.o
+[40/54] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewState.cpp.o
+In file included from /home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewState.cpp:1:
+/home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewState.h:19:7: warning: designated initializers are a C++20 extension [-Wc++20-designator]
+      .left = (float)value["left"].getDouble(),
+      ^
+1 warning generated.
+[41/54] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/safeareacontext-generated.cpp.o
+[42/54] Building CXX object CMakeFiles/appmodules.dir/home/pritam/Desktop/EventsApp/EventsApp/android/app/build/generated/rncli/src/main/jni/rncli.cpp.o
+[43/54] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/ShadowNodes.cpp.o
+[44/54] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewShadowNode.cpp.o
+In file included from /home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewShadowNode.cpp:1:
+In file included from /home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewShadowNode.h:6:
+/home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/android/src/main/jni/../../../../common/cpp/react/renderer/components/safeareacontext/RNCSafeAreaViewState.h:19:7: warning: designated initializers are a C++20 extension [-Wc++20-designator]
+      .left = (float)value["left"].getDouble(),
+      ^
+1 warning generated.
+[45/54] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/home/pritam/Desktop/EventsApp/EventsApp/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/Props.cpp.o
+[46/54] Linking CXX shared library /home/pritam/Desktop/EventsApp/EventsApp/android/app/build/intermediates/cxx/Debug/ha5z5q3d/obj/arm64-v8a/libreact_codegen_safeareacontext.so
+[47/54] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/RNVectorIconsSpecJSI-generated.cpp.o
+[48/54] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/EventEmitters.cpp.o
+[49/54] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/RNVectorIconsSpec-generated.cpp.o
+[50/54] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/States.cpp.o
+[51/54] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/Props.cpp.o
+[52/54] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/ShadowNodes.cpp.o
+[53/54] Linking CXX shared library /home/pritam/Desktop/EventsApp/EventsApp/android/app/build/intermediates/cxx/Debug/ha5z5q3d/obj/arm64-v8a/libreact_codegen_RNVectorIconsSpec.so
+[54/54] Linking CXX shared library /home/pritam/Desktop/EventsApp/EventsApp/android/app/build/intermediates/cxx/Debug/ha5z5q3d/obj/arm64-v8a/libappmodules.so
