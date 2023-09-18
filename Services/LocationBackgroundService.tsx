@@ -1,25 +1,25 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Geolocation from '@react-native-community/geolocation';
-import React, {useState, useEffect} from 'react';
-import {View, AppState} from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Geolocation from "@react-native-community/geolocation";
+import React, { useState, useEffect } from "react";
+import { View, AppState } from "react-native";
 
 import BackgroundGeolocation, {
   Location,
   State,
   Subscription,
-} from 'react-native-background-geolocation';
+} from "react-native-background-geolocation";
 
-import createEvent from '../src/events/eventCreator';
-import store from '../src/redux/store';
-import {uploadEventPhotos} from '../src/redux/slices/eventsSlice';
-import {showNotification} from '../src/utils/helpers';
+import createEvent from "../src/events/eventCreator";
+import store from "../src/redux/store";
+import { uploadEventPhotos } from "../src/redux/slices/eventsSlice";
+import { showNotification } from "../src/utils/helpers";
 
-import EventTimer from '../src/components/EventTimer';
-import TestCrash from '../src/components/TestCrash';
+import EventTimer from "../src/components/EventTimer";
+import TestCrash from "../src/components/TestCrash";
 // Geocoder.init(MAPS_API_KEY);
 
 const BackgroundLocationService = () => {
-  const [appState, setAppState] = React.useState('');
+  const [appState, setAppState] = React.useState("");
   const [enabled, setEnabled] = React.useState(false);
   const [location, setLocation] = React.useState<Location>();
 
@@ -50,22 +50,22 @@ const BackgroundLocationService = () => {
   // };
 
   const startImageUploading = async () => {
-    const eventsForSync = await AsyncStorage.getItem('eventsForSync');
-    const uploadingSlot = await AsyncStorage.getItem('uploadingSlot');
+    const eventsForSync = await AsyncStorage.getItem("eventsForSync");
+    const uploadingSlot = await AsyncStorage.getItem("uploadingSlot");
     console.log(
-      'EVENTS IN STORAGE & SLOT+==========',
+      "EVENTS IN STORAGE & SLOT+==========",
       eventsForSync,
-      uploadingSlot,
+      uploadingSlot
     );
     if (
       eventsForSync !== null &&
-      AppState.currentState === 'active' &&
-      uploadingSlot !== 'occupied'
+      AppState.currentState === "active" &&
+      uploadingSlot !== "occupied"
     ) {
-      showNotification({message: 'uploading images to server'});
-      console.log('DISPATCHING UPLOADING==========', eventsForSync);
+      showNotification({ message: "uploading images to server" });
+      console.log("DISPATCHING UPLOADING==========", eventsForSync);
       store.dispatch(uploadEventPhotos(JSON.parse(eventsForSync)));
-      await AsyncStorage.setItem('uploadingSlot', 'occupied');
+      await AsyncStorage.setItem("uploadingSlot", "occupied");
     }
   };
 
@@ -73,9 +73,9 @@ const BackgroundLocationService = () => {
     // Get an authorization token from transistorsoft demo server.
     const token =
       await BackgroundGeolocation.findOrCreateTransistorAuthorizationToken(
-        'org',
-        'events-app-user',
-        'https://tracker.transistorsoft.com',
+        "org",
+        "events-app-user",
+        "https://tracker.transistorsoft.com"
       );
 
     BackgroundGeolocation.sync();
@@ -93,14 +93,14 @@ const BackgroundLocationService = () => {
       disableElasticity: true,
       stopTimeout: 1,
       // Permissions
-      locationAuthorizationRequest: 'Always',
+      locationAuthorizationRequest: "Always",
       backgroundPermissionRationale: {
         title:
           "Allow {applicationName} to access this device's location even when closed or not in use.",
         message:
-          'This app collects location data to enable recording your trips to work and calculate distance-travelled.',
+          "This app collects location data to enable recording your trips to work and calculate distance-travelled.",
         positiveAction: 'Change to "{backgroundPermissionOptionLabel}"',
-        negativeAction: 'Cancel',
+        negativeAction: "Cancel",
       },
       // HTTP & Persistence
       autoSync: true,
@@ -110,21 +110,21 @@ const BackgroundLocationService = () => {
       startOnBoot: true,
       enableHeadless: true,
     });
-    console.log('state----', state);
-    showNotification({message: `ready: ${state.trackingMode}`});
+    console.log("state----", state);
+    showNotification({ message: `ready: ${state.trackingMode}` });
     setEnabled(state.enabled);
   };
 
-  const _handleAppStateChange = appStatus => {
+  const _handleAppStateChange = (appStatus) => {
     setAppState(appStatus);
-    console.log('app state changed =====------', appStatus);
+    console.log("app state changed =====------", appStatus);
   };
 
   const [eventsForSync, setEventsForSync] = useState(null);
   const [uploadingSlot, setUploadingSlot] = useState(null);
   const getStorageValues = async () => {
-    const events = await AsyncStorage.getItem('eventsForSync');
-    const slot = await AsyncStorage.getItem('uploadingSlot');
+    const events = await AsyncStorage.getItem("eventsForSync");
+    const slot = await AsyncStorage.getItem("uploadingSlot");
     setEventsForSync(events);
     setUploadingSlot(slot);
   };
@@ -133,12 +133,12 @@ const BackgroundLocationService = () => {
   // image uplaod effect
   useEffect(() => {
     console.log(
-      'INSIDE USEFFECT RUNNING---------',
+      "INSIDE USEFFECT RUNNING---------",
       eventsForSync,
       appState,
-      uploadingSlot,
+      uploadingSlot
     );
-    if (appState === 'active') {
+    if (appState === "active") {
       startImageUploading();
     }
   }, [eventsForSync, uploadingSlot, appState]);
@@ -149,69 +149,71 @@ const BackgroundLocationService = () => {
     // Register BackgroundGeolocation event-listeners.
     const getAppStatus = async () => {
       const runningStatus: null | string = await AsyncStorage.getItem(
-        'appStatus',
+        "appStatus"
       );
-      console.log('running-----', runningStatus);
+      console.log("running-----", runningStatus);
       return runningStatus;
     };
 
     BackgroundGeolocation.getState()
-      .then(async data => {
+      .then(async (data) => {
         if (data.trackingMode === 1) {
           const runningStatus = await getAppStatus();
-          if (runningStatus !== 'running') {
+          if (runningStatus !== "running") {
             BackgroundGeolocation.start();
-            await AsyncStorage.setItem('appStatus', 'running');
+            await AsyncStorage.setItem("appStatus", "running");
           }
         }
       })
-      .catch(e => {
-        showNotification({message: `app couldnt start: ${JSON.stringify(e)}`});
-        console.log('cannot start app --- ', e);
+      .catch((e) => {
+        showNotification({
+          message: `app couldnt start: ${JSON.stringify(e)}`,
+        });
+        console.log("cannot start app --- ", e);
       });
 
     const onLocation: Subscription = BackgroundGeolocation.onLocation(
-      l => {
-        console.log('[onLocation]', l);
+      (l) => {
+        console.log("[onLocation]", l);
         setLocation(l);
         showNotification({
-          message: 'Location change',
+          message: "Location change",
         });
       },
-      error => {
+      (error) => {
         showNotification({
           message: `Location error: ${error}`,
         });
-        console.log('[onLocation] ERROR: ', error);
-      },
+        console.log("[onLocation] ERROR: ", error);
+      }
     );
 
     const onMotionChange: Subscription = BackgroundGeolocation.onMotionChange(
-      event => {
-        console.log('[onMotionChange]', event);
+      (event) => {
+        console.log("[onMotionChange]", event);
         showNotification({
-          message: 'Motion change',
+          message: "Motion change",
         });
-      },
+      }
     );
 
     const onActivityChange: Subscription =
-      BackgroundGeolocation.onActivityChange(event => {
-        console.log('[onActivityChange]', event);
+      BackgroundGeolocation.onActivityChange((event) => {
+        console.log("[onActivityChange]", event);
         showNotification({
-          message: 'Activity change',
+          message: "Activity change",
         });
       });
 
     const onProviderChange: Subscription =
-      BackgroundGeolocation.onProviderChange(event => {
-        console.log('[onProviderChange]', event);
+      BackgroundGeolocation.onProviderChange((event) => {
+        console.log("[onProviderChange]", event);
         showNotification({
-          message: 'Provider change',
+          message: "Provider change",
         });
       });
 
-    AppState.addEventListener('change', _handleAppStateChange);
+    AppState.addEventListener("change", _handleAppStateChange);
 
     return () => {
       // When view is destroyed (or refreshed with dev live-reload),
@@ -224,41 +226,41 @@ const BackgroundLocationService = () => {
   }, []);
 
   useEffect(() => {
-    showNotification({message: 'Location changed in effect'});
+    showNotification({ message: "Location changed in effect" });
     if (location && location.coords) {
-      console.log('location update--=-=-=-', location);
-      const {longitude, latitude} = location.coords;
+      console.log("location update--=-=-=-", location);
+      const { longitude, latitude } = location.coords;
       const address = `${latitude}/${longitude}`;
       createEvent(address, latitude, longitude);
     }
   }, [location]);
-  console.log('state values-----', enabled, location);
+  console.log("state values-----", enabled, location);
 
   const init = async () => {
-    let oldTime = await AsyncStorage.getItem('eventStartTime');
-    let oldAddress = await AsyncStorage.getItem('currentAddress');
+    let oldTime = await AsyncStorage.getItem("eventStartTime");
+    let oldAddress = await AsyncStorage.getItem("currentAddress");
 
     // Storing the start time and address when app runs first time
     if (!oldTime) {
       const startTimeStamp = new Date().getTime();
       await AsyncStorage.setItem(
-        'eventStartTime',
-        JSON.stringify(startTimeStamp),
+        "eventStartTime",
+        JSON.stringify(startTimeStamp)
       );
     }
 
     if (!oldAddress) {
       Geolocation.getCurrentPosition(
-        async position => {
-          console.log('FIrst time location -------------', position);
-          const {latitude, longitude} = position.coords;
+        async (position) => {
+          console.log("FIrst time location -------------", position);
+          const { latitude, longitude } = position.coords;
           const coords = `${latitude}/${longitude}`;
-          await AsyncStorage.setItem('currentAddress', coords);
+          await AsyncStorage.setItem("currentAddress", coords);
         },
-        error => {
-          console.log('Error getting location: ', error.message);
+        (error) => {
+          console.log("Error getting location: ", error.message);
         },
-        {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
       );
     }
   };
@@ -275,7 +277,6 @@ const BackgroundLocationService = () => {
       {/* <Button title="Add Geofence" onPress={addGeofence} /> */}
       {/* <Button title="Photo Lib" onPress={getPhotoLibAccess} /> */}
       {/* <Button title="Clear Storage" onPress={clearStorage} /> */}
-      <TestCrash />
     </View>
   );
 };

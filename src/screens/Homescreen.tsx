@@ -1,32 +1,32 @@
-import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   View,
   StyleSheet,
   Text,
   FlatList,
   ActivityIndicator,
-} from 'react-native';
-import CustomCarousel from '../components/Carousel/CustomCarousel';
-import Header from '../components/Header/Header';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import BackgroundGeolocation from 'react-native-background-geolocation';
+} from "react-native";
+import CustomCarousel from "../components/Carousel/CustomCarousel";
+import Header from "../components/Header/Header";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import BackgroundGeolocation from "react-native-background-geolocation";
 
-import BackgroundLocationService from '../../Services/LocationBackgroundService';
-import {getEvents} from '../redux/slices/eventsSlice';
+import BackgroundLocationService from "../../Services/LocationBackgroundService";
+import { getEvents } from "../redux/slices/eventsSlice";
 
-const Homescreen = ({setToken}) => {
+const Homescreen = ({ setToken }) => {
   const dispatch = useDispatch();
 
-  const {events, error, loading} = useSelector(state => state.events);
+  const { events, error, loading } = useSelector((state) => state.events);
 
   useEffect(() => {
-    console.log('fetching VEENTSSS .......................');
+    console.log("fetching VEENTSSS .......................");
     dispatch(getEvents());
   }, [dispatch]);
 
   const handleLogout = async () => {
-    console.log('Logout');
+    console.log("Logout");
     // AsyncStorage.removeItem('token');
     await AsyncStorage.clear();
     await BackgroundGeolocation.destroyTransistorAuthorizationToken();
@@ -58,13 +58,15 @@ const Homescreen = ({setToken}) => {
           // }}
           initialNumToRender={10}
           windowSize={25}
-          snapToAlignment={'start'}
-          decelerationRate={'normal'}
-          keyExtractor={item => `${item.id}_${Math.ceil(Math.random() * 1000)}`}
+          snapToAlignment={"start"}
+          decelerationRate={"normal"}
+          keyExtractor={(item) =>
+            `${item.id}_${Math.ceil(Math.random() * 1000)}`
+          }
           pagingEnabled
           removeClippedSubviews
           scrollEnabled
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
               <CustomCarousel
                 key={`${item.id}_${Math.ceil(Math.random() * 1000)}`}
@@ -91,27 +93,27 @@ const Homescreen = ({setToken}) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
+    height: "100%",
   },
   logo: {
     width: 100,
     height: 30,
   },
   shadow: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
     height: 2,
-    backgroundColor: '#000',
+    backgroundColor: "#000",
     opacity: 0.2,
   },
   listContent: {
     flexGrow: 1,
   },
   loader: {
-    height: '100%',
-    backgroundColor: '#eeeeee',
+    height: "100%",
+    backgroundColor: "#eeeeee",
   },
 });
 
