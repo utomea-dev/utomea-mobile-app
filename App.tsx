@@ -3,12 +3,9 @@ import { Provider } from "react-redux";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Homescreen from "./src/screens/Homescreen";
-import Signup from "./src/screens/Signup";
-import Signin from "./src/components/Authentication/Signin";
 import store from "./src/redux/store";
-import Authentication from "./src/navigation";
 import { AppNavigator } from "./src/navigation/AppNavigator";
+import Tabs from "./src/navigation/Tabs";
 
 const Stack = createStackNavigator();
 
@@ -17,7 +14,8 @@ const App = () => {
     <Provider store={store}>
       <SafeAreaView style={{ flex: 1 }}>
         <NavigationContainer>
-          <AppNavigator />
+          <Tabs />
+          {/* <AppNavigator /> */}
         </NavigationContainer>
       </SafeAreaView>
     </Provider>
