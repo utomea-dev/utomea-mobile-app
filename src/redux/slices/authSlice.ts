@@ -31,7 +31,7 @@ export const signupUser = createAsyncThunk(
       const body = data;
 
       const response = await makeRequest(signupUrl(), "POST", body, {});
-      await AsyncStorage.setItem("utomea_user", JSON.stringify("userData"));
+      await AsyncStorage.setItem("utomea_user", JSON.stringify(response.data));
 
       return response.status;
     } catch (error) {
@@ -47,7 +47,7 @@ export const signinUser = createAsyncThunk(
       const body = data;
       const response = await makeRequest(signinUrl(), "POST", body, {});
       await AsyncStorage.setItem("utomea_user", JSON.stringify(response.data));
-      console.log("response ---- ", response.data);
+
       return response.data;
     } catch (error) {
       handleError(error);
