@@ -278,7 +278,6 @@ const BackgroundLocationService = () => {
       {/* <Button title="Photo Lib" onPress={getPhotoLibAccess} /> */}
       {/* <Button title="Clear Storage" onPress={clearStorage} />
        */}
-      {/* Minor Change */}
     </View>
   );
 };

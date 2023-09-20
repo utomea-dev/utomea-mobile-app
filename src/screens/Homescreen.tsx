@@ -86,7 +86,6 @@ const Homescreen = ({ setToken }) => {
         buttonStyle={{backgroundColor: '#F85F6A', width: '100%'}}
         // containerStyle={{marginBottom: 16}}
 
-        // Minor change
       /> */}
       <BackgroundLocationService />
     </View>
