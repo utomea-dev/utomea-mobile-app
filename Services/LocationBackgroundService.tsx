@@ -276,7 +276,9 @@ const BackgroundLocationService = () => {
       {/* <Button title="Stop Tracking" onPress={stopTask} /> */}
       {/* <Button title="Add Geofence" onPress={addGeofence} /> */}
       {/* <Button title="Photo Lib" onPress={getPhotoLibAccess} /> */}
-      {/* <Button title="Clear Storage" onPress={clearStorage} /> */}
+      {/* <Button title="Clear Storage" onPress={clearStorage} />
+       */}
+      {/* Minor Change */}
     </View>
   );
 };
