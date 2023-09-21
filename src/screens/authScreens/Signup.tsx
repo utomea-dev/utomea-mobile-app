@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { View, Alert, Text, StyleSheet, Image } from "react-native";
-import CustomButton from "../components/Button/Button";
-import CustomInput from "../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
+import CustomInput from "../../components/Input/Input";
 
-import Logo from "../assets/images/logo.svg";
-import GoogleIcon from "../assets/icons/google.svg";
-import Facebook from "../assets/icons/facebook.svg";
-import Apple from "../assets/icons/apple.svg";
+import Logo from "../../assets/images/logo.svg";
+import GoogleIcon from "../../assets/icons/google.svg";
+import Facebook from "../../assets/icons/facebook.svg";
+import Apple from "../../assets/icons/apple.svg";
 
-import { signupUser } from "../redux/slices/authSlice";
-import { useAuth } from "../hooks/useAuth";
+import { signupUser } from "../../redux/slices/authSlice";
+import { useAuth } from "../../hooks/useAuth";
 
 const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -40,22 +40,6 @@ const Signup = ({ navigation }) => {
   const handleSigninLink = () => {
     navigation.navigate("Signin");
   };
-
-  const checkAuth = async () => {
-    try {
-      const isAuthenticated = await useAuth();
-
-      if (isAuthenticated) {
-        navigation.navigate("EmptyFeed");
-      }
-    } catch (error) {
-      console.error("Error checking user token:", error);
-    }
-  };
-
-  useFocusEffect(() => {
-    checkAuth();
-  });
 
   useEffect(() => {
     setValidationError(signupError);

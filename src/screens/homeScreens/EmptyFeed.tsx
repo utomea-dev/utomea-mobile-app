@@ -1,38 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 
-import CalendarHeader from "../components/Header/CalendarHeader";
-import CustomButton from "../components/Button/Button";
+import CalendarHeader from "../../components/Header/CalendarHeader";
+import CustomButton from "../../components/Button/Button";
 
-import PlusDark from "../assets/icons/plus_dark.svg";
-import PlusLight from "../assets/icons/plus_light.svg";
-import Welcome from "../assets/icons/welcome.svg";
+import PlusDark from "../../assets/icons/plus_dark.svg";
+import PlusLight from "../../assets/icons/plus_light.svg";
+import Welcome from "../../assets/icons/welcome.svg";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ScrollView } from "react-native-gesture-handler";
 
 const createButtons = [1, 2, 3, 4];
 
 const EmptyFeed = ({ navigation, route }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(true);
 
   const { prevScreen } = route.params || { prevScreen: "Unknown" };
+  console.log("previous screen  ************", prevScreen);
 
   const handleCreateEventButton = async () => {
-    // navigation.navigate("Signup");
+    AsyncStorage.clear();
+    navigation.navigate("Signin");
   };
 
   const handlePress = (entry) => {};
 
-  useEffect(() => {
-    if (prevScreen !== "Signin") {
-      setModalVisible(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      AsyncStorage.clear();
-    };
-  }, []);
+  // useEffect(() => {
+  //   if (prevScreen === "AutoEntryTime") {
+  //     setModalVisible(true);
+  //   }
+  // }, []);
 
   const renderModal = () => {
     return (
@@ -66,7 +64,6 @@ const EmptyFeed = ({ navigation, route }) => {
               <CustomButton
                 title="Continue"
                 onPress={() => setModalVisible(false)}
-                buttonStyle={{ width: 90 }}
               />
             </View>
           </View>
@@ -82,7 +79,7 @@ const EmptyFeed = ({ navigation, route }) => {
         style={styles.button}
         onPress={() => handlePress(entry)}
       >
-        <PlusLight />
+        <PlusLight stroke="red" fill="red" />
       </TouchableOpacity>
     ));
   };

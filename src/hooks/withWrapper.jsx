@@ -1,6 +1,6 @@
 import React from "react";
 
-const withScreenWrapper = (WrappedComponent, WrapperComponent) => {
+const withWrapper = (WrappedComponent, WrapperComponent) => {
   return (props) => {
     return (
       <WrapperComponent>
@@ -10,4 +10,4 @@ const withScreenWrapper = (WrappedComponent, WrapperComponent) => {
   };
 };
 
-export default withScreenWrapper;
+export default withWrapper;

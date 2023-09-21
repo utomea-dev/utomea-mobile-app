@@ -2,16 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { View, Alert, Text, StyleSheet, Image } from "react-native";
-import CustomButton from "../components/Button/Button";
-import CustomInput from "../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
+import CustomInput from "../../components/Input/Input";
 
-import Logo from "../assets/images/logo.svg";
-import GoogleIcon from "../assets/icons/google.svg";
-import Facebook from "../assets/icons/facebook.svg";
-import Apple from "../assets/icons/apple.svg";
+import Logo from "../../assets/images/logo.svg";
+import GoogleIcon from "../../assets/icons/google.svg";
+import Facebook from "../../assets/icons/facebook.svg";
+import Apple from "../../assets/icons/apple.svg";
 
-import { signinUser } from "../redux/slices/authSlice";
-import { useAuth } from "../hooks/useAuth";
+import { signinUser } from "../../redux/slices/authSlice";
+import { useAuth } from "../../hooks/useAuth";
 // import Calendar from "../../assets/icons/calendar.svg";
 
 const Signin = ({ navigation }) => {
@@ -48,7 +48,7 @@ const Signin = ({ navigation }) => {
       const isAuthenticated = await useAuth();
 
       if (isAuthenticated) {
-        navigation.navigate("EmptyFeed", { prevScreen: "Signin" });
+        navigation.navigate("MainTabs", { prevScreen: "Signin" });
       }
     } catch (error) {
       console.error("Error checking user token:", error);
@@ -65,7 +65,7 @@ const Signin = ({ navigation }) => {
 
   useEffect(() => {
     if (signinSuccess) {
-      navigation.navigate("EmptyFeed");
+      navigation.navigate("MainTabs");
     }
   }, [signinSuccess]);
 

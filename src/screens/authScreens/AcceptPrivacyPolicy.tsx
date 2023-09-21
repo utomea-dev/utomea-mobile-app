@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import CustomButton from "../components/Button/Button";
+import CustomButton from "../../components/Button/Button";
 
-import Logo from "../assets/images/logo.svg";
+import Logo from "../../assets/images/logo.svg";
 
 import { ScrollView } from "react-native-gesture-handler";
 
@@ -31,7 +31,7 @@ const AcceptPrivacyPolicy = ({ navigation }) => {
           full Privacy Policy on our website. If you have questions, contact us
           at [Contact Information]. Your privacy is our priority.
         </Text>
-        <Text style={styles.paragraph}>
+        <Text style={[styles.paragraph, { marginBottom: 75 }]}>
           Your privacy is important to us. We collect and use your data solely
           to enhance our services. We don't share your personal information
           without your consent. Your data is secure with us, and you have
@@ -79,7 +79,7 @@ const AcceptPrivacyPolicy = ({ navigation }) => {
         <CustomButton
           title="I Accept"
           onPress={handleAccept}
-          containerStyle={{ width: 84 }}
+          containerStyle={{ width: 94 }}
         />
       </View>
     </View>
@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingTop: 20,
+    paddingHorizontal: 5,
   },
 });
 

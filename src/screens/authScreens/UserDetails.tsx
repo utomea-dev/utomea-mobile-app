@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { View, Alert, Text, StyleSheet, Image } from "react-native";
-import CustomButton from "../components/Button/Button";
-import CustomInput from "../components/Input/Input";
+import CustomButton from "../../components/Button/Button";
+import CustomInput from "../../components/Input/Input";
 
-import { updateUserForm } from "../redux/slices/authSlice";
+import { updateUserForm } from "../../redux/slices/authSlice";
 
-import Logo from "../assets/images/logo.svg";
+import Logo from "../../assets/images/logo.svg";
 
 const UserDetails = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -40,11 +40,7 @@ const UserDetails = ({ navigation }) => {
           containerStyle={{ marginBottom: 16 }}
         />
       </View>
-      <CustomButton
-        title="Save"
-        onPress={handleSave}
-        containerStyle={{ width: 64 }}
-      />
+      <CustomButton title="Save" onPress={handleSave} />
     </View>
   );
 };

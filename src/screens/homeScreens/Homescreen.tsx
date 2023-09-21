@@ -7,13 +7,13 @@ import {
   FlatList,
   ActivityIndicator,
 } from "react-native";
-import CustomCarousel from "../components/Carousel/CustomCarousel";
-import Header from "../components/Header/Header";
+import CustomCarousel from "../../components/Carousel/CustomCarousel";
+import Header from "../../components/Header/Header";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BackgroundGeolocation from "react-native-background-geolocation";
 
-import BackgroundLocationService from "../../Services/LocationBackgroundService";
-import { getEvents } from "../redux/slices/eventsSlice";
+import BackgroundLocationService from "../../../Services/LocationBackgroundService";
+import { getEvents } from "../../redux/slices/eventsSlice";
 
 const Homescreen = ({ setToken }) => {
   const dispatch = useDispatch();

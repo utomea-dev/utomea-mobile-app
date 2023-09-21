@@ -8,11 +8,11 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import CustomButton from "../components/Button/Button";
+import CustomButton from "../../components/Button/Button";
 
-import { updateUser, updateUserForm } from "../redux/slices/authSlice";
+import { updateUser, updateUserForm } from "../../redux/slices/authSlice";
 
-import Logo from "../assets/images/logo.svg";
+import Logo from "../../assets/images/logo.svg";
 
 const entryTime = [30, 60, 90];
 
@@ -34,10 +34,10 @@ const AutoEntryTime = ({ navigation }) => {
   const handlePress = (entry) => {
     setActive(() => entry);
   };
-
+  console.log("updateUserSuccess=----------", updateUserSuccess);
   useEffect(() => {
     if (updateUserSuccess) {
-      navigation.navigate("EmptyFeed");
+      navigation.navigate("MainTabs", { prevScreen: "AutoEntryTime" });
     }
   }, [updateUserSuccess]);
 
@@ -82,7 +82,6 @@ const AutoEntryTime = ({ navigation }) => {
           title="Save"
           disabled={updateUserLoading}
           onPress={handleSave}
-          containerStyle={{ width: 64 }}
         />
       </View>
     </View>
@@ -157,6 +156,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingTop: 20,
+    paddingHorizontal: 5,
   },
 });
 

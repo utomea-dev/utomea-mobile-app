@@ -1,14 +1,14 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import withScreenWrapper from "../hooks/screenWrapper";
-import ScreenView from "../components/ScreenView/ScreenView";
-import { routes } from "./routes";
+import withWrapper from "../../hooks/withWrapper";
+import ScreenView from "../../components/ScreenView/ScreenView";
+import { searchRoutes } from "../routes/searchRoutes";
 
-export const AppNavigator = () => {
+export const SearchNavigator = () => {
   const Stack = createStackNavigator();
 
-  const screens = routes.map((route, key) => {
-    const Component = withScreenWrapper(route.component, ScreenView);
+  const screens = searchRoutes.map((route, key) => {
+    const Component = withWrapper(route.component, ScreenView);
 
     return (
       <Stack.Screen

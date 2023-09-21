@@ -14,7 +14,7 @@ const initialState = {
   },
   user: {},
   signupSuccess: false,
-  signupError: false,
+  signupError: "",
   signupLoading: false,
   signinSuccess: false,
   signinError: "",
@@ -33,7 +33,7 @@ export const signupUser = createAsyncThunk(
       const response = await makeRequest(signupUrl(), "POST", body, {});
       await AsyncStorage.setItem("utomea_user", JSON.stringify(response.data));
 
-      return response.status;
+      return response.data;
     } catch (error) {
       handleError(error);
     }
@@ -60,8 +60,7 @@ export const updateUser = createAsyncThunk(
   async (data: object, { dispatch }) => {
     try {
       const body = data.body;
-
-      const response = await makeRequest(updateUserUrl(), "POST", body, {});
+      const response = await makeRequest(updateUserUrl(), "PUT", body, {});
 
       if (response.status === 200) {
         console.log("resss====", response);
@@ -85,20 +84,25 @@ const authSLice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(signupUser.pending, (state) => {
       state.signupLoading = true;
+      state.signupSuccess = false;
+      state.signupError = "";
     });
-    builder.addCase(signupUser.fulfilled, (state) => {
+    builder.addCase(signupUser.fulfilled, (state, action) => {
       state.signupLoading = false;
       state.signupSuccess = true;
-      state.signupError = false;
+      state.user = action.payload;
+      state.signupError = "";
     });
-    builder.addCase(signupUser.rejected, (state) => {
+    builder.addCase(signupUser.rejected, (state, action) => {
       state.signupLoading = false;
       state.signupSuccess = false;
-      state.signupError = true;
+      state.signupError = action.error.message;
     });
 
     builder.addCase(signinUser.pending, (state) => {
       state.signinLoading = true;
+      state.signinSuccess = false;
+      state.signinError = "";
     });
     builder.addCase(signinUser.fulfilled, (state, action) => {
       state.signinLoading = false;
@@ -114,6 +118,8 @@ const authSLice = createSlice({
 
     builder.addCase(updateUser.pending, (state) => {
       state.updateUserLoading = true;
+      state.updateUserError = false;
+      state.updateUserSuccess = false;
     });
     builder.addCase(updateUser.fulfilled, (state) => {
       state.updateUserLoading = false;

@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 50,
     gap: 12,
-    width: "100%",
   },
   disabled: {
     backgroundColor: "#616161",
@@ -46,7 +45,6 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderRadius: 50,
-    width: "100%",
   },
   text: {
     color: "#0E0E0E",

@@ -7,11 +7,17 @@ const makeRequest = async (
   body = {},
   options: Object
 ) => {
-  const user = (await AsyncStorage.getItem("utomea_user")) || {};
-  const token = JSON.parse(user)?.accessToken;
+  const user = await AsyncStorage.getItem("utomea_user");
+  let token = "";
+
+  if (user) {
+    token = await JSON.parse(user).token;
+  }
+  console.log("token=====", user, token);
   const allOptions = {
     headers: { Authorization: `Bearer ${token}` },
   };
+
   switch (method) {
     case "GET":
       return axios.get(url, allOptions);

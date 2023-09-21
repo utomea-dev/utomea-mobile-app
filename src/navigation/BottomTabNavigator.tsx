@@ -1,40 +1,39 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import * as React from "react";
-import Homescreen from "../screens/Homescreen";
-import Profile from "../screens/Profile";
-import Search from "../screens/Search";
-import CreateEvent from "../screens/CreateEvents";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View, Text, Image } from "react-native";
+import { HomeNavigator } from "./navigators/HomeNavigator";
+import { SearchNavigator } from "./navigators/SearchNavigator";
+import { CreateNavigator } from "./navigators/CreateNavigator";
+import { ProfileNavigator } from "./navigators/ProfileNavigator";
 
 const Tab = createBottomTabNavigator();
 
 const tabConfig = [
   {
     name: "Home",
-    component: Homescreen,
-    iconUri: require("../../assets/icons/home.png"), // Replace with your home icon URL
+    component: HomeNavigator,
+    iconUri: require("../assets/icons/home.png"),
   },
   {
     name: "Search",
-    component: Search,
-    iconUri: require("../../assets/icons/search.png"), // Replace with your search icon URL
+    component: SearchNavigator,
+    iconUri: require("../assets/icons/search.png"),
   },
   {
     name: "Create",
-    component: CreateEvent,
-    iconUri: require("../../assets/icons/create.png"), // Replace with your create icon URL
+    component: CreateNavigator,
+    iconUri: require("../assets/icons/create.png"),
   },
   {
     name: "Profile",
-    component: Profile,
-    iconUri: require("../../assets/icons/icon.png"), // Replace with your profile icon URL
+    component: ProfileNavigator,
+    iconUri: require("../assets/icons/icon.png"),
   },
 ];
 
 const TabItem = ({ focused, iconUri, label }) => {
   return (
     // In this view style reduce the gap between the items
-
     <View style={{ alignItems: "center" }}>
       <Image
         source={iconUri}
@@ -48,7 +47,7 @@ const TabItem = ({ focused, iconUri, label }) => {
         style={{
           color: focused ? "#58DAC3" : "white",
           fontSize: 10,
-          // marginBottom: 4,
+          marginTop: -8,
         }}
       >
         {label}
@@ -64,13 +63,13 @@ const Tabs = () => {
         headerShown: false,
         tabBarStyle: {
           display: "flex",
-          padding: 16,
+          padding: 12,
           paddingRight: 40,
-          paddingBottom: 12,
+          paddingBottom: 16,
           paddingLeft: 40,
           position: "absolute",
           backgroundColor: "#0E0E0EE5",
-          height: 75,
+          height: 72,
         },
 
         tabBarIcon: ({ focused }) => {
