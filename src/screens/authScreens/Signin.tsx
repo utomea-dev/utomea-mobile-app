@@ -14,6 +14,11 @@ import { signinUser } from "../../redux/slices/authSlice";
 import { useAuth } from "../../hooks/useAuth";
 // import Calendar from "../../assets/icons/calendar.svg";
 
+const isEmailValid = (email) => {
+  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  return emailRegex.test(email);
+};
+
 const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
 
@@ -29,6 +34,11 @@ const Signin = ({ navigation }) => {
   const handleSignin = async () => {
     if (!email || !password) {
       setValidationError(() => "Signin Failed, Please fill in all fields");
+      return;
+    }
+
+    if (!isEmailValid(email)) {
+      setValidationError("Please enter a valid email address");
       return;
     }
 
@@ -85,7 +95,7 @@ const Signin = ({ navigation }) => {
         containerStyle={{ marginBottom: 16 }}
       />
       <CustomInput
-        label="Password"
+        label="Choose a Password"
         editable={!signinLoading}
         placeholder="Choose a password"
         placeholderTextColor="grey"

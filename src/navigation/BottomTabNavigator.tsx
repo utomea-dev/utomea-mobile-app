@@ -12,22 +12,22 @@ const tabConfig = [
   {
     name: "Home",
     component: HomeNavigator,
-    iconUri: require("../assets/icons/home.png"),
+    imgsrc: require("../assets/icons/home.png"),
   },
   {
     name: "Search",
     component: SearchNavigator,
-    iconUri: require("../assets/icons/search.png"),
+    imgsrc: require("../assets/icons/search.png"),
   },
   {
     name: "Create",
     component: CreateNavigator,
-    iconUri: require("../assets/icons/create.png"),
+    imgsrc: require("../assets/icons/create.png"),
   },
   {
     name: "Profile",
     component: ProfileNavigator,
-    iconUri: require("../assets/icons/icon.png"),
+    imgsrc: require("../assets/icons/icon.png"),
   },
 ];
 
@@ -74,10 +74,14 @@ const Tabs = () => {
 
         tabBarIcon: ({ focused }) => {
           const tabInfo = tabConfig.find((item) => item.name === route.name);
-          if (tabInfo) {
-            return <TabItem focused={focused} iconUri={tabInfo.iconUri} />;
+          if (!tabInfo) {
+            console.log(`No tabInfo found for route name: ${route.name}`);
+            return null;
           }
-          return null;
+          console.log(
+            `Using iconUri: ${tabInfo.iconUri} for route name: ${route.name}`
+          );
+          return <TabItem focused={focused} iconUri={tabInfo.imgsrc} />;
         },
         tabBarLabel: ({ focused, color }) => {
           const tabInfo = tabConfig.find((item) => item.name === route.name);
