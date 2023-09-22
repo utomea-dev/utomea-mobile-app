@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
   },
   disabled: {
     backgroundColor: "#616161",
-    padding: "6px 16px",
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderRadius: 50,
