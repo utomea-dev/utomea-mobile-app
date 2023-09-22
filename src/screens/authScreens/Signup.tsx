@@ -13,6 +13,11 @@ import Apple from "../../assets/icons/apple.svg";
 import { signupUser } from "../../redux/slices/authSlice";
 import { useAuth } from "../../hooks/useAuth";
 
+const isEmailValid = (email) => {
+  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  return emailRegex.test(email);
+};
+
 const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
 
@@ -27,6 +32,11 @@ const Signup = ({ navigation }) => {
   const handleSignup = async () => {
     if (!email || !password) {
       setValidationError(() => "Signin Failed, Please fill in all fields");
+      return;
+    }
+
+    if (!isEmailValid(email)) {
+      setValidationError("Please enter a valid email address");
       return;
     }
 
