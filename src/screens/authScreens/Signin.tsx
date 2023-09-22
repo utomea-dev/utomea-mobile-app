@@ -87,7 +87,7 @@ const Signin = ({ navigation }) => {
       <CustomInput
         label="Password"
         editable={!signinLoading}
-        placeholder="Choose a password"
+        placeholder="Enter your password"
         placeholderTextColor="grey"
         secureTextEntry={true}
         value={password}

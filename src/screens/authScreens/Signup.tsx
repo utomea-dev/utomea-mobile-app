@@ -67,9 +67,9 @@ const Signup = ({ navigation }) => {
         containerStyle={{ marginBottom: 16 }}
       />
       <CustomInput
-        label="Password"
+        label="Choose a password"
         editable={!signupLoading}
-        placeholder="Choose a password"
+        placeholder="Enter your password"
         placeholderTextColor="grey"
         secureTextEntry={true}
         value={password}
