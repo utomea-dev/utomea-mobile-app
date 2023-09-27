@@ -7,5 +7,7 @@ export const useAuth = async () => {
     return false;
   }
 
-  return true;
+  const userDetails = JSON.parse(user).user;
+
+  return userDetails;
 };

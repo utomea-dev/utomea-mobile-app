@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Button, TouchableOpacity, Text, StyleSheet } from "react-native";
+import {
+  View,
+  Button,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 
 const CustomButton = ({
   title = "",
@@ -8,6 +15,7 @@ const CustomButton = ({
   buttonStyle = {},
   textStyle = {},
   containerStyle = {},
+  isLoading = false,
   Icon,
   ...rest
 }) => {
@@ -18,10 +26,18 @@ const CustomButton = ({
         onPress={onPress}
         {...rest}
       >
-        {Icon && <Icon />}
-        <Text style={[styles.text, textStyle, disabled && styles.textDisabled]}>
-          {title}
-        </Text>
+        {isLoading ? (
+          <ActivityIndicator color="#ffffff" />
+        ) : (
+          <View style={styles.flex}>
+            {Icon && <Icon />}
+            <Text
+              style={[styles.text, textStyle, disabled && styles.textDisabled]}
+            >
+              {title}
+            </Text>
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -29,6 +45,12 @@ const CustomButton = ({
 
 const styles = StyleSheet.create({
   container: {},
+  flex: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignContent: "center",
+    gap: 12,
+  },
   button: {
     flexDirection: "row",
     justifyContent: "center",

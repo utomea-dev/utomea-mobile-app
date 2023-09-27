@@ -14,26 +14,31 @@ import { signinUser } from "../../redux/slices/authSlice";
 import { useAuth } from "../../hooks/useAuth";
 // import Calendar from "../../assets/icons/calendar.svg";
 
-const isEmailValid = (email) => {
-  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  return emailRegex.test(email);
-};
-
 const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const { signinSuccess, signinError, signinLoading } = useSelector(
     (state) => state.auth
   );
-  console.log("signin success---", signinSuccess);
-  console.log("signin Error---", signinError);
+
   const [email, setEmail] = useState("");
   const [validationError, setValidationError] = useState(signinError);
   const [password, setPassword] = useState("");
 
+  const clear = () => {
+    setEmail("");
+    setPassword("");
+    setValidationError("");
+  };
+
+  const isEmailValid = (email) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+  };
+
   const handleSignin = async () => {
     if (!email || !password) {
-      setValidationError(() => "Signin Failed, Please fill in all fields");
+      setValidationError(() => "Signin Failed, Please fill in all the fields");
       return;
     }
 
@@ -42,11 +47,17 @@ const Signin = ({ navigation }) => {
       return;
     }
 
+    setValidationError("");
+
     dispatch(signinUser({ email, password }));
   };
 
   const handleSocialSignin = () => {
     Alert.alert("Available Soon!");
+  };
+
+  const handleForgotPassword = () => {
+    // navigation.navigate("ForgotPassword");
   };
 
   const handleSignupLink = () => {
@@ -55,10 +66,13 @@ const Signin = ({ navigation }) => {
 
   const checkAuth = async () => {
     try {
-      const isAuthenticated = await useAuth();
-
-      if (isAuthenticated) {
-        navigation.navigate("MainTabs", { prevScreen: "Signin" });
+      const user = await useAuth();
+      if (user) {
+        if (user.privacy_policy_accepted) {
+          navigation.navigate("MainTabs", { prevScreen: "Signin" });
+        } else {
+          navigation.navigate("UserDetails");
+        }
       }
     } catch (error) {
       console.error("Error checking user token:", error);
@@ -71,10 +85,14 @@ const Signin = ({ navigation }) => {
 
   useEffect(() => {
     setValidationError(signinError);
+    return () => {
+      clear();
+    };
   }, [signinError]);
 
   useEffect(() => {
     if (signinSuccess) {
+      clear();
       navigation.navigate("MainTabs");
     }
   }, [signinSuccess]);
@@ -106,14 +124,29 @@ const Signin = ({ navigation }) => {
       />
 
       <CustomButton
+        isLoading={signinLoading}
         disabled={signinLoading}
         title="Login"
         onPress={handleSignin}
       />
 
-      <View style={{ marginTop: 5 }}>
-        <Text style={styles.errorText}>{validationError}</Text>
-      </View>
+      {validationError && (
+        <View style={{ marginTop: 5 }}>
+          <Text style={styles.errorText}>{validationError}</Text>
+        </View>
+      )}
+
+      <Text
+        style={{
+          color: "#FFFFFF",
+          textDecorationLine: "underline",
+          textAlign: "right",
+          marginTop: 16,
+        }}
+        onPress={handleForgotPassword}
+      >
+        Forgot Password ?
+      </Text>
 
       <View style={{ marginVertical: 24 }}>
         <Text style={styles.or}>OR</Text>

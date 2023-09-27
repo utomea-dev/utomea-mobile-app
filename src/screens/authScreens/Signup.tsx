@@ -13,11 +13,6 @@ import Apple from "../../assets/icons/apple.svg";
 import { signupUser } from "../../redux/slices/authSlice";
 import { useAuth } from "../../hooks/useAuth";
 
-const isEmailValid = (email) => {
-  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  return emailRegex.test(email);
-};
-
 const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
 
@@ -29,9 +24,29 @@ const Signup = ({ navigation }) => {
   const [password, setPassword] = useState("");
   const [validationError, setValidationError] = useState(signupError);
 
+  const clear = () => {
+    setEmail("");
+    setPassword("");
+    setValidationError("");
+  };
+
+  const isEmailValid = (email) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+  };
+
+  const isPasswordValid = (pass) => {
+    // const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    // return emailRegex.test(email);
+    if (pass.length < 6) {
+      return false;
+    }
+    return true;
+  };
+
   const handleSignup = async () => {
     if (!email || !password) {
-      setValidationError(() => "Signin Failed, Please fill in all fields");
+      setValidationError(() => "Please fill in all the fields");
       return;
     }
 
@@ -39,6 +54,13 @@ const Signup = ({ navigation }) => {
       setValidationError("Please enter a valid email address");
       return;
     }
+
+    if (!isPasswordValid(password)) {
+      setValidationError(() => "Password should be atleast 6 characters long");
+      return;
+    }
+
+    setValidationError("");
 
     dispatch(signupUser({ email, password }));
   };
@@ -51,12 +73,35 @@ const Signup = ({ navigation }) => {
     navigation.navigate("Signin");
   };
 
+  const checkAuth = async () => {
+    try {
+      const user = await useAuth();
+      if (user) {
+        if (user.privacy_policy_accepted) {
+          navigation.navigate("MainTabs", { prevScreen: "Signin" });
+        } else {
+          navigation.navigate("UserDetails");
+        }
+      }
+    } catch (error) {
+      console.error("Error checking user token:", error);
+    }
+  };
+
+  useFocusEffect(() => {
+    checkAuth();
+  });
+
   useEffect(() => {
     setValidationError(signupError);
+    return () => {
+      clear();
+    };
   }, [signupError]);
 
   useEffect(() => {
     if (signupSuccess) {
+      clear();
       navigation.navigate("UserDetails");
     }
   }, [signupSuccess]);
@@ -88,14 +133,17 @@ const Signup = ({ navigation }) => {
       />
 
       <CustomButton
+        isLoading={signupLoading}
         disabled={signupLoading}
         title="Create Account"
         onPress={handleSignup}
       />
 
-      <View style={{ marginTop: 5 }}>
-        <Text style={styles.errorText}>{validationError}</Text>
-      </View>
+      {validationError && (
+        <View style={{ marginTop: 5 }}>
+          <Text style={styles.errorText}>{validationError}</Text>
+        </View>
+      )}
 
       <View style={{ marginVertical: 24 }}>
         <Text style={styles.or}>OR</Text>

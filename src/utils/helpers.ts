@@ -1,6 +1,10 @@
-import {Platform, ToastAndroid} from 'react-native';
+import { Platform, ToastAndroid } from "react-native";
 
-import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+
+export const trimAndNormalizeSpaces = (str) => {
+  return str.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " ");
+};
 
 export const formatTime = (epochTime: number) => {
   const formattedTime = new Date(epochTime).toISOString();
@@ -10,24 +14,24 @@ export const formatTime = (epochTime: number) => {
 export const formatISOToDateString = (dateString: string) => {
   const date = new Date(dateString);
   const options = {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
   };
   const formattedDateTime = date.toLocaleString(undefined, options);
 
   return formattedDateTime;
 };
 
-export const showNotification = ({message}) => {
-  if (Platform.OS === 'android') {
+export const showNotification = ({ message }) => {
+  if (Platform.OS === "android") {
     ToastAndroid.show(message, ToastAndroid.SHORT);
-  } else if (Platform.OS === 'ios') {
+  } else if (Platform.OS === "ios") {
     PushNotificationIOS.presentLocalNotification({
-      alertTitle: 'Debug log',
+      alertTitle: "Debug log",
       alertBody: message,
     });
   }

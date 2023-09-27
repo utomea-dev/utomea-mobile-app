@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { View, Alert, Text, StyleSheet, Image } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
+import { trimAndNormalizeSpaces } from "../../utils/helpers";
 
 import { updateUserForm } from "../../redux/slices/authSlice";
 
@@ -13,10 +14,24 @@ const UserDetails = ({ navigation }) => {
 
   const userName = useSelector((state) => state.auth.updateUserForm.name);
   const [name, setName] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const handleSave = async () => {
-    if (!name) return;
-    dispatch(updateUserForm({ key: "name", value: name }));
+    if (!name) {
+      setValidationError(() => "Username cannot be empty");
+      return;
+    }
+
+    if (name.length < 4) {
+      setValidationError(() => "Username should be atleast 4 characters long");
+      return;
+    }
+
+    setValidationError("");
+
+    const trimmedName = trimAndNormalizeSpaces(name);
+
+    dispatch(updateUserForm({ key: "name", value: trimmedName }));
     navigation.navigate("AcceptPrivacyPolicy");
   };
 
@@ -37,8 +52,12 @@ const UserDetails = ({ navigation }) => {
           placeholderTextColor="grey"
           value={name}
           onChangeText={(text) => setName(text)}
-          containerStyle={{ marginBottom: 16 }}
         />
+        {validationError && (
+          <View style={{ marginTop: 5 }}>
+            <Text style={styles.errorText}>{validationError}</Text>
+          </View>
+        )}
       </View>
       <CustomButton title="Save" onPress={handleSave} />
     </View>
@@ -65,6 +84,11 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     color: "#FFFFFF",
     fontWeight: "700",
+    textAlign: "center",
+  },
+  errorText: {
+    fontSize: 12,
+    color: "red",
     textAlign: "center",
   },
 });

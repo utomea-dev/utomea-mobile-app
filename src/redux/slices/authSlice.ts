@@ -20,7 +20,7 @@ const initialState = {
   signinError: "",
   signinLoading: false,
   updateUserSuccess: false,
-  updateUserError: false,
+  updateUserError: "",
   updateUserLoading: false,
 };
 
@@ -63,7 +63,10 @@ export const updateUser = createAsyncThunk(
       const response = await makeRequest(updateUserUrl(), "PUT", body, {});
 
       if (response.status === 200) {
-        console.log("resss====", response);
+        let user = (await AsyncStorage.getItem("utomea_user")) || "Unknown";
+        user = JSON.parse(user);
+        user.user.privacy_policy_accepted = true;
+        await AsyncStorage.setItem("utomea_user", JSON.stringify(user));
       }
 
       return response.status;
@@ -96,7 +99,7 @@ const authSLice = createSlice({
     builder.addCase(signupUser.rejected, (state, action) => {
       state.signupLoading = false;
       state.signupSuccess = false;
-      state.signupError = action.error.message;
+      state.signupError = action.error.message || "";
     });
 
     builder.addCase(signinUser.pending, (state) => {
@@ -113,23 +116,23 @@ const authSLice = createSlice({
     builder.addCase(signinUser.rejected, (state, action) => {
       state.signinLoading = false;
       state.signinSuccess = false;
-      state.signinError = action.error.message;
+      state.signinError = action.error.message || "";
     });
 
     builder.addCase(updateUser.pending, (state) => {
       state.updateUserLoading = true;
-      state.updateUserError = false;
+      state.updateUserError = "";
       state.updateUserSuccess = false;
     });
     builder.addCase(updateUser.fulfilled, (state) => {
       state.updateUserLoading = false;
       state.updateUserSuccess = true;
-      state.updateUserError = false;
+      state.updateUserError = "";
     });
-    builder.addCase(updateUser.rejected, (state) => {
+    builder.addCase(updateUser.rejected, (state, action) => {
       state.updateUserLoading = false;
       state.updateUserSuccess = false;
-      state.updateUserError = true;
+      state.updateUserError = action.error.message || "";
     });
   },
 });

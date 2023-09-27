@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import CustomButton from "../../components/Button/Button";
 
-import { updateUser, updateUserForm } from "../../redux/slices/authSlice";
+import { updateUser } from "../../redux/slices/authSlice";
 
 import Logo from "../../assets/images/logo.svg";
 
@@ -34,7 +34,7 @@ const AutoEntryTime = ({ navigation }) => {
   const handlePress = (entry) => {
     setActive(() => entry);
   };
-  console.log("updateUserSuccess=----------", updateUserSuccess);
+
   useEffect(() => {
     if (updateUserSuccess) {
       navigation.navigate("MainTabs", { prevScreen: "AutoEntryTime" });
@@ -80,6 +80,7 @@ const AutoEntryTime = ({ navigation }) => {
         </TouchableOpacity>
         <CustomButton
           title="Save"
+          isLoading={updateUserLoading}
           disabled={updateUserLoading}
           onPress={handleSave}
         />
