@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 
 import CalendarHeader from "../../components/Header/CalendarHeader";
@@ -10,27 +11,24 @@ import Welcome from "../../assets/icons/welcome.svg";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ScrollView } from "react-native-gesture-handler";
+import { reset } from "../../redux/slices/authSlice";
 
 const createButtons = [1, 2, 3, 4];
 
 const EmptyFeed = ({ navigation, route }) => {
+  const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(true);
 
   const { prevScreen } = route.params || { prevScreen: "Unknown" };
   console.log("previous screen  ************", prevScreen);
 
   const handleCreateEventButton = async () => {
+    dispatch(reset());
     AsyncStorage.clear();
     navigation.navigate("Signin");
   };
 
   const handlePress = (entry) => {};
-
-  // useEffect(() => {
-  //   if (prevScreen === "AutoEntryTime") {
-  //     setModalVisible(true);
-  //   }
-  // }, []);
 
   const renderModal = () => {
     return (

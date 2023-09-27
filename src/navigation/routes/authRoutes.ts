@@ -4,6 +4,9 @@ import UserDetails from "../../screens/authScreens/UserDetails";
 import AcceptPrivacyPolicy from "../../screens/authScreens/AcceptPrivacyPolicy";
 import AutoEntryTime from "../../screens/authScreens/AutoEntryTime";
 import BottomTabs from "../../screens/BottomTabs";
+import ForgotPassword from "../../screens/authScreens/ForgotPassword";
+import CheckEmail from "../../screens/authScreens/CheckEmail";
+import NewPassword from "../../screens/authScreens/NewPassword";
 
 export const authRoutes = [
   {
@@ -29,6 +32,21 @@ export const authRoutes = [
   {
     name: "AutoEntryTime",
     component: AutoEntryTime,
+    options: { headerShown: false },
+  },
+  {
+    name: "ForgotPassword",
+    component: ForgotPassword,
+    options: { headerShown: false },
+  },
+  {
+    name: "CheckEmail",
+    component: CheckEmail,
+    options: { headerShown: false },
+  },
+  {
+    name: "reset-password",
+    component: NewPassword,
     options: { headerShown: false },
   },
   {

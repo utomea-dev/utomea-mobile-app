@@ -17,19 +17,18 @@ const UserDetails = ({ navigation }) => {
   const [validationError, setValidationError] = useState("");
 
   const handleSave = async () => {
-    if (!name) {
+    const trimmedName = trimAndNormalizeSpaces(name);
+    if (!trimmedName) {
       setValidationError(() => "Username cannot be empty");
       return;
     }
 
-    if (name.length < 4) {
+    if (trimmedName.length < 4) {
       setValidationError(() => "Username should be atleast 4 characters long");
       return;
     }
 
     setValidationError("");
-
-    const trimmedName = trimAndNormalizeSpaces(name);
 
     dispatch(updateUserForm({ key: "name", value: trimmedName }));
     navigation.navigate("AcceptPrivacyPolicy");

@@ -14,6 +14,9 @@ const baseUrl = `https://${host}`;
 export const signupUrl = () => `${baseUrl}/user/signup`;
 export const signinUrl = () => `${baseUrl}/user/signin`;
 export const updateUserUrl = () => `${baseUrl}/user/user-details`;
+export const forgotPasswordUrl = () => `${baseUrl}/auth/forgot-password`;
+export const resetPasswordUrl = (token: string) =>
+  `${baseUrl}/auth/reset-password/${token}`;
 
 // ======================== EVents urls ============================
 export const getEventsUrl = () => `${baseUrl}/events`;

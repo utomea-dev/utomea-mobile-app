@@ -10,7 +10,7 @@ import GoogleIcon from "../../assets/icons/google.svg";
 import Facebook from "../../assets/icons/facebook.svg";
 import Apple from "../../assets/icons/apple.svg";
 
-import { signinUser } from "../../redux/slices/authSlice";
+import { reset, signinUser } from "../../redux/slices/authSlice";
 import { useAuth } from "../../hooks/useAuth";
 
 const Signin = ({ navigation }) => {
@@ -56,7 +56,7 @@ const Signin = ({ navigation }) => {
   };
 
   const handleForgotPassword = () => {
-    // navigation.navigate("ForgotPassword");
+    navigation.navigate("ForgotPassword");
     clear();
   };
 
@@ -80,9 +80,16 @@ const Signin = ({ navigation }) => {
     }
   };
 
-  useFocusEffect(() => {
-    checkAuth();
-  });
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = navigation.addListener("beforeRemove", () => {
+        dispatch(reset());
+      });
+
+      checkAuth();
+      return unsubscribe;
+    }, [navigation])
+  );
 
   useEffect(() => {
     setValidationError(signinError);

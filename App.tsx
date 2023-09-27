@@ -9,10 +9,18 @@ import { AuthNavigator } from "./src/navigation/navigators/AuthNavigator";
 const Stack = createStackNavigator();
 
 const App = () => {
+  const linking = {
+    prefixes: ["https://utomeaapp"],
+    config: {
+      screens: {
+        "reset-password": { path: "reset-password/:token" },
+      },
+    },
+  };
   return (
     <Provider store={store}>
       <SafeAreaView style={{ flex: 1 }}>
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
           <AuthNavigator />
         </NavigationContainer>
       </SafeAreaView>

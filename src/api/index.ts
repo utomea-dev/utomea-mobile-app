@@ -13,7 +13,6 @@ const makeRequest = async (
   if (user) {
     token = await JSON.parse(user).token;
   }
-  console.log("token=====", user, token);
   const allOptions = {
     headers: { Authorization: `Bearer ${token}` },
   };
