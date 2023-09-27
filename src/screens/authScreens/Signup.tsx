@@ -22,7 +22,7 @@ const Signup = ({ navigation }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [validationError, setValidationError] = useState(signupError);
+  const [validationError, setValidationError] = useState("");
 
   const clear = () => {
     setEmail("");
@@ -71,6 +71,7 @@ const Signup = ({ navigation }) => {
 
   const handleSigninLink = () => {
     navigation.navigate("Signin");
+    clear();
   };
 
   const checkAuth = async () => {
@@ -94,9 +95,6 @@ const Signup = ({ navigation }) => {
 
   useEffect(() => {
     setValidationError(signupError);
-    return () => {
-      clear();
-    };
   }, [signupError]);
 
   useEffect(() => {

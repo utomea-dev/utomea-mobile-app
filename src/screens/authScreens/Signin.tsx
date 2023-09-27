@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Alert, Text, StyleSheet, Image } from "react-native";
+import { View, Alert, Text, StyleSheet, TouchableOpacity } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
 
@@ -12,7 +12,6 @@ import Apple from "../../assets/icons/apple.svg";
 
 import { signinUser } from "../../redux/slices/authSlice";
 import { useAuth } from "../../hooks/useAuth";
-// import Calendar from "../../assets/icons/calendar.svg";
 
 const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -22,7 +21,7 @@ const Signin = ({ navigation }) => {
   );
 
   const [email, setEmail] = useState("");
-  const [validationError, setValidationError] = useState(signinError);
+  const [validationError, setValidationError] = useState("");
   const [password, setPassword] = useState("");
 
   const clear = () => {
@@ -58,10 +57,12 @@ const Signin = ({ navigation }) => {
 
   const handleForgotPassword = () => {
     // navigation.navigate("ForgotPassword");
+    clear();
   };
 
   const handleSignupLink = () => {
     navigation.navigate("Signup");
+    clear();
   };
 
   const checkAuth = async () => {
@@ -85,9 +86,6 @@ const Signin = ({ navigation }) => {
 
   useEffect(() => {
     setValidationError(signinError);
-    return () => {
-      clear();
-    };
   }, [signinError]);
 
   useEffect(() => {
@@ -135,19 +133,27 @@ const Signin = ({ navigation }) => {
           <Text style={styles.errorText}>{validationError}</Text>
         </View>
       )}
-
-      <Text
+      <View
         style={{
-          color: "#FFFFFF",
-          textDecorationLine: "underline",
-          textAlign: "right",
-          marginTop: 16,
+          flexDirection: "row",
+          justifyContent: "flex-end",
+          borderWidth: 1,
+          borderColor: "transparent",
         }}
-        onPress={handleForgotPassword}
       >
-        Forgot Password ?
-      </Text>
-
+        <TouchableOpacity onPress={handleForgotPassword}>
+          <Text
+            style={{
+              color: "#FFFFFF",
+              textDecorationLine: "underline",
+              textAlign: "right",
+              marginTop: 16,
+            }}
+          >
+            Forgot Password ?
+          </Text>
+        </TouchableOpacity>
+      </View>
       <View style={{ marginVertical: 24 }}>
         <Text style={styles.or}>OR</Text>
         <View style={{ height: 1, backgroundColor: "#3B3B3B" }} />
