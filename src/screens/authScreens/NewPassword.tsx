@@ -80,6 +80,8 @@ const NewPassword = ({ navigation, route }) => {
       </View>
       <View style={styles.flex}>
         <CustomButton
+          disabled={resetPasswordLoading}
+          isLoading={resetPasswordLoading}
           title="Save"
           onPress={handleSave}
           containerStyle={{ width: "100%" }}
