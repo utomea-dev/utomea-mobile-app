@@ -33,7 +33,6 @@ const tabConfig = [
 
 const TabItem = ({ focused, iconUri, label }) => {
   return (
-    // In this view style reduce the gap between the items
     <View style={{ alignItems: "center" }}>
       <Image
         source={iconUri}
@@ -42,7 +41,6 @@ const TabItem = ({ focused, iconUri, label }) => {
           tintColor: focused ? "#58DAC3" : "white",
         }}
       />
-
       <Text
         style={{
           color: focused ? "#58DAC3" : "white",
@@ -59,38 +57,32 @@ const TabItem = ({ focused, iconUri, label }) => {
 const Tabs = () => {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarStyle: {
-          display: "flex",
-          padding: 12,
-          paddingRight: 40,
-          paddingBottom: 16,
-          paddingLeft: 40,
-          position: "absolute",
-          backgroundColor: "#0E0E0EE5",
-          height: 72,
-        },
-
-        tabBarIcon: ({ focused }) => {
-          const tabInfo = tabConfig.find((item) => item.name === route.name);
-          if (!tabInfo) {
-            console.log(`No tabInfo found for route name: ${route.name}`);
-            return null;
-          }
-          console.log(
-            `Using iconUri: ${tabInfo.iconUri} for route name: ${route.name}`
-          );
-          return <TabItem focused={focused} iconUri={tabInfo.imgsrc} />;
-        },
-        tabBarLabel: ({ focused, color }) => {
-          const tabInfo = tabConfig.find((item) => item.name === route.name);
-          if (tabInfo) {
-            return <TabItem focused={focused} label={tabInfo.name} />;
-          }
-          return null;
-        },
-      })}
+      screenOptions={({ route }) => {
+        const tabInfo = tabConfig.find((item) => item.name === route.name);
+        if (!tabInfo) {
+          console.warn(`No tabInfo found for route name: ${route.name}`);
+          return {};
+        }
+        return {
+          headerShown: false,
+          tabBarStyle: {
+            display: "flex",
+            padding: 12,
+            paddingRight: 40,
+            paddingBottom: 16,
+            paddingLeft: 40,
+            position: "absolute",
+            backgroundColor: "#0E0E0EE5",
+            height: 72,
+          },
+          tabBarIcon: ({ focused }) => (
+            <TabItem focused={focused} iconUri={tabInfo.imgsrc} />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <TabItem focused={focused} label={tabInfo.name} />
+          ),
+        };
+      }}
     >
       {tabConfig.map((tab, index) => (
         <Tab.Screen
