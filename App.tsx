@@ -19,7 +19,7 @@ const App = () => {
   };
   return (
     <Provider store={store}>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#0E0E0E" }}>
         <NavigationContainer linking={linking}>
           <AuthNavigator />
         </NavigationContainer>

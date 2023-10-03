@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Alert, Text, StyleSheet, Image } from "react-native";
+import { View, Alert, Text, StyleSheet, BackHandler } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
 import { trimAndNormalizeSpaces } from "../../utils/helpers";
@@ -33,6 +33,25 @@ const UserDetails = ({ navigation }) => {
     dispatch(updateUserForm({ key: "name", value: trimmedName }));
     navigation.navigate("AcceptPrivacyPolicy");
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (navigation.isFocused()) {
+        BackHandler.exitApp();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => {
+      backHandler.remove();
+    };
+  }, [navigation]);
 
   useEffect(() => {
     setName(userName);
@@ -88,7 +107,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 12,
     color: "red",
-    textAlign: "center",
+    textAlign: "left",
   },
 });
 

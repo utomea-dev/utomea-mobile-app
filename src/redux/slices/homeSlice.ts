@@ -14,6 +14,8 @@ import { handleError } from "../errorHandler";
 const initialState = {
   events: [],
   eventsLoading: false,
+  unverifiedCount: 0,
+  totalCount: 0,
   eventsError: "",
   date: "",
   verified: "",
@@ -33,7 +35,7 @@ export const getEvents = createAsyncThunk(
         getEventsUrl({ limit, skip, verified, date }),
         {}
       );
-
+      const { totalCount, unverifiedCount } = response.data;
       const newEvents = response.data.data;
       let merged = [];
 
@@ -50,7 +52,7 @@ export const getEvents = createAsyncThunk(
         merged = [...events, ...newEvents];
       } else merged = newEvents;
 
-      return merged;
+      return { merged, totalCount, unverifiedCount };
     } catch (error) {
       handleError(error);
     }
@@ -65,6 +67,8 @@ const homeSlice = createSlice({
       state.events = [];
       state.eventsLoading = false;
       state.eventsError = "";
+      state.totalCount = 0;
+      state.unverifiedCount = 0;
       state.date = "";
       state.verified = "";
       state.limit = 10;
@@ -84,7 +88,9 @@ const homeSlice = createSlice({
     builder.addCase(getEvents.fulfilled, (state, action) => {
       state.eventsLoading = false;
       state.eventsError = "";
-      state.events = action.payload || [];
+      state.events = action.payload?.merged || [];
+      state.totalCount = action.payload?.totalCount;
+      state.unverifiedCount = action.payload?.unverifiedCount;
     });
     builder.addCase(getEvents.rejected, (state, action) => {
       state.eventsLoading = false;

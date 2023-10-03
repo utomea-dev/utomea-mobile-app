@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 12,
     color: "red",
-    textAlign: "center",
+    textAlign: "left",
   },
 });
 

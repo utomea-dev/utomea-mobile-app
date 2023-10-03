@@ -7,12 +7,13 @@ import {
   TouchableOpacity,
   FlatList,
   ActivityIndicator,
+  BackHandler,
+  ToastAndroid,
 } from "react-native";
 
 import CalendarHeader from "../../components/Header/CalendarHeader";
 import CustomButton from "../../components/Button/Button";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import EmptyFeed from "./EmptyFeed";
 import Events from "../../components/Event/Events";
 import {
@@ -24,15 +25,40 @@ import { formatDate } from "../../utils/helpers";
 
 const HomeFeed = ({ navigation }) => {
   const dispatch = useDispatch();
-
-  const { verified, events, eventsLoading, eventsError, infiniteLoading } =
-    useSelector((state) => state.home);
+  const {
+    verified,
+    events,
+    eventsLoading,
+    eventsError,
+    infiniteLoading,
+    unverifiedCount,
+    totalCount,
+  } = useSelector((state) => state.home);
 
   const handleTabPress = () => {
     dispatch(
       setHomeFilter({ key: "verified", value: verified === "" ? false : "" })
     );
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (navigation.isFocused()) {
+        BackHandler.exitApp();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => {
+      backHandler.remove();
+    };
+  }, [navigation]);
 
   useEffect(() => {
     dispatch(getEvents());
@@ -64,7 +90,9 @@ const HomeFeed = ({ navigation }) => {
         ) : (
           <TouchableOpacity onPress={handleTabPress} style={styles.rowFlex}>
             <Text style={{ color: "#ADADAD" }}>Unverified Events</Text>
-            <Text style={styles.notification}>99</Text>
+            {!!unverifiedCount && (
+              <Text style={styles.notification}>{unverifiedCount}</Text>
+            )}
           </TouchableOpacity>
         )}
       </View>
@@ -113,8 +141,14 @@ const HomeFeed = ({ navigation }) => {
       <CalendarHeader />
       <EmptyFeed navigation={navigation} />
 
-      {/* {renderTabs()} */}
-      {/* {renderFlatlist()} */}
+      {/* {totalCount === 0 ? (
+        <EmptyFeed navigation={navigation} />
+      ) : (
+        <>
+          {renderTabs()}
+          {renderFlatlist()}
+        </>
+      )} */}
     </View>
   );
 };

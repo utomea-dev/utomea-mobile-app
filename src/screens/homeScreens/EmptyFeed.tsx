@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
-
-import CalendarHeader from "../../components/Header/CalendarHeader";
 import CustomButton from "../../components/Button/Button";
 
 import PlusDark from "../../assets/icons/plus_dark.svg";
@@ -10,7 +8,6 @@ import PlusLight from "../../assets/icons/plus_light.svg";
 import Welcome from "../../assets/icons/welcome.svg";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ScrollView } from "react-native-gesture-handler";
 import { reset } from "../../redux/slices/authSlice";
 
 const createButtons = [1, 2, 3, 4];
@@ -18,8 +15,6 @@ const createButtons = [1, 2, 3, 4];
 const EmptyFeed = ({ navigation }) => {
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(true);
-
-  // const { prevScreen } = route.params || { prevScreen: "Unknown" };
 
   const handleCreateEventButton = async () => {
     dispatch(reset());
@@ -76,7 +71,7 @@ const EmptyFeed = ({ navigation }) => {
         style={styles.button}
         onPress={() => handlePress(entry)}
       >
-        <PlusLight stroke="red" fill="red" />
+        <PlusLight />
       </TouchableOpacity>
     ));
   };
@@ -114,12 +109,6 @@ const styles = StyleSheet.create({
   container: {
     height: "100%",
     width: "100%",
-  },
-  logo: {
-    height: 200,
-    width: 200,
-    borderColor: "red",
-    borderWidth: 1,
   },
   modalContainer: {
     flex: 1,

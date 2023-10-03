@@ -4,6 +4,7 @@ import { View, Alert, Text, StyleSheet, TouchableOpacity } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
 import Logo from "../../assets/images/logo.svg";
+import { StackActions } from "@react-navigation/native";
 
 import { forgotPassword } from "../../redux/slices/authSlice";
 
@@ -42,7 +43,7 @@ const ForgotPassword = ({ navigation }) => {
 
   useEffect(() => {
     if (forgotPasswordSuccess) {
-      navigation.navigate("CheckEmail");
+      navigation.dispatch(StackActions.replace("CheckEmail"));
     }
   }, [forgotPasswordSuccess]);
 
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 12,
     color: "red",
-    textAlign: "center",
+    textAlign: "left",
   },
 });
 
