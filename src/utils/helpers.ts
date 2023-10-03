@@ -1,6 +1,7 @@
 import { Platform, ToastAndroid } from "react-native";
 
 import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import { MONTHS } from "../constants/constants";
 
 export const trimAndNormalizeSpaces = (str) => {
   return str.replace(/^\s+|\s+$/g, "").replace(/\s+/g, " ");
@@ -9,6 +10,16 @@ export const trimAndNormalizeSpaces = (str) => {
 export const formatTime = (epochTime: number) => {
   const formattedTime = new Date(epochTime).toISOString();
   return formattedTime;
+};
+
+export const formatDate = (date = "", short = false) => {
+  const splitDate = date.split("-");
+  const monthString = MONTHS[splitDate[1]][short ? "short" : "long"];
+  return `${monthString} ${splitDate[2]}, ${splitDate[0]}`;
+};
+
+export const daysInMonth = (year, month) => {
+  return new Date(year, month, 0).getDate();
 };
 
 export const formatISOToDateString = (dateString: string) => {

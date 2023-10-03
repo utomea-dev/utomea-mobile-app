@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 
 const App = () => {
   const linking = {
-    prefixes: ["https://utomeaapp"],
+    prefixes: ["https://utomeaapp", "utomeaapp://"],
     config: {
       screens: {
         "reset-password": { path: "reset-password/:token" },

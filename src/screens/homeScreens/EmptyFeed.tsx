@@ -15,12 +15,11 @@ import { reset } from "../../redux/slices/authSlice";
 
 const createButtons = [1, 2, 3, 4];
 
-const EmptyFeed = ({ navigation, route }) => {
+const EmptyFeed = ({ navigation }) => {
   const dispatch = useDispatch();
   const [modalVisible, setModalVisible] = useState(true);
 
-  const { prevScreen } = route.params || { prevScreen: "Unknown" };
-  console.log("previous screen  ************", prevScreen);
+  // const { prevScreen } = route.params || { prevScreen: "Unknown" };
 
   const handleCreateEventButton = async () => {
     dispatch(reset());
@@ -84,7 +83,6 @@ const EmptyFeed = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       {renderModal()}
-      <CalendarHeader />
       <View style={{ marginVertical: 24 }}>
         <Text style={styles.title}>Your feed is empty :(</Text>
         <View>
