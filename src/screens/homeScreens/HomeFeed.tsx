@@ -22,6 +22,8 @@ import {
   setHomeFilter,
 } from "../../redux/slices/homeSlice";
 import { formatDate } from "../../utils/helpers";
+import { useFocusEffect } from "@react-navigation/native";
+import BackgroundLocationService from "../../../Services/LocationBackgroundService";
 
 const HomeFeed = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -29,9 +31,12 @@ const HomeFeed = ({ navigation }) => {
     verified,
     events,
     eventsLoading,
+    eventsLoadingInner,
     eventsError,
     infiniteLoading,
     unverifiedCount,
+    skip,
+    date,
     totalCount,
   } = useSelector((state) => state.home);
 
@@ -39,6 +44,10 @@ const HomeFeed = ({ navigation }) => {
     dispatch(
       setHomeFilter({ key: "verified", value: verified === "" ? false : "" })
     );
+  };
+
+  const fetchMore = () => {
+    // dispatch(setHomeFilter({ key: "skip", value: 2 }));
   };
 
   useEffect(() => {
@@ -61,8 +70,15 @@ const HomeFeed = ({ navigation }) => {
   }, [navigation]);
 
   useEffect(() => {
-    dispatch(getEvents());
-  }, [verified]);
+    dispatch(getEvents({ refetch: true }));
+  }, [verified, skip, date]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(resetHome());
+      dispatch(getEvents());
+    }, [dispatch])
+  );
 
   const renderTabs = () => {
     return (
@@ -98,8 +114,9 @@ const HomeFeed = ({ navigation }) => {
       </View>
     );
   };
+
   const renderFlatlist = () => {
-    if (eventsLoading) {
+    if (eventsLoadingInner) {
       return (
         <View
           style={{
@@ -126,8 +143,10 @@ const HomeFeed = ({ navigation }) => {
           const endDate = item[0].end_timestamp.split("T")[0];
           return <Events cards={item} date={formatDate(endDate)} />;
         }}
+        showsVerticalScrollIndicator={false}
         onEndReachedThreshold={1}
         onEndReached={({ distanceFromEnd }) => {
+          fetchMore();
           console.log("on end reached ", distanceFromEnd);
         }}
       />
@@ -136,19 +155,34 @@ const HomeFeed = ({ navigation }) => {
     );
   };
 
+  if (eventsLoading) {
+    return (
+      <View
+        style={{
+          flex: 0.9,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>
+          <ActivityIndicator color="#58DAC3" size="large" />;
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <CalendarHeader />
-      <EmptyFeed navigation={navigation} />
-
-      {/* {totalCount === 0 ? (
+      {totalCount === 0 ? (
         <EmptyFeed navigation={navigation} />
       ) : (
-        <>
+        <View>
           {renderTabs()}
           {renderFlatlist()}
-        </>
-      )} */}
+        </View>
+      )}
+      <BackgroundLocationService />
     </View>
   );
 };

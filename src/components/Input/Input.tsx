@@ -4,7 +4,8 @@ import { View, TextInput, Text, StyleSheet } from "react-native";
 const CustomInput = ({
   label = "",
   secure = false,
-  onChangeText = () => {},
+  validationError = "",
+  onChangeText = (e) => {},
   inputStyle = {},
   containerStyle = {},
   value = "",
@@ -15,10 +16,17 @@ const CustomInput = ({
       {label && <Text style={[styles.label]}>{label}</Text>}
       <TextInput
         onChangeText={onChangeText}
-        style={[styles.input, inputStyle]}
+        style={[
+          styles.input,
+          { borderColor: validationError ? "#FC7A1B" : "#3B3B3B" },
+          inputStyle,
+        ]}
         value={value}
         {...rest}
       />
+      {validationError && (
+        <Text style={[styles.validationError]}>{validationError}</Text>
+      )}
     </View>
   );
 };
@@ -39,6 +47,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 16,
     color: "#FFFFFF",
+  },
+  validationError: {
+    marginTop: 6,
+    fontSize: 10,
+    lineHeight: 12,
+    fontWeight: "400",
+    color: "#FC7A1B",
   },
 });
 

@@ -2,16 +2,19 @@ import React from "react";
 import { StyleSheet, View, Image } from "react-native";
 
 import Verified from "../../assets/icons/verified.svg";
+import thumbnail from "../../assets/images/thumbnail.png";
 
-const EventImage = ({ isVerified = false }) => {
+const EventImage = ({
+  isVerified = false,
+  imageUrl = "",
+  imageStyles = {},
+}) => {
   return (
     <View style={styles.container}>
       {isVerified && <Verified style={styles.icon} />}
       <Image
-        style={styles.image}
-        source={{
-          uri: "https://img.freepik.com/free-photo/woman-lookint-ships-sea_23-2148330634.jpg?q=10&h=200",
-        }}
+        style={[styles.image, imageStyles]}
+        source={imageUrl ? { uri: imageUrl } : thumbnail}
       />
     </View>
   );

@@ -75,6 +75,7 @@ const EmptyFeed = ({ navigation }) => {
       </TouchableOpacity>
     ));
   };
+
   return (
     <View style={styles.container}>
       {renderModal()}

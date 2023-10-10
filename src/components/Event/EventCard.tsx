@@ -11,7 +11,7 @@ const EventCard = ({ data }) => {
     <View style={styles.container}>
       {/* Event image */}
       <View style={styles.imageContainer}>
-        <EventImage isVerified={data.verified} />
+        <EventImage isVerified={data.verified} imageUrl={data.hero_image} />
       </View>
 
       {/* Event description */}
@@ -39,16 +39,18 @@ const EventCard = ({ data }) => {
         </View>
 
         {/* Event tags */}
-        <View style={styles.flex}>
-          <Tag />
-          <Text
-            numberOfLines={1}
-            ellipsizeMode="tail"
-            style={styles.eventAddress}
-          >
-            {data.tags.join(", ")}
-          </Text>
-        </View>
+        {data.tags.length > 0 && (
+          <View style={styles.flex}>
+            <Tag />
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.eventAddress}
+            >
+              {data.tags.join(", ")}
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   );

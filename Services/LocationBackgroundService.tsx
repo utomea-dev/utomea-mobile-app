@@ -49,25 +49,25 @@ const BackgroundLocationService = () => {
   //     });
   // };
 
-  const startImageUploading = async () => {
-    const eventsForSync = await AsyncStorage.getItem("eventsForSync");
-    const uploadingSlot = await AsyncStorage.getItem("uploadingSlot");
-    console.log(
-      "EVENTS IN STORAGE & SLOT+==========",
-      eventsForSync,
-      uploadingSlot
-    );
-    if (
-      eventsForSync !== null &&
-      AppState.currentState === "active" &&
-      uploadingSlot !== "occupied"
-    ) {
-      showNotification({ message: "uploading images to server" });
-      console.log("DISPATCHING UPLOADING==========", eventsForSync);
-      store.dispatch(uploadEventPhotos(JSON.parse(eventsForSync)));
-      await AsyncStorage.setItem("uploadingSlot", "occupied");
-    }
-  };
+  // const startImageUploading = async () => {
+  //   const eventsForSync = await AsyncStorage.getItem("eventsForSync");
+  //   const uploadingSlot = await AsyncStorage.getItem("uploadingSlot");
+  //   console.log(
+  //     "EVENTS IN STORAGE & SLOT+==========",
+  //     eventsForSync,
+  //     uploadingSlot
+  //   );
+  //   if (
+  //     eventsForSync !== null &&
+  //     AppState.currentState === "active" &&
+  //     uploadingSlot !== "occupied"
+  //   ) {
+  //     showNotification({ message: "uploading images to server" });
+  //     console.log("DISPATCHING UPLOADING==========", eventsForSync);
+  //     store.dispatch(uploadEventPhotos(JSON.parse(eventsForSync)));
+  //     await AsyncStorage.setItem("uploadingSlot", "occupied");
+  //   }
+  // };
 
   const initBackgroundGeolocation = async () => {
     // Get an authorization token from transistorsoft demo server.
@@ -131,17 +131,17 @@ const BackgroundLocationService = () => {
   getStorageValues();
 
   // image uplaod effect
-  useEffect(() => {
-    console.log(
-      "INSIDE USEFFECT RUNNING---------",
-      eventsForSync,
-      appState,
-      uploadingSlot
-    );
-    if (appState === "active") {
-      startImageUploading();
-    }
-  }, [eventsForSync, uploadingSlot, appState]);
+  // useEffect(() => {
+  //   console.log(
+  //     "INSIDE USEFFECT RUNNING---------",
+  //     eventsForSync,
+  //     appState,
+  //     uploadingSlot
+  //   );
+  //   if (appState === "active") {
+  //     // startImageUploading();
+  //   }
+  // }, [eventsForSync, uploadingSlot, appState]);
 
   React.useEffect(() => {
     initBackgroundGeolocation();
@@ -234,7 +234,6 @@ const BackgroundLocationService = () => {
       createEvent(address, latitude, longitude);
     }
   }, [location]);
-  console.log("state values-----", enabled, location);
 
   const init = async () => {
     let oldTime = await AsyncStorage.getItem("eventStartTime");

@@ -58,7 +58,7 @@
 	<key>NSMotionUsageDescription</key>
 	<string>Motion permission helps detect when device in in-motion</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need Photo Library Access for Accessing images</string>
+	<string>We neeed photo library access to Attach photos with Events</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>external-accessory</string>

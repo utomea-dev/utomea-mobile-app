@@ -29,12 +29,16 @@ const Signin = ({ navigation }) => {
   );
 
   const [email, setEmail] = useState("");
-  const [validationError, setValidationError] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [validationError, setValidationError] = useState("");
 
   const clear = () => {
     setEmail("");
     setPassword("");
+    setEmailError("");
+    setPasswordError("");
     setValidationError("");
   };
 
@@ -139,6 +143,7 @@ const Signin = ({ navigation }) => {
         label="Email"
         placeholder="Enter user email"
         placeholderTextColor="grey"
+        // validationError={'Invalid'}
         editable={!signinLoading}
         value={email}
         onChangeText={(text) => setEmail(text)}
@@ -252,7 +257,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 12,
-    color: "red",
+    color: "#FC7A1B",
     textAlign: "left",
   },
   or: {
