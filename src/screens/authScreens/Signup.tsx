@@ -11,7 +11,7 @@ import GoogleIcon from "../../assets/icons/google.svg";
 import Facebook from "../../assets/icons/facebook.svg";
 import Apple from "../../assets/icons/apple.svg";
 
-import { signupUser } from "../../redux/slices/authSlice";
+import { reset, signupUser } from "../../redux/slices/authSlice";
 import { useAuth } from "../../hooks/useAuth";
 
 const Signup = ({ navigation }) => {
@@ -109,9 +109,16 @@ const Signup = ({ navigation }) => {
     };
   }, [navigation]);
 
-  useFocusEffect(() => {
-    checkAuth();
-  });
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = navigation.addListener("beforeRemove", () => {
+        dispatch(reset());
+      });
+
+      checkAuth();
+      return unsubscribe;
+    }, [navigation])
+  );
 
   useEffect(() => {
     setValidationError(signupError);
@@ -227,7 +234,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 12,
-    color: "red",
+    color: "#FC7A1B",
     textAlign: "left",
   },
   or: {

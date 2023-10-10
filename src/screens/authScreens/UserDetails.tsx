@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 12,
-    color: "red",
+    color: "#FC7A1B",
     textAlign: "left",
   },
 });

@@ -22,7 +22,7 @@ const CustomButton = ({
   return (
     <View style={[styles.container, containerStyle]}>
       <TouchableOpacity
-        style={[styles.button, buttonStyle, disabled && styles.disabled]}
+        style={[styles.button, disabled && styles.disabled, buttonStyle]}
         onPress={onPress}
         {...rest}
       >
@@ -32,7 +32,7 @@ const CustomButton = ({
           <View style={styles.flex}>
             {Icon && <Icon />}
             <Text
-              style={[styles.text, textStyle, disabled && styles.textDisabled]}
+              style={[styles.text, disabled && styles.textDisabled, textStyle]}
             >
               {title}
             </Text>

@@ -7,6 +7,6 @@ export const useAuth = async () => {
   }
 
   const userDetails = JSON.parse(user).user;
-
+  console.log("USER-----", user);
   return userDetails;
 };
