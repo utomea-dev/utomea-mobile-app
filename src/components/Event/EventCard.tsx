@@ -39,7 +39,7 @@ const EventCard = ({ data }) => {
         </View>
 
         {/* Event tags */}
-        {data.tags.length > 0 && (
+        {data.tags?.length > 0 && (
           <View style={styles.flex}>
             <Tag />
             <Text
@@ -47,7 +47,7 @@ const EventCard = ({ data }) => {
               ellipsizeMode="tail"
               style={styles.eventAddress}
             >
-              {data.tags.join(", ")}
+              {data.tags?.slice(0, 3).join(", ")}
             </Text>
           </View>
         )}
