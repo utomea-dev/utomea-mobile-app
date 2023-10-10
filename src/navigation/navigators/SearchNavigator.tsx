@@ -20,5 +20,21 @@ export const SearchNavigator = () => {
     );
   });
 
-  return <Stack.Navigator>{screens}</Stack.Navigator>;
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        cardStyleInterpolator: ({ current }) => ({
+          cardStyle: {
+            opacity: current.progress,
+          },
+        }),
+        transitionSpec: {
+          open: { animation: "timing", config: { duration: 300 } },
+          close: { animation: "timing", config: { duration: 300 } },
+        },
+      }}
+    >
+      {screens}
+    </Stack.Navigator>
+  );
 };

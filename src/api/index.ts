@@ -34,7 +34,7 @@ const makeRequest = async (
       return axios.delete(url, allOptions);
 
     default:
-      return axios.get(url, {}, allOptions);
+      return axios.get(url, allOptions);
   }
 };
 

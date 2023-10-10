@@ -37,6 +37,7 @@
     "fbjs": "^3.0.4",
     "react": "18.2.0",
     "react-native": "0.71.7",
+    "react-native-app-intro-slider": "^4.0.4",
     "react-native-background-actions": "^3.0.0",
     "react-native-background-fetch": "^4.1.10",
     "react-native-background-geolocation": "^4.12.1",

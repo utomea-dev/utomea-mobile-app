@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Alert, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Alert,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  BackHandler,
+} from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
+import { StackActions } from "@react-navigation/native";
 
 import Logo from "../../assets/images/logo.svg";
 import GoogleIcon from "../../assets/icons/google.svg";
@@ -70,9 +78,9 @@ const Signin = ({ navigation }) => {
       const user = await useAuth();
       if (user) {
         if (user.privacy_policy_accepted) {
-          navigation.navigate("MainTabs", { prevScreen: "Signin" });
+          navigation.dispatch(StackActions.replace("MainTabs"));
         } else {
-          navigation.navigate("UserDetails");
+          navigation.dispatch(StackActions.replace("UserDetails"));
         }
       }
     } catch (error) {
@@ -92,13 +100,32 @@ const Signin = ({ navigation }) => {
   );
 
   useEffect(() => {
+    const backAction = () => {
+      if (navigation.isFocused()) {
+        BackHandler.exitApp();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => {
+      backHandler.remove();
+    };
+  }, [navigation]);
+
+  useEffect(() => {
     setValidationError(signinError);
   }, [signinError]);
 
   useEffect(() => {
     if (signinSuccess) {
       clear();
-      navigation.navigate("MainTabs");
+      navigation.dispatch(StackActions.replace("MainTabs"));
     }
   }, [signinSuccess]);
 
@@ -226,7 +253,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 12,
     color: "red",
-    textAlign: "center",
+    textAlign: "left",
   },
   or: {
     fontSize: 10,

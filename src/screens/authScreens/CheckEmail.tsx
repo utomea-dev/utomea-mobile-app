@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Email from "../../assets/images/email.svg";
 
 import { forgotPassword, reset } from "../../redux/slices/authSlice";
@@ -18,7 +18,6 @@ const CheckEmail = ({ navigation }) => {
   const handleSendAgain = () => {
     dispatch(forgotPassword({ email }));
     // navigation.navigate("NewPassword");
-    Alert.alert(`We Have Sent the Reset-Password Link Again to ${email}`);
   };
 
   return (
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 12,
     color: "red",
-    textAlign: "center",
+    textAlign: "left",
   },
 });
 

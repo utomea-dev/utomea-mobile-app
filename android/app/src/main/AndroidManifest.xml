@@ -37,6 +37,12 @@
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="https" android:host="utomeaapp" />
         </intent-filter>
+        <intent-filter android:autoVerify='true'>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="utomeaapp" />
+        </intent-filter>
       </activity>
       <service android:name="com.asterinet.react.bgactions.RNBackgroundActionsTask" />
       <service android:name="com.voximplant.foregroundservice.VIForegroundService"> </service>

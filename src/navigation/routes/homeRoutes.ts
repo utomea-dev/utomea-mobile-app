@@ -1,9 +1,9 @@
-import EmptyFeed from "../../screens/homeScreens/EmptyFeed";
+import HomeFeed from "../../screens/homeScreens/HomeFeed";
 
 export const homeRoutes = [
   {
-    name: "EmptyFeed",
-    component: EmptyFeed,
+    name: "HomeFeed",
+    component: HomeFeed,
     options: { headerShown: false },
   },
 ];

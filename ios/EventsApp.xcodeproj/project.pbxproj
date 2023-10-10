@@ -11,6 +11,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		52C2A7472AD021BE00880E0A /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52C2A7462AD021BE00880E0A /* Launch Screen.storyboard */; };
 		9970F7360F3EC26CBD9A9FBC /* libPods-EventsApp-EventsAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CB3FF48C1D58EBC546EA65AA /* libPods-EventsApp-EventsAppTests.a */; };
 		D7B20D78252C63D67AA00DB1 /* libPods-EventsApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9855B9DB34E5AF4CB9F683D0 /* libPods-EventsApp.a */; };
 /* End PBXBuildFile section */
@@ -37,6 +38,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = EventsApp/main.m; sourceTree = "<group>"; };
 		1C733F4DF3D3C950FB09D61D /* Pods-EventsApp-EventsAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventsApp-EventsAppTests.release.xcconfig"; path = "Target Support Files/Pods-EventsApp-EventsAppTests/Pods-EventsApp-EventsAppTests.release.xcconfig"; sourceTree = "<group>"; };
 		5276DC742A1DE83C006D9A9E /* EventsApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = EventsApp.entitlements; path = EventsApp/EventsApp.entitlements; sourceTree = "<group>"; };
+		52C2A7462AD021BE00880E0A /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		753C8713E71EC5E187C3F285 /* Pods-EventsApp-EventsAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EventsApp-EventsAppTests.debug.xcconfig"; path = "Target Support Files/Pods-EventsApp-EventsAppTests/Pods-EventsApp-EventsAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9855B9DB34E5AF4CB9F683D0 /* libPods-EventsApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EventsApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB3FF48C1D58EBC546EA65AA /* libPods-EventsApp-EventsAppTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-EventsApp-EventsAppTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,6 +91,7 @@
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				52C2A7462AD021BE00880E0A /* Launch Screen.storyboard */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -242,6 +245,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52C2A7472AD021BE00880E0A /* Launch Screen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Alert, Text, StyleSheet, Image } from "react-native";
+import { View, Alert, Text, StyleSheet, BackHandler } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
+import { StackActions } from "@react-navigation/native";
 
 import Logo from "../../assets/images/logo.svg";
 import GoogleIcon from "../../assets/icons/google.svg";
@@ -79,15 +80,34 @@ const Signup = ({ navigation }) => {
       const user = await useAuth();
       if (user) {
         if (user.privacy_policy_accepted) {
-          navigation.navigate("MainTabs", { prevScreen: "Signin" });
+          navigation.dispatch(StackActions.replace("MainTabs"));
         } else {
-          navigation.navigate("UserDetails");
+          navigation.dispatch(StackActions.replace("UserDetails"));
         }
       }
     } catch (error) {
       console.error("Error checking user token:", error);
     }
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (navigation.isFocused()) {
+        BackHandler.exitApp();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => {
+      backHandler.remove();
+    };
+  }, [navigation]);
 
   useFocusEffect(() => {
     checkAuth();
@@ -100,7 +120,7 @@ const Signup = ({ navigation }) => {
   useEffect(() => {
     if (signupSuccess) {
       clear();
-      navigation.navigate("UserDetails");
+      navigation.dispatch(StackActions.replace("UserDetails"));
     }
   }, [signupSuccess]);
 
@@ -208,7 +228,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 12,
     color: "red",
-    textAlign: "center",
+    textAlign: "left",
   },
   or: {
     fontSize: 10,
