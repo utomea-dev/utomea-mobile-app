@@ -3,10 +3,10 @@ import Signin from "../../screens/authScreens/Signin";
 import UserDetails from "../../screens/authScreens/UserDetails";
 import AcceptPrivacyPolicy from "../../screens/authScreens/AcceptPrivacyPolicy";
 import AutoEntryTime from "../../screens/authScreens/AutoEntryTime";
-import BottomTabs from "../../screens/BottomTabs";
 import ForgotPassword from "../../screens/authScreens/ForgotPassword";
 import CheckEmail from "../../screens/authScreens/CheckEmail";
 import NewPassword from "../../screens/authScreens/NewPassword";
+import BottomTabs from "../../screens/BottomTabs";
 
 export const authRoutes = [
   {

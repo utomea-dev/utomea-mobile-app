@@ -20,6 +20,7 @@ const AddPhotos = ({
   photos = [],
   addPhotos = (e) => {},
   removePhotos = (e) => {},
+  validationError = "",
 }) => {
   const screenWidth = Dimensions.get("window").width;
   const imageWidth = (screenWidth - 56) / 4;
@@ -29,7 +30,7 @@ const AddPhotos = ({
     try {
       const options = {
         mediaType: "photo",
-        selectionLimit: 20,
+        selectionLimit: 50,
         presentationStyle: "popover",
       };
       const result = await launchImageLibrary(options);
@@ -113,6 +114,11 @@ const AddPhotos = ({
       ) : (
         <View style={styles.photosButtonContainer}>{renderCreateButton()}</View>
       )}
+      {validationError && (
+        <View style={{ marginTop: 5 }}>
+          <Text style={styles.errorText}>{validationError}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -169,5 +175,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "transparent",
+  },
+  errorText: {
+    fontSize: 12,
+    color: "#FC7A1B",
+    textAlign: "left",
   },
 });

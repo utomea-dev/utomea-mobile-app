@@ -23,11 +23,15 @@ const Signup = ({ navigation }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [validationError, setValidationError] = useState("");
 
   const clear = () => {
     setEmail("");
     setPassword("");
+    setEmailError("");
+    setPasswordError("");
     setValidationError("");
   };
 
@@ -37,8 +41,6 @@ const Signup = ({ navigation }) => {
   };
 
   const isPasswordValid = (pass) => {
-    // const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    // return emailRegex.test(email);
     if (pass.length < 6) {
       return false;
     }
@@ -46,24 +48,24 @@ const Signup = ({ navigation }) => {
   };
 
   const handleSignup = async () => {
-    if (!email || !password) {
-      setValidationError(() => "Please fill in all the fields");
-      return;
+    let errorFlag = false;
+
+    if (!email || !isEmailValid(email)) {
+      setEmailError(() => "Please enter a valid email address");
+      errorFlag = true;
     }
 
-    if (!isEmailValid(email)) {
-      setValidationError("Please enter a valid email address");
-      return;
+    if (!password || !isPasswordValid(password)) {
+      setPasswordError(
+        () => "Please choose a password of atleast 6 characters"
+      );
+      errorFlag = true;
     }
 
-    if (!isPasswordValid(password)) {
-      setValidationError(() => "Password should be atleast 6 characters long");
-      return;
+    if (!errorFlag) {
+      setValidationError("");
+      dispatch(signupUser({ email, password }));
     }
-
-    setValidationError("");
-
-    dispatch(signupUser({ email, password }));
   };
 
   const handleSocialSignup = () => {
@@ -141,6 +143,7 @@ const Signup = ({ navigation }) => {
         label="Email"
         placeholder="Enter user email"
         placeholderTextColor="grey"
+        validationError={emailError}
         editable={!signupLoading}
         value={email}
         onChangeText={(text) => setEmail(text)}
@@ -151,6 +154,7 @@ const Signup = ({ navigation }) => {
         editable={!signupLoading}
         placeholder="Enter your password"
         placeholderTextColor="grey"
+        validationError={passwordError}
         secureTextEntry={true}
         value={password}
         onChangeText={(text) => setPassword(text)}

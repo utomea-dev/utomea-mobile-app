@@ -1,6 +1,5 @@
+import React, { useState } from "react";
 import { StyleSheet, Text, View, Modal } from "react-native";
-import React from "react";
-import Close from "../../../assets/icons/close.svg";
 import { useDispatch, useSelector } from "react-redux";
 import GeneralHeader from "../../components/Header/GeneralHeader";
 import Label from "../../components/Label/Label";
@@ -12,6 +11,7 @@ import {
 } from "../../redux/slices/homeSlice";
 import CustomButton from "../../components/Button/Button";
 import { useFocusEffect } from "@react-navigation/native";
+import { isDateRangeValid } from "../../utils/helpers";
 
 const DateRange = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -27,10 +27,32 @@ const DateRange = ({ navigation }) => {
     date: endDay,
   } = useSelector((state) => state.home.endDate);
 
+  const [dateRangeError, setDateRangeError] = useState("");
+
   const handleContinue = () => {
-    // onClose();
+    const currentDate = new Date().toISOString().split("T")[0];
+    const startDate = `${startYear}-${startMonth}-${startDay}`;
+    const endDate = `${endYear}-${endMonth}-${endDay}`;
+    const isDateValid = isDateRangeValid(startDate, endDate);
+    const isNotFutureDate = isDateRangeValid(endDate, currentDate);
+
+    if (!isNotFutureDate) {
+      setDateRangeError("Cannot choose a future date");
+      return;
+    }
+    if (!isDateValid) {
+      setDateRangeError("Please choose a valid date range");
+      return;
+    }
+    setDateRangeError("");
     navigation.navigate("Create/create");
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(resetHome());
+    }, [dispatch])
+  );
 
   return (
     <View style={styles.dateContainer}>
@@ -68,6 +90,11 @@ const DateRange = ({ navigation }) => {
         onPress={handleContinue}
         buttonStyle={{ paddingVertical: 8 }}
       />
+      {dateRangeError && (
+        <View style={{ marginTop: 5 }}>
+          <Text style={styles.errorText}>{dateRangeError}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -107,5 +134,10 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: "#ADADAD",
     textAlign: "center",
+  },
+  errorText: {
+    fontSize: 12,
+    color: "#FC7A1B",
+    textAlign: "left",
   },
 });

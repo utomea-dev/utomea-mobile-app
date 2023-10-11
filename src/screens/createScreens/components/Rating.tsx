@@ -5,7 +5,6 @@ import Label from "../../../components/Label/Label";
 
 const MyRating = ({ rating = 0, setRating }) => {
   const ratingCompleted = (e) => {
-    console.log("e=====", e);
     setRating(e);
   };
 

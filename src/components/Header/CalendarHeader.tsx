@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 
 import DatePicker from "./DatePicker";
-import { setEndDate, setHomeFilter } from "../../redux/slices/homeSlice";
+import {
+  resetDate,
+  setEndDate,
+  setHomeFilter,
+} from "../../redux/slices/homeSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { MONTHS } from "../../constants/constants";
 
@@ -30,6 +34,12 @@ const CalendarHeader = () => {
 
   const handleContinue = () => {
     dispatch(setHomeFilter({ key: "date", value: `${year}-${month}-${date}` }));
+    hideFlyIn();
+  };
+
+  const handleClearFilter = () => {
+    dispatch(resetDate());
+    dispatch(setHomeFilter({ key: "date", value: "" }));
     hideFlyIn();
   };
 
@@ -62,6 +72,13 @@ const CalendarHeader = () => {
             title="Continue"
             onPress={handleContinue}
             buttonStyle={{ paddingVertical: 8 }}
+          />
+          <CustomButton
+            title="Clear filter"
+            onPress={handleClearFilter}
+            buttonStyle={{ paddingVertical: 8, backgroundColor: "#222222" }}
+            containerStyle={{ marginVertical: 8 }}
+            textStyle={{ color: "#FFFFFF" }}
           />
         </View>
       </Modal>
@@ -106,7 +123,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     paddingHorizontal: 16,
     width: "100%",
-    height: 300,
+    height: 310,
     paddingBottom: 40,
     backgroundColor: "rgba(14, 14, 14, 0.9)",
     borderTopLeftRadius: 16,

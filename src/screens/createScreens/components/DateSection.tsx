@@ -24,7 +24,11 @@ const DateSection = ({ onPress = () => {}, date }) => {
             <Edit />
           </View>
         }
-        buttonStyle={{ paddingVertical: 6, backgroundColor: "#222222" }}
+        buttonStyle={{
+          paddingVertical: 6,
+          paddingHorizontal: 12,
+          backgroundColor: "#222222",
+        }}
       />
     </View>
   );

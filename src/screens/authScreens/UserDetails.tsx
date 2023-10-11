@@ -68,14 +68,10 @@ const UserDetails = ({ navigation }) => {
           label="Name"
           placeholder="Enter your name"
           placeholderTextColor="grey"
+          validationError={validationError}
           value={name}
           onChangeText={(text) => setName(text)}
         />
-        {validationError && (
-          <View style={{ marginTop: 5 }}>
-            <Text style={styles.errorText}>{validationError}</Text>
-          </View>
-        )}
       </View>
       <CustomButton title="Save" onPress={handleSave} />
     </View>

@@ -6,35 +6,47 @@ import CustomInput from "../../../components/Input/Input";
 import RightArrow from "../../../assets/icons/right_arrow.svg";
 import CloseSmall from "../../../assets/icons/close_small.svg";
 
-const Tags = ({ tags = [], onRemove = (e) => {}, onAdd = (e) => {} }) => {
+const Tags = ({
+  tags = [],
+  onRemove = (e) => {},
+  onAdd = (e) => {},
+  validationError = "",
+}) => {
   const [input, setInput] = useState("");
 
-  const handlePress = (str) => {
+  const handleAddTag = (str) => {
     const capitalised = str
       .toLowerCase()
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
     const cleaned = capitalised.trim().replace(/\s+/g, " ");
-    onAdd(cleaned);
+
     setInput("");
+    onAdd(cleaned);
   };
 
   return (
     <View style={{ marginVertical: 20 }}>
       {/* tag input */}
-      <View style={styles.inputContainer}>
+      <View
+        style={[
+          styles.inputContainer,
+          { alignItems: validationError ? "center" : "flex-end" },
+        ]}
+      >
         <CustomInput
           label="Tags"
           value={input}
           onChangeText={(text) => setInput(text)}
+          validationError={validationError}
           placeholder="Type a custom tag to describe this event"
           placeholderTextColor="grey"
           containerStyle={{ flex: 1 }}
         />
         <TouchableOpacity
-          style={{ marginBottom: 3 }}
-          onPress={() => handlePress(input)}
+          style={{ marginBottom: validationError ? 0 : 2 }}
+          onPress={() => handleAddTag(input)}
         >
           <RightArrow />
         </TouchableOpacity>
@@ -75,7 +87,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "center",
-    alignItems: "flex-end",
     gap: 8,
   },
   tagsContainer: {

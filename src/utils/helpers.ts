@@ -22,6 +22,16 @@ export const daysInMonth = (year, month) => {
   return new Date(year, month, 0).getDate();
 };
 
+export const isDateRangeValid = (startDate, endDate) => {
+  const jsDate1 = new Date(startDate);
+  const jsDate2 = new Date(endDate);
+
+  if (jsDate1 > jsDate2) {
+    return false;
+  }
+  return true;
+};
+
 export const formatISOToDateString = (dateString: string) => {
   const date = new Date(dateString);
   const options = {

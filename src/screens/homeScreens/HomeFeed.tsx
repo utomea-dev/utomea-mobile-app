@@ -18,6 +18,7 @@ import EmptyFeed from "./EmptyFeed";
 import Events from "../../components/Event/Events";
 import {
   getEvents,
+  resetDate,
   resetHome,
   setHomeFilter,
 } from "../../redux/slices/homeSlice";
@@ -71,12 +72,16 @@ const HomeFeed = ({ navigation }) => {
 
   useEffect(() => {
     dispatch(getEvents({ refetch: true }));
-  }, [verified, skip, date]);
+  }, [verified, date]);
+
+  useEffect(() => {
+    dispatch(getEvents());
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(resetHome());
-      dispatch(getEvents());
+      dispatch(resetDate());
+      dispatch(getEvents({ refetch: true }));
     }, [dispatch])
   );
 
@@ -116,11 +121,11 @@ const HomeFeed = ({ navigation }) => {
   };
 
   const renderFlatlist = () => {
-    if (eventsLoadingInner) {
+    if (eventsLoadingInner || events === null) {
       return (
         <View
           style={{
-            flex: 0.9,
+            height: "80%",
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -135,7 +140,7 @@ const HomeFeed = ({ navigation }) => {
     if (eventsError)
       return <Text style={{ color: "#FFFFFF" }}>{eventsError}</Text>;
 
-    return events.length ? (
+    return events && events.length ? (
       <FlatList
         data={events}
         keyExtractor={(item) => item[0].id.toString()}
@@ -215,13 +220,14 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   notification: {
-    backgroundColor: "#E6010F",
+    backgroundColor: "#FC7A1B",
     color: "#F2F2F2",
     borderRadius: 20,
-    height: 16,
-    paddingTop: 2,
+    height: 18,
+    paddingTop: 3,
+    paddingLeft: 2,
     aspectRatio: 1,
-    fontSize: 9,
+    fontSize: 10,
     lineHeight: 12,
     fontWeight: "500",
     textAlign: "center",

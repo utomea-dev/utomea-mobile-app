@@ -9,22 +9,24 @@ const CustomInput = ({
   inputStyle = {},
   containerStyle = {},
   value = "",
+  multiline = false,
   ...rest
 }) => {
   return (
     <View style={[styles.inputContainer, containerStyle]}>
       {label && <Text style={[styles.label]}>{label}</Text>}
       <TextInput
+        multiline={multiline}
         onChangeText={onChangeText}
         style={[
           styles.input,
-          { borderColor: validationError ? "#FC7A1B" : "#3B3B3B" },
+          { borderColor: validationError?.length ? "#FC7A1B" : "#3B3B3B" },
           inputStyle,
         ]}
         value={value}
         {...rest}
       />
-      {validationError && (
+      {validationError?.length > 0 && (
         <Text style={[styles.validationError]}>{validationError}</Text>
       )}
     </View>
@@ -34,6 +36,7 @@ const CustomInput = ({
 const styles = StyleSheet.create({
   inputContainer: {},
   input: {
+    height: 42,
     backgroundColor: "#222222",
     paddingVertical: 12,
     paddingHorizontal: 14,

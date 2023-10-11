@@ -1,11 +1,12 @@
+import React, { useState } from "react";
 import { StyleSheet, Text, View, Modal } from "react-native";
-import React from "react";
 import Close from "../../../assets/icons/close.svg";
 import CustomButton from "../../../components/Button/Button";
 import DatePicker from "../../../components/Header/DatePicker";
 import { useSelector } from "react-redux";
 import { setEndDate, setStartDate } from "../../../redux/slices/homeSlice";
 import Label from "../../../components/Label/Label";
+import { isDateRangeValid } from "../../../utils/helpers";
 
 const DateFlyIn = ({ onClose }) => {
   const {
@@ -19,7 +20,24 @@ const DateFlyIn = ({ onClose }) => {
     date: endDay,
   } = useSelector((state) => state.home.endDate);
 
+  const [dateRangeError, setDateRangeError] = useState("");
+
   const handleContinue = () => {
+    const currentDate = new Date().toISOString().split("T")[0];
+    const startDate = `${startYear}-${startMonth}-${startDay}`;
+    const endDate = `${endYear}-${endMonth}-${endDay}`;
+    const isDateValid = isDateRangeValid(startDate, endDate);
+    const isNotFutureDate = isDateRangeValid(endDate, currentDate);
+    if (!isNotFutureDate) {
+      setDateRangeError("Cannot choose a future date");
+      return;
+    }
+    if (!isDateValid) {
+      setDateRangeError("Please choose a valid date range");
+      return;
+    }
+
+    setDateRangeError("");
     onClose();
   };
 
@@ -57,6 +75,11 @@ const DateFlyIn = ({ onClose }) => {
         onPress={handleContinue}
         buttonStyle={{ paddingVertical: 8 }}
       />
+      {dateRangeError && (
+        <View style={{ marginTop: 5 }}>
+          <Text style={styles.errorText}>{dateRangeError}</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -92,5 +115,10 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontWeight: "500",
     textAlign: "center",
+  },
+  errorText: {
+    fontSize: 12,
+    color: "#FC7A1B",
+    textAlign: "left",
   },
 });
