@@ -1,34 +1,40 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const makeRequest = async (
   url: string,
-  method = 'GET',
+  method = "GET",
   body = {},
-  options: Object,
+  options: Object
 ) => {
-  const token = await AsyncStorage.getItem('token');
+  const user = await AsyncStorage.getItem("utomea_user");
+  let token = "";
+
+  if (user) {
+    token = await JSON.parse(user).token;
+  }
   const allOptions = {
-    headers: {Authorization: `Bearer ${token}`},
+    headers: { Authorization: `Bearer ${token}` },
   };
+
   switch (method) {
-    case 'GET':
+    case "GET":
       return axios.get(url, allOptions);
 
-    case 'POST':
+    case "POST":
       return axios.post(url, body, allOptions);
 
-    case 'PUT':
+    case "PUT":
       return axios.put(url, body, allOptions);
 
-    case 'PATCH':
+    case "PATCH":
       return axios.patch(url, body, allOptions);
 
-    case 'DELETE':
+    case "DELETE":
       return axios.delete(url, allOptions);
 
     default:
-      return axios.get(url, {}, allOptions);
+      return axios.get(url, allOptions);
   }
 };
 
