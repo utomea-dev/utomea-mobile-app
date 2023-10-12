@@ -144,9 +144,15 @@ const HomeFeed = ({ navigation }) => {
       <FlatList
         data={events}
         keyExtractor={(item) => item[0].id.toString()}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           const endDate = item[0].end_timestamp.split("T")[0];
-          return <Events cards={item} date={formatDate(endDate)} />;
+          return (
+            <Events
+              cards={item}
+              date={formatDate(endDate)}
+              isLast={events?.length === index + 1}
+            />
+          );
         }}
         showsVerticalScrollIndicator={false}
         onEndReachedThreshold={1}

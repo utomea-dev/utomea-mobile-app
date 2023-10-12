@@ -26,7 +26,7 @@ const initialState = {
   totalCount: 0,
   date: "",
   verified: "",
-  limit: 10,
+  limit: 50,
   skip: 0,
   startDate: {
     year: currentYear.toString(),

@@ -2,9 +2,9 @@ import React from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import EventCard from "./EventCard";
 
-const Events = ({ date = "", cards }) => {
+const Events = ({ date = "", cards, isLast = false }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginBottom: isLast ? 170 : 16 }]}>
       {date && <Text style={styles.date}>{date}</Text>}
       {cards.map((card, i) => (
         <EventCard key={i + 1} data={card} />
@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "flex-start",
-    marginBottom: 16,
     gap: 16,
   },
   date: {
