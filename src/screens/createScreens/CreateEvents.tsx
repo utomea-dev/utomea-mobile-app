@@ -193,7 +193,7 @@ const CreateEvent = ({ navigation, route }) => {
   const handleCancel = () => {
     clearErrors();
     dispatch(resetHome());
-    navigation.navigate("HomeFeed");
+    navigation.navigate("Home");
   };
 
   const handleCreateEvent = () => {
@@ -283,7 +283,7 @@ const CreateEvent = ({ navigation, route }) => {
     if (!createEventLoading && !uploadImageLoading && createEventSuccess) {
       clearErrors();
       dispatch(resetHome());
-      navigation.navigate("HomeFeed");
+      navigation.navigate("Home");
     }
   }, [createEventLoading, uploadImageLoading, createEventSuccess]);
 
