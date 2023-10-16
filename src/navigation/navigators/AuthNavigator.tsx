@@ -19,7 +19,7 @@ export const AuthNavigator = () => {
       } else {
         navigation.navigate("MainTabs");
       }
-      SplashScreen.hide();
+      SplashScreen?.hide();
     }, 500);
   };
   useEffect(() => {

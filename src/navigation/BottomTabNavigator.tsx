@@ -97,7 +97,7 @@ const Tabs = () => {
           key={index}
           name={tab.name}
           component={tab.component}
-          options={{ title: tab.name.toUpperCase() }}
+          options={{ title: tab.name.toUpperCase(), unmountOnBlur: true }}
         />
       ))}
     </Tab.Navigator>
