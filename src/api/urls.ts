@@ -18,11 +18,15 @@ export const forgotPasswordUrl = () => `${baseUrl}/auth/forgot-password`;
 export const resetPasswordUrl = (token: string) =>
   `${baseUrl}/auth/reset-password/${token}`;
 
-// ======================== EVents urls ============================
+// ======================== Events urls ============================
 export const getEventsUrl = ({ limit, skip, verified, date }) =>
   `${baseUrl}/events?limit=${limit}&skip=${skip}&verified=${verified}&date=${date}`;
 export const createEventUrl = () => `${baseUrl}/events`;
-export const updateEventUrl = (id: number) => `${baseUrl}/events/${id}`;
-export const deleteEventUrl = (id: number) => `${baseUrl}/events${id}`;
+export const editEventUrl = (id: number) => `${baseUrl}/events/${id}`;
+export const getEventDetailsUrl = (id: number) => `${baseUrl}/events/${id}`;
+export const deleteEventUrl = (id: number) => `${baseUrl}/events/${id}`;
+
+// ======================== Photos urls ============================
+export const deletePhotosUrl = () => `${baseUrl}/photos`;
 export const uploadEventPhotosUrl = (id: number) =>
   `${baseUrl}/events/upload/${id}`;

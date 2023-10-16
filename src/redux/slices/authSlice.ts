@@ -128,7 +128,7 @@ export const resetPassword = createAsyncThunk(
 );
 
 const authSLice = createSlice({
-  name: "theme",
+  name: "auth",
   initialState,
   reducers: {
     updateUserForm: (state, action) => {

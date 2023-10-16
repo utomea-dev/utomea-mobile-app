@@ -18,6 +18,7 @@ import EmptyFeed from "./EmptyFeed";
 import Events from "../../components/Event/Events";
 import {
   getEvents,
+  getMoreEvents,
   resetDate,
   resetHome,
   setHomeFilter,
@@ -25,6 +26,10 @@ import {
 import { formatDate } from "../../utils/helpers";
 import { useFocusEffect } from "@react-navigation/native";
 import BackgroundLocationService from "../../../Services/LocationBackgroundService";
+import {
+  resetEventDetails,
+  resetEventDetailsLoaders,
+} from "../../redux/slices/eventDetailSlice";
 
 const HomeFeed = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -48,7 +53,14 @@ const HomeFeed = ({ navigation }) => {
   };
 
   const fetchMore = () => {
-    // dispatch(setHomeFilter({ key: "skip", value: 2 }));
+    return;
+    console.log("LNEGHT*************", events.length, totalCount);
+    if (events && events.length < totalCount) {
+      dispatch(getMoreEvents({ skip: events.length }));
+      return;
+    }
+    console.log("no more events to fetch ---");
+    return;
   };
 
   useEffect(() => {
@@ -72,15 +84,19 @@ const HomeFeed = ({ navigation }) => {
 
   useEffect(() => {
     dispatch(getEvents({ refetch: true }));
+    dispatch(resetEventDetailsLoaders());
   }, [verified, date]);
 
   useEffect(() => {
     dispatch(getEvents());
+    dispatch(resetEventDetailsLoaders());
   }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       dispatch(resetDate());
+      dispatch(resetEventDetails());
+      dispatch(resetEventDetailsLoaders());
       dispatch(getEvents({ refetch: true }));
     }, [dispatch])
   );
@@ -112,7 +128,9 @@ const HomeFeed = ({ navigation }) => {
           <TouchableOpacity onPress={handleTabPress} style={styles.rowFlex}>
             <Text style={{ color: "#ADADAD" }}>Unverified Events</Text>
             {!!unverifiedCount && (
-              <Text style={styles.notification}>{unverifiedCount}</Text>
+              <View style={styles.notificationContainer}>
+                <Text style={styles.notification}>{unverifiedCount}</Text>
+              </View>
             )}
           </TouchableOpacity>
         )}
@@ -150,12 +168,13 @@ const HomeFeed = ({ navigation }) => {
             <Events
               cards={item}
               date={formatDate(endDate)}
+              loading={infiniteLoading}
               isLast={events?.length === index + 1}
             />
           );
         }}
         showsVerticalScrollIndicator={false}
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={0.4}
         onEndReached={({ distanceFromEnd }) => {
           fetchMore();
           console.log("on end reached ", distanceFromEnd);
@@ -184,7 +203,7 @@ const HomeFeed = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <CalendarHeader />
+      <CalendarHeader isDisabled={totalCount === 0} />
       {totalCount === 0 ? (
         <EmptyFeed navigation={navigation} />
       ) : (
@@ -225,19 +244,25 @@ const styles = StyleSheet.create({
     borderColor: "#3B3B3B",
     borderRadius: 100,
   },
-  notification: {
-    backgroundColor: "#FC7A1B",
-    color: "#F2F2F2",
-    borderRadius: 20,
+  notificationContainer: {
     height: 18,
-    paddingTop: 3,
-    paddingLeft: 2,
+    aspectRatio: 1,
+    borderRadius: 60,
+    padding: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FC7A1B",
+  },
+  notification: {
+    backgroundColor: "transparent",
+    color: "#F2F2F2",
+    height: 18,
     aspectRatio: 1,
     fontSize: 10,
     lineHeight: 12,
     fontWeight: "500",
     textAlign: "center",
-    marginBottom: -2,
+    marginTop: 5,
   },
 });
 

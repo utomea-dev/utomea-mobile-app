@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Image } from "react-native";
 
 import Verified from "../../assets/icons/verified.svg";
@@ -9,10 +9,14 @@ const EventImage = ({
   imageUrl = "",
   imageStyles = {},
 }) => {
+  const [blur, setBlur] = useState(20);
   return (
     <View style={styles.container}>
       {isVerified && <Verified style={styles.icon} />}
       <Image
+        blurRadius={blur}
+        onLoadStart={() => setBlur(40)}
+        onLoadEnd={() => setBlur(0)}
         style={[styles.image, imageStyles]}
         source={imageUrl ? { uri: imageUrl } : thumbnail}
       />

@@ -17,9 +17,7 @@ const EmptyFeed = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(true);
 
   const handleCreateEventButton = async () => {
-    dispatch(reset());
-    AsyncStorage.clear();
-    navigation.navigate("Signin");
+    navigation.navigate("Create");
   };
 
   const handlePress = (entry) => {};

@@ -32,6 +32,14 @@ export const isDateRangeValid = (startDate, endDate) => {
   return true;
 };
 
+export const deepCloneArray = (arr) => {
+  if (Array.isArray(arr)) {
+    return arr.map((item) => deepCloneArray(item));
+  } else {
+    return arr;
+  }
+};
+
 export const formatISOToDateString = (dateString: string) => {
   const date = new Date(dateString);
   const options = {
@@ -48,6 +56,7 @@ export const formatISOToDateString = (dateString: string) => {
 };
 
 export const showNotification = ({ message }) => {
+  return null;
   if (Platform.OS === "android") {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   } else if (Platform.OS === "ios") {

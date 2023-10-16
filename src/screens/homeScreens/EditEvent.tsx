@@ -16,20 +16,25 @@ import CalendarHeader from "../../components/Header/CalendarHeader";
 import CustomButton from "../../components/Button/Button";
 import Divider from "../../components/Divider/Divider";
 
-import Category from "./components/Category";
-import Tags from "./components/Tags";
-import MyRating from "./components/Rating";
-import AddPhotos from "./components/AddPhotos";
-import EventTitle from "./components/EventTitle";
-import DateSection from "./components/DateSection";
-import LocationSection from "./components/LocationSection";
-import Description from "./components/Description";
+import Category from "../createScreens/components/Category";
+import Tags from "../createScreens/components/Tags";
+import MyRating from "../createScreens/components/Rating";
+import AddPhotos from "../createScreens/components/AddPhotos";
+import EventTitle from "../createScreens/components/EventTitle";
+import DateSection from "../createScreens/components/DateSection";
+import LocationSection from "../createScreens/components/LocationSection";
+import Description from "../createScreens/components/Description";
+import DateFlyIn from "../createScreens/components/DateFlyIn";
+import LocationFlyIn from "../createScreens/components/LocationFlyIn";
 import GeneralHeader from "../../components/Header/GeneralHeader";
-import DateFlyIn from "./components/DateFlyIn";
-import LocationFlyIn from "./components/LocationFlyIn";
 import { MONTHS } from "../../constants/constants";
-import { createEvent, resetHome } from "../../redux/slices/homeSlice";
+import {
+  resetHome,
+  setEndDate,
+  setStartDate,
+} from "../../redux/slices/homeSlice";
 import { StackActions, useFocusEffect } from "@react-navigation/native";
+import { editEvent } from "../../redux/slices/eventDetailSlice";
 
 const categories = [
   {
@@ -78,17 +83,18 @@ const categories = [
   },
 ];
 
-const CreateEvent = ({ navigation, route }) => {
+const EditEvent = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const {
-    createEventLoading,
-    createEventSuccess,
-    createEventError,
-    uploadImageLoading,
-    uploadImageSuccess,
-    uploadImageError,
-  } = useSelector((state) => state.home);
+    eventDetail: data,
+    editEventLoading,
+    editEventSuccess,
+    editEventError,
+  } = useSelector((state) => state.eventDetail);
+  const { uploadImageLoading, uploadImageSuccess, uploadImageError } =
+    useSelector((state) => state.home);
+
   const { startDate, endDate } = useSelector((state) => state.home);
   const { year: startYear, month: startMonth, date: startDay } = startDate;
   const { year: endYear, month: endMonth, date: endDay } = endDate;
@@ -103,6 +109,8 @@ const CreateEvent = ({ navigation, route }) => {
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
   const [rating, setRating] = useState(0);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [dateFlyInVisible, setDateFlyInVisible] = useState(false);
   const [locationFlyInVisible, setLocationFlyInVisible] = useState(false);
 
@@ -112,20 +120,58 @@ const CreateEvent = ({ navigation, route }) => {
   const [locationError, setLocationError] = useState("");
   const [photosError, setPhotosError] = useState("");
 
-  const disableSaveButton = () => {
-    if (
-      photos.length > 0 ||
-      title ||
-      location ||
-      selectedCategory ||
-      description ||
-      tags?.length > 0 ||
-      rating > 0
-    ) {
-      return false;
+  // initialize states with event data
+  useEffect(() => {
+    if (data !== null) {
+      setPhotos(() => data.photos);
+      setTitle(() => data.title);
+      setLocation(() => data.location);
+      setLongitude(() => data.longitude);
+      setLatitude(() => data.latitude);
+      setSelectedCategory(() => data.category?.id);
+      setDescription(() => data.description);
+      setTags(() => data.tags || []);
+      setRating(() => data.rating || 0);
+      setStartTime(() => data.begin_timestamp.split("T")[1]);
+      setEndTime(() => data.end_timestamp.split("T")[1]);
+      dispatch(
+        setStartDate({
+          key: "year",
+          value: data.begin_timestamp.split("T")[0].split("-")[0],
+        })
+      );
+      dispatch(
+        setStartDate({
+          key: "month",
+          value: data.begin_timestamp.split("T")[0].split("-")[1],
+        })
+      );
+      dispatch(
+        setStartDate({
+          key: "date",
+          value: data.begin_timestamp.split("T")[0].split("-")[2],
+        })
+      );
+      dispatch(
+        setEndDate({
+          key: "year",
+          value: data.end_timestamp.split("T")[0].split("-")[0],
+        })
+      );
+      dispatch(
+        setEndDate({
+          key: "month",
+          value: data.end_timestamp.split("T")[0].split("-")[1],
+        })
+      );
+      dispatch(
+        setEndDate({
+          key: "date",
+          value: data.end_timestamp.split("T")[0].split("-")[2],
+        })
+      );
     }
-    return true;
-  };
+  }, [data]);
 
   const showFlyIn = (setFlyIn) => {
     setFlyIn(true);
@@ -150,9 +196,8 @@ const CreateEvent = ({ navigation, route }) => {
     setPhotos((pics) => [...pics, ...morePics]);
   };
 
-  const removePhotos = (pic) => {
-    const filtered = photos.filter((img) => img.uri !== pic.uri);
-    setPhotos(() => filtered);
+  const removePhotos = () => {
+    navigation.navigate("EditPhotos");
   };
 
   const handleDatePress = () => {
@@ -161,7 +206,6 @@ const CreateEvent = ({ navigation, route }) => {
 
   const handleLocationPress = () => {
     showFlyIn(setLocationFlyInVisible);
-    console.log("location press");
   };
 
   const onCategoryPress = (categ) => {
@@ -192,11 +236,10 @@ const CreateEvent = ({ navigation, route }) => {
 
   const handleCancel = () => {
     clearErrors();
-    dispatch(resetHome());
-    navigation.navigate("HomeFeed");
+    navigation.goBack();
   };
 
-  const handleCreateEvent = () => {
+  const handleEditEvent = () => {
     clearErrors();
     let errorFlag = false;
     if (!title) {
@@ -226,10 +269,10 @@ const CreateEvent = ({ navigation, route }) => {
       longitude,
       begin_timestamp: `${startYear}-${startMonth}-${
         Number(startDay) < 10 ? "0" + startDay : startDay
-      }`,
+      }T${startTime}`,
       end_timestamp: `${endYear}-${endMonth}-${
         Number(endDay) < 10 ? "0" + endDay : endDay
-      }`,
+      }T${endTime}`,
       title: title.trim().replace(/\s+/g, " "),
       description,
       location,
@@ -239,7 +282,15 @@ const CreateEvent = ({ navigation, route }) => {
     };
 
     clearErrors();
-    dispatch(createEvent({ body, photos }));
+    dispatch(
+      editEvent({
+        id: data.id,
+        body,
+        photos: photos.slice(data.photos.length),
+        navigation,
+        goBack: true,
+      })
+    );
   };
 
   const renderDateFlyIn = () => {
@@ -276,16 +327,16 @@ const CreateEvent = ({ navigation, route }) => {
   useFocusEffect(
     React.useCallback(() => {
       clearErrors();
-    }, [dispatch])
+    }, [])
   );
 
   useEffect(() => {
-    if (!createEventLoading && !uploadImageLoading && createEventSuccess) {
+    if (uploadImageSuccess) {
       clearErrors();
-      dispatch(resetHome());
-      navigation.navigate("HomeFeed");
+      navigation.goBack();
+      return;
     }
-  }, [createEventLoading, uploadImageLoading, createEventSuccess]);
+  }, [uploadImageSuccess]);
 
   return (
     <KeyboardAvoidingView
@@ -299,12 +350,10 @@ const CreateEvent = ({ navigation, route }) => {
         title="Create an Event"
         CTA={() => (
           <CustomButton
-            isLoading={createEventLoading || uploadImageLoading}
-            disabled={
-              disableSaveButton() || createEventLoading || uploadImageLoading
-            }
+            isLoading={editEventLoading || uploadImageLoading}
+            disabled={editEventLoading || uploadImageLoading}
             title="Save"
-            onPress={handleCreateEvent}
+            onPress={handleEditEvent}
             buttonStyle={{ paddingVertical: 6 }}
           />
         )}
@@ -329,7 +378,7 @@ const CreateEvent = ({ navigation, route }) => {
         <Divider />
         <DateSection
           onPress={handleDatePress}
-          date={`${MONTHS[endMonth].long} ${endDay}, ${endYear}`}
+          date={`${MONTHS[endMonth]?.long} ${endDay}, ${endYear}`}
         />
         <Divider />
         <LocationSection
@@ -360,12 +409,10 @@ const CreateEvent = ({ navigation, route }) => {
         <Divider />
         <View style={{ marginTop: 20, marginBottom: 75 }}>
           <CustomButton
-            isLoading={createEventLoading || uploadImageLoading}
-            disabled={
-              disableSaveButton() || createEventLoading || uploadImageLoading
-            }
-            onPress={handleCreateEvent}
-            title="Save & Create Event"
+            isLoading={editEventLoading || uploadImageLoading}
+            disabled={editEventLoading || uploadImageLoading}
+            onPress={handleEditEvent}
+            title="Save Changes"
             buttonStyle={{ paddingVertical: 8 }}
             textStyle={styles.textStyle}
           />
@@ -389,6 +436,25 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
+  },
+  modalContainer: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "rgba(14, 14, 14, 0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modal: {
+    flex: 1,
+    marginHorizontal: 16,
+    paddingVertical: 40,
+    paddingHorizontal: 16,
+    backgroundColor: "#0E0E0E",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#3B3B3B",
   },
   photosButton: {
     borderWidth: 1,
@@ -421,4 +487,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateEvent;
+export default EditEvent;

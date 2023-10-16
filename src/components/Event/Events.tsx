@@ -1,14 +1,32 @@
 import React from "react";
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import EventCard from "./EventCard";
 
-const Events = ({ date = "", cards, isLast = false }) => {
+const Events = ({ date = "", cards, isLast = false, loading = "false" }) => {
   return (
-    <View style={[styles.container, { marginBottom: isLast ? 170 : 16 }]}>
+    <View style={[styles.container, { marginBottom: isLast ? 180 : 16 }]}>
       {date && <Text style={styles.date}>{date}</Text>}
       {cards.map((card, i) => (
         <EventCard key={i + 1} data={card} />
       ))}
+      {isLast && loading && (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            paddingBottom: 10,
+          }}
+        >
+          <ActivityIndicator color="58DAC3" size="small" />
+        </View>
+      )}
     </View>
   );
 };

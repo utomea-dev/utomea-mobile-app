@@ -8,14 +8,12 @@ import {
 } from "../../api/urls";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { showNotification } from "../../utils/helpers";
+import { deepCloneArray, showNotification } from "../../utils/helpers";
 import { handleError } from "../errorHandler";
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth() + 1;
 const currentDate = new Date().getDate();
-
-console.log("DATE________________", currentYear, currentMonth, currentDate);
 
 const initialState = {
   events: null,
@@ -61,6 +59,7 @@ export const getEvents = createAsyncThunk(
   "events/getEvents",
   async (data, { getState }) => {
     try {
+      console.log("RUNING GET EVENTS++++++++++++++++++++++++++++");
       const { limit, events, skip, verified, date } = getState().home;
       const response = await makeRequest(
         getEventsUrl({ limit, skip, verified, date }),
@@ -80,7 +79,7 @@ export const getEvents = createAsyncThunk(
           .split("T")[0]
           .split(" ")[0];
         if (lastEventDate === newEventDate) {
-          newEvents[0].push(...lastEvent);
+          newEvents[0].unshift(...lastEvent);
         } else {
           eventsClone.push(lastEvent);
         }
@@ -94,12 +93,60 @@ export const getEvents = createAsyncThunk(
   }
 );
 
+const eventsHaveSameDate = (event1, event2) => {
+  const date1 = event1[0].end_timestamp.split("T")[0].split(" ")[0];
+  const date2 = event2[0].end_timestamp.split("T")[0].split(" ")[0];
+
+  console.log("DATE COMPARE IN SLICE---------", date1, date2, date1 === date2);
+  return date1 === date2;
+};
+
+export const getMoreEvents = createAsyncThunk(
+  "events/getMoreEvents",
+  async (data, { getState }) => {
+    try {
+      const { limit, events, verified, date } = getState().home;
+      const { skip } = data;
+      const response = await makeRequest(
+        getEventsUrl({ limit, skip, verified, date }),
+        {}
+      );
+      const { totalCount, unverifiedCount } = response.data;
+      const newEvents = deepCloneArray(response.data.data);
+      let merged = [];
+
+      if (events && events.length) {
+        const eventsClone = deepCloneArray(events);
+
+        const lastEvent = eventsClone[eventsClone.length - 1];
+        const firstNewEvent = newEvents[0];
+
+        if (eventsHaveSameDate(lastEvent, firstNewEvent)) {
+          merged = [
+            ...eventsClone.slice(0, -1),
+            [...lastEvent, ...firstNewEvent],
+            ...newEvents.slice(1),
+          ];
+        } else {
+          merged = [...eventsClone, ...newEvents];
+        }
+      } else {
+        console.log("ELSE IS RUNNING I FECTHING MORE%%%%%%%%%%%%%%%%%");
+        merged = newEvents;
+      }
+      return { merged, totalCount, unverifiedCount };
+    } catch (error) {
+      handleError(error);
+    }
+  }
+);
+
 export const uploadImage = createAsyncThunk(
   "events/uploadImage",
   async (data, { getState, dispatch }) => {
     try {
       const images = data.photos;
-      const id = data.id;
+      const { id } = data;
       const requests = images.map(async (image, index) => {
         const formData = new FormData();
         formData.append("files", {
@@ -120,8 +167,9 @@ export const uploadImage = createAsyncThunk(
         );
       });
       const response = await Promise.allSettled(requests);
+      console.log("IMAGE SUCCESS OR NOT-----", response);
       dispatch(getEvents());
-      return {};
+      return { message: "Image upload successful" };
     } catch (error) {
       handleError(error);
     }
@@ -238,11 +286,31 @@ const homeSlice = createSlice({
       state.eventsLoading = false;
       state.eventsLoadingInner = false;
       state.eventsError = "";
-      state.events = action.payload?.merged || [];
+      state.events = action.payload?.merged || null;
       state.totalCount = action.payload?.totalCount;
       state.unverifiedCount = action.payload?.unverifiedCount;
     });
     builder.addCase(getEvents.rejected, (state, action) => {
+      state.eventsLoading = false;
+      state.eventsLoadingInner = false;
+      state.eventsError = action.error.message || "Some error occured";
+    });
+
+    builder.addCase(getMoreEvents.pending, (state, action) => {
+      state.infiniteLoading = true;
+      state.eventsError = "";
+    });
+    builder.addCase(getMoreEvents.fulfilled, (state, action) => {
+      state.eventsLoading = false;
+      state.infiniteLoading = false;
+      state.eventsLoadingInner = false;
+      state.eventsError = "";
+      state.events = action.payload?.merged || null;
+      state.totalCount = action.payload?.totalCount;
+      state.unverifiedCount = action.payload?.unverifiedCount;
+    });
+    builder.addCase(getMoreEvents.rejected, (state, action) => {
+      state.infiniteLoading = false;
       state.eventsLoading = false;
       state.eventsLoadingInner = false;
       state.eventsError = action.error.message || "Some error occured";
@@ -265,16 +333,21 @@ const homeSlice = createSlice({
     });
 
     builder.addCase(uploadImage.pending, (state, action) => {
+      console.log("INSIDE IMAGE LOADING REDUCER");
+
       state.uploadImageLoading = true;
       state.uploadImageError = "";
       state.uploadImageSuccess = false;
     });
     builder.addCase(uploadImage.fulfilled, (state, action) => {
+      console.log("INSIDE IMAGE SUCCESS REDUCER");
       state.uploadImageLoading = false;
       state.uploadImageError = "";
       state.uploadImageSuccess = true;
     });
     builder.addCase(uploadImage.rejected, (state, action) => {
+      console.log("INSIDE IMAGE REJECTED REDUCER");
+
       state.uploadImageLoading = false;
       state.uploadImageSuccess = false;
       state.uploadImageError = action.error.message || "Some error occured";

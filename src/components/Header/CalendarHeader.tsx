@@ -14,7 +14,7 @@ import Calendar from "../../assets/icons/calendar.svg";
 import Close from "../../assets/icons/close.svg";
 import CustomButton from "../Button/Button";
 
-const CalendarHeader = () => {
+const CalendarHeader = ({ isDisabled }) => {
   const dispatch = useDispatch();
 
   const { year, month, date } = useSelector((state) => state.home.endDate);
@@ -94,12 +94,13 @@ const CalendarHeader = () => {
           alignItems: "center",
           gap: 6,
         }}
+        disabled={isDisabled}
         onPress={handlePress}
       >
         <Calendar />
         <Text
           style={styles.title}
-        >{`${MONTHS[month].long} ${date}, ${year}`}</Text>
+        >{`${MONTHS[month]?.long} ${date}, ${year}`}</Text>
       </TouchableOpacity>
     </View>
   );

@@ -1,14 +1,22 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import EventImage from "./EventImage";
 
 import Location from "../../assets/icons/location.svg";
 import Tag from "../../assets/icons/tag.svg";
 import { formatDate } from "../../utils/helpers";
+import { useNavigation } from "@react-navigation/native";
 
 const EventCard = ({ data }) => {
+  const navigation = useNavigation();
+
+  const gotoEventDetail = () => {
+    const { id } = data;
+    navigation.navigate("EventDetail", { id });
+  };
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={gotoEventDetail}>
       {/* Event image */}
       <View style={styles.imageContainer}>
         <EventImage isVerified={data.verified} imageUrl={data.hero_image} />
@@ -52,7 +60,7 @@ const EventCard = ({ data }) => {
           </View>
         )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
