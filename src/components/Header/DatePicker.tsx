@@ -16,8 +16,8 @@ const yearData = Array.from({ length: currentYear - 1949 }, (_, i) => ({
 
 const DatePicker = ({
   year = currentYear.toString(),
-  month = "01",
-  date = "1",
+  month = "05",
+  date = "05",
   setDate = () => {},
 }) => {
   const dispatch = useDispatch();
@@ -30,7 +30,7 @@ const DatePicker = ({
     const maxDays = daysInMonth(year, month);
     return Array.from({ length: maxDays }, (_, i) => ({
       label: `${i + 1}`,
-      value: `${i + 1}`,
+      value: `${i + 1 < 10 ? "0" + (i + 1) : i + 1}`,
     }));
   };
 
@@ -126,6 +126,7 @@ const DatePicker = ({
           data={monthData}
           keyExtractor={(item) => item.label.toString()}
           initialNumToRender={12}
+          initialScrollIndex={1}
           getItemLayout={getItemLayout}
           snapToAlignment="start"
           snapToInterval={120}
@@ -154,6 +155,7 @@ const DatePicker = ({
           data={dateData}
           keyExtractor={(item) => item.label.toString()}
           initialNumToRender={10}
+          initialScrollIndex={1}
           getItemLayout={getItemLayout}
           snapToAlignment="start"
           snapToInterval={120}

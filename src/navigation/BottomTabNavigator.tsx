@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Keyboard } from "react-native";
 import { HomeNavigator } from "./navigators/HomeNavigator";
 import { SearchNavigator } from "./navigators/SearchNavigator";
 import { CreateNavigator } from "./navigators/CreateNavigator";
@@ -57,12 +57,35 @@ const TabItem = ({ focused, iconUri, label }) => {
 };
 
 const Tabs = () => {
+  const [isKeyboardOpen, setIsKeyboardOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboardOpen(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboardOpen(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          display: "flex",
+          display: isKeyboardOpen ? "none" : "flex",
           padding: 12,
           paddingRight: 40,
           paddingBottom: 16,
@@ -78,9 +101,6 @@ const Tabs = () => {
             console.log(`No tabInfo found for route name: ${route.name}`);
             return null;
           }
-          console.log(
-            `Using iconUri: ${tabInfo.iconUri} for route name: ${route.name}`
-          );
           return <TabItem focused={focused} iconUri={tabInfo.imgsrc} />;
         },
         tabBarLabel: ({ focused, color }) => {

@@ -28,7 +28,13 @@ import GeneralHeader from "../../components/Header/GeneralHeader";
 import DateFlyIn from "./components/DateFlyIn";
 import LocationFlyIn from "./components/LocationFlyIn";
 import { MONTHS } from "../../constants/constants";
-import { createEvent, resetHome } from "../../redux/slices/homeSlice";
+import {
+  createEvent,
+  resetHome,
+  setDateString,
+  setEndDate,
+  setStartDate,
+} from "../../redux/slices/homeSlice";
 import { StackActions, useFocusEffect } from "@react-navigation/native";
 
 const categories = [
@@ -88,6 +94,8 @@ const CreateEvent = ({ navigation, route }) => {
     uploadImageLoading,
     uploadImageSuccess,
     uploadImageError,
+    startDateString,
+    endDateString,
   } = useSelector((state) => state.home);
   const { startDate, endDate } = useSelector((state) => state.home);
   const { year: startYear, month: startMonth, date: startDay } = startDate;
@@ -224,12 +232,8 @@ const CreateEvent = ({ navigation, route }) => {
     const body = {
       latitude,
       longitude,
-      begin_timestamp: `${startYear}-${startMonth}-${
-        Number(startDay) < 10 ? "0" + startDay : startDay
-      }`,
-      end_timestamp: `${endYear}-${endMonth}-${
-        Number(endDay) < 10 ? "0" + endDay : endDay
-      }`,
+      begin_timestamp: startDateString,
+      end_timestamp: endDateString,
       title: title.trim().replace(/\s+/g, " "),
       description,
       location,
@@ -237,9 +241,50 @@ const CreateEvent = ({ navigation, route }) => {
       category: selectedCategory,
       rating,
     };
-
     clearErrors();
     dispatch(createEvent({ body, photos }));
+  };
+
+  const dateOnClose = () => {
+    hideFlyIn(setDateFlyInVisible);
+    const startDateSplit = startDateString.split("-");
+    const endDateSplit = endDateString.split("-");
+    dispatch(
+      setStartDate({
+        key: "year",
+        value: startDateSplit[0],
+      })
+    );
+    dispatch(
+      setStartDate({
+        key: "month",
+        value: startDateSplit[1],
+      })
+    );
+    dispatch(
+      setStartDate({
+        key: "date",
+        value: startDateSplit[2],
+      })
+    );
+    dispatch(
+      setEndDate({
+        key: "year",
+        value: endDateSplit[0],
+      })
+    );
+    dispatch(
+      setEndDate({
+        key: "month",
+        value: endDateSplit[1],
+      })
+    );
+    dispatch(
+      setEndDate({
+        key: "date",
+        value: endDateSplit[2],
+      })
+    );
   };
 
   const renderDateFlyIn = () => {
@@ -250,7 +295,10 @@ const CreateEvent = ({ navigation, route }) => {
         visible={dateFlyInVisible}
         onRequestClose={() => hideFlyIn(setDateFlyInVisible)}
       >
-        <DateFlyIn onClose={() => hideFlyIn(setDateFlyInVisible)} />
+        <DateFlyIn
+          onClose={dateOnClose}
+          closeOnly={() => hideFlyIn(setDateFlyInVisible)}
+        />
       </Modal>
     );
   };
@@ -329,7 +377,9 @@ const CreateEvent = ({ navigation, route }) => {
         <Divider />
         <DateSection
           onPress={handleDatePress}
-          date={`${MONTHS[endMonth].long} ${endDay}, ${endYear}`}
+          date={`${MONTHS[endDateString?.split("-")[1]].long} ${
+            endDateString.split("-")[2]
+          }, ${endDateString.split("-")[0]}`}
         />
         <Divider />
         <LocationSection

@@ -15,10 +15,18 @@ import Close from "../../assets/icons/close.svg";
 import CustomButton from "../Button/Button";
 
 const CalendarHeader = ({ isDisabled }) => {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+  const currentDate = new Date().getDate();
+
   const dispatch = useDispatch();
 
-  const { year, month, date } = useSelector((state) => state.home.endDate);
+  const { year, month, date: day } = useSelector((state) => state.home.endDate);
+
   const [isFlyInVisible, setIsFlyInVisible] = useState(false);
+  const [localDate, setLocalDate] = useState(
+    `${currentYear}-${currentMonth}-${currentDate}`
+  );
 
   const handlePress = (entry) => {
     showFlyIn();
@@ -33,11 +41,13 @@ const CalendarHeader = ({ isDisabled }) => {
   };
 
   const handleContinue = () => {
-    dispatch(setHomeFilter({ key: "date", value: `${year}-${month}-${date}` }));
+    dispatch(setHomeFilter({ key: "date", value: `${year}-${month}-${day}` }));
+    setLocalDate(() => `${year}-${month}-${day}`);
     hideFlyIn();
   };
 
   const handleClearFilter = () => {
+    setLocalDate(() => `${currentYear}-${currentMonth}-${currentDate}`);
     dispatch(resetDate());
     dispatch(setHomeFilter({ key: "date", value: "" }));
     hideFlyIn();
@@ -63,7 +73,7 @@ const CalendarHeader = ({ isDisabled }) => {
             <DatePicker
               year={year}
               month={month}
-              date={date}
+              date={day}
               setDate={setEndDate}
             />
           </View>
@@ -98,9 +108,9 @@ const CalendarHeader = ({ isDisabled }) => {
         onPress={handlePress}
       >
         <Calendar />
-        <Text
-          style={styles.title}
-        >{`${MONTHS[month]?.long} ${date}, ${year}`}</Text>
+        <Text style={styles.title}>{`${MONTHS[localDate.split("-")[1]]?.long} ${
+          localDate.split("-")[2]
+        }, ${localDate.split("-")[0]}`}</Text>
       </TouchableOpacity>
     </View>
   );

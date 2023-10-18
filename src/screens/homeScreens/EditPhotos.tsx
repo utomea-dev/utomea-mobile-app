@@ -70,6 +70,10 @@ const EditPhotos = ({ navigation }) => {
   };
 
   const handleSelectAll = () => {
+    if (selectedPhotos.length === photos.length) {
+      setSelectedPhotos(() => []);
+      return;
+    }
     const all = photos.map((p) => p.id);
     setSelectedPhotos(() => [...all]);
   };
@@ -171,7 +175,7 @@ const EditPhotos = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {renderModal()}
-      <GeneralHeader title="Create an Event" />
+      <GeneralHeader title="Edit Event" />
       <ScrollView
         style={styles.scrollContainer}
         showsVerticalScrollIndicator={false}

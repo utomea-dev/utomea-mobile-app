@@ -44,7 +44,7 @@ const EventDetail = ({ navigation, route }) => {
     eventDetailLoading,
     eventDetailError,
     editEventLoading,
-    editEventSuccess,
+    verifyEventSuccess,
     deleteEventLoading,
     deleteEventSuccess,
     deleteEventError,
@@ -263,7 +263,7 @@ const EventDetail = ({ navigation, route }) => {
           <VerifyWindow
             handleVerify={handleVerify}
             editEventLoading={editEventLoading}
-            editEventSuccess={editEventSuccess}
+            verifyEventSuccess={verifyEventSuccess}
             setIsVerified={setIsVerified}
           />
         )}

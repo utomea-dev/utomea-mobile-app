@@ -9,7 +9,7 @@ import {
 } from "../../api/urls";
 
 import { handleError } from "../errorHandler";
-import { uploadImage } from "./homeSlice";
+import { setDateString, uploadImage } from "./homeSlice";
 
 const initialState = {
   eventDetail: null,
@@ -18,6 +18,7 @@ const initialState = {
   date: "",
 
   editEventSuccess: false,
+  verifyEventSuccess: false,
   editEventLoading: false,
   editEventError: "",
 
@@ -32,13 +33,25 @@ const initialState = {
 
 export const getEventDetails = createAsyncThunk(
   "events/getEventDetails",
-  async (data, { getState }) => {
+  async (data, { dispatch, getState }) => {
     try {
       const { id } = data;
       const response = await makeRequest(getEventDetailsUrl(id), {});
       console.log("detail event====", response.data);
-
-      return response.data.data;
+      const eventDetails = response.data.data;
+      dispatch(
+        setDateString({
+          key: "startDateString",
+          value: eventDetails?.begin_timestamp.split("T")[0],
+        })
+      );
+      dispatch(
+        setDateString({
+          key: "endDateString",
+          value: eventDetails?.end_timestamp.split("T")[0],
+        })
+      );
+      return eventDetails;
     } catch (error) {
       handleError(error);
     }
@@ -53,7 +66,6 @@ export const editEvent = createAsyncThunk(
 
       const response = await makeRequest(editEventUrl(id), "PUT", body, {});
 
-      console.log("res update----", id, response);
       if (photos.length) {
         dispatch(uploadImage({ id, photos }));
       } else {
@@ -63,7 +75,7 @@ export const editEvent = createAsyncThunk(
         }
       }
 
-      return { message: response.data.message };
+      return { message: response.data.message, verify: body.verified };
     } catch (error) {
       handleError(error);
     }
@@ -75,10 +87,7 @@ export const deleteEvent = createAsyncThunk(
   async (data, { getState, dispatch }) => {
     try {
       const { id } = data;
-      console.log("id delete------[", id);
       const response = await makeRequest(deleteEventUrl(id), "DELETE", {}, {});
-
-      console.log("rese delete---------", response.data);
 
       return { message: response.data.message };
     } catch (error) {
@@ -118,6 +127,7 @@ const eventDetailSlice = createSlice({
       state.eventDetailError = "";
 
       state.editEventSuccess = false;
+      state.verifyEventSuccess = false;
       state.editEventLoading = false;
       state.editEventError = "";
 
@@ -150,14 +160,17 @@ const eventDetailSlice = createSlice({
       state.editEventLoading = true;
       state.editEventError = "";
       state.editEventSuccess = false;
+      state.verifyEventSuccess = false;
     });
     builder.addCase(editEvent.fulfilled, (state, action) => {
       state.editEventLoading = false;
       state.editEventError = "";
+      state.verifyEventSuccess = action.payload?.verify === true ? true : false;
       state.editEventSuccess = true;
     });
     builder.addCase(editEvent.rejected, (state, action) => {
       state.editEventLoading = false;
+      state.verifyEventSuccess = false;
       state.editEventSuccess = false;
       state.editEventError = action.error.message || "Some error occured";
     });

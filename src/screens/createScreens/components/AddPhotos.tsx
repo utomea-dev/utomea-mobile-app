@@ -106,13 +106,7 @@ const AddPhotos = ({
         <Label label={mode === "delete" ? "All Photos" : "Photos"} />
         {photos.length > 0 && (
           <CustomButton
-            onPress={
-              mode === "delete"
-                ? selectedPhotos.length > 0
-                  ? rest.deletePhotos
-                  : rest.selectAll
-                : openImagePicker
-            }
+            onPress={mode === "delete" ? rest.selectAll : openImagePicker}
             title={
               <View
                 style={{
@@ -122,12 +116,11 @@ const AddPhotos = ({
                   gap: 8,
                 }}
               >
-                {mode === "delete" && selectedPhotos.length > 0 && <Delete />}
                 <Text style={{ color: "#FFFFFF" }}>
                   {mode === "delete"
-                    ? selectedPhotos.length > 0
-                      ? "Delete Selection"
-                      : "Select photos"
+                    ? selectedPhotos.length === photos.length
+                      ? "Unselect All"
+                      : "Select All"
                     : "Add more photos"}
                 </Text>
                 {mode !== "delete" && <Add />}

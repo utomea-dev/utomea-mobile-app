@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { deepCloneArray, showNotification } from "../../utils/helpers";
 import { handleError } from "../errorHandler";
+import { mergeAll } from "../helpers";
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth() + 1;
@@ -22,6 +23,8 @@ const initialState = {
   eventsLoadingInner: false,
   unverifiedCount: 0,
   totalCount: 0,
+  startDateString: "",
+  endDateString: "",
   date: "",
   verified: "",
   limit: 50,
@@ -60,46 +63,18 @@ export const getEvents = createAsyncThunk(
   async (data, { getState }) => {
     try {
       console.log("RUNING GET EVENTS++++++++++++++++++++++++++++");
-      const { limit, events, skip, verified, date } = getState().home;
+      const { limit, skip, verified, date } = getState().home;
       const response = await makeRequest(
         getEventsUrl({ limit, skip, verified, date }),
         {}
       );
       const { totalCount, unverifiedCount } = response.data;
-      const newEvents = response.data.data;
-      let merged = [];
-
-      if (events && events.length) {
-        const eventsClone = [...events];
-        const lastEvent = eventsClone.pop();
-        const lastEventDate = lastEvent[0].end_timestamp
-          .split("T")[0]
-          .split(" ")[0];
-        const newEventDate = newEvents[0][0].end_timestamp
-          .split("T")[0]
-          .split(" ")[0];
-        if (lastEventDate === newEventDate) {
-          newEvents[0].unshift(...lastEvent);
-        } else {
-          eventsClone.push(lastEvent);
-        }
-
-        merged = [...eventsClone, ...newEvents];
-      } else merged = newEvents;
-      return { merged, totalCount, unverifiedCount };
+      return { events: response.data.data, totalCount, unverifiedCount };
     } catch (error) {
       handleError(error);
     }
   }
 );
-
-const eventsHaveSameDate = (event1, event2) => {
-  const date1 = event1[0].end_timestamp.split("T")[0].split(" ")[0];
-  const date2 = event2[0].end_timestamp.split("T")[0].split(" ")[0];
-
-  console.log("DATE COMPARE IN SLICE---------", date1, date2, date1 === date2);
-  return date1 === date2;
-};
 
 export const getMoreEvents = createAsyncThunk(
   "events/getMoreEvents",
@@ -112,29 +87,8 @@ export const getMoreEvents = createAsyncThunk(
         {}
       );
       const { totalCount, unverifiedCount } = response.data;
-      const newEvents = deepCloneArray(response.data.data);
-      let merged = [];
-
-      if (events && events.length) {
-        const eventsClone = deepCloneArray(events);
-
-        const lastEvent = eventsClone[eventsClone.length - 1];
-        const firstNewEvent = newEvents[0];
-
-        if (eventsHaveSameDate(lastEvent, firstNewEvent)) {
-          merged = [
-            ...eventsClone.slice(0, -1),
-            [...lastEvent, ...firstNewEvent],
-            ...newEvents.slice(1),
-          ];
-        } else {
-          merged = [...eventsClone, ...newEvents];
-        }
-      } else {
-        console.log("ELSE IS RUNNING I FECTHING MORE%%%%%%%%%%%%%%%%%");
-        merged = newEvents;
-      }
-      return { merged, totalCount, unverifiedCount };
+      const result = mergeAll(events, response.data.data);
+      return { result, totalCount, unverifiedCount };
     } catch (error) {
       handleError(error);
     }
@@ -211,28 +165,6 @@ const homeSlice = createSlice({
       state.verified = "";
       state.limit = 50;
       state.infiniteLoading = false;
-      state.startDate = {
-        year: currentYear.toString(),
-        month:
-          currentMonth < 10
-            ? "0" + currentMonth.toString()
-            : currentMonth.toString(),
-        date:
-          currentDate < 10
-            ? "0" + currentDate.toString()
-            : currentDate.toString(),
-      };
-      state.endDate = {
-        year: currentYear.toString(),
-        month:
-          currentMonth < 10
-            ? "0" + currentMonth.toString()
-            : currentMonth.toString(),
-        date:
-          currentDate < 10
-            ? "0" + currentDate.toString()
-            : currentDate.toString(),
-      };
       state.createEventSuccess = false;
       state.createEventLoading = false;
       state.createEventError = "";
@@ -241,6 +173,8 @@ const homeSlice = createSlice({
       state.uploadImageError = "";
     },
     resetDate: (state) => {
+      state.startDateString = "";
+      state.endDateString = "";
       state.startDate = {
         year: currentYear.toString(),
         month:
@@ -270,6 +204,9 @@ const homeSlice = createSlice({
     setEndDate: (state, action) => {
       state.endDate[action.payload.key] = action.payload.value;
     },
+    setDateString: (state, action) => {
+      state[action.payload.key] = action.payload.value;
+    },
     setHomeFilter: (state, action) => {
       state[action.payload.key] = action.payload.value;
     },
@@ -286,7 +223,7 @@ const homeSlice = createSlice({
       state.eventsLoading = false;
       state.eventsLoadingInner = false;
       state.eventsError = "";
-      state.events = action.payload?.merged || null;
+      state.events = action.payload?.events || null;
       state.totalCount = action.payload?.totalCount;
       state.unverifiedCount = action.payload?.unverifiedCount;
     });
@@ -305,7 +242,7 @@ const homeSlice = createSlice({
       state.infiniteLoading = false;
       state.eventsLoadingInner = false;
       state.eventsError = "";
-      state.events = action.payload?.merged || null;
+      state.events = action.payload?.result || null;
       state.totalCount = action.payload?.totalCount;
       state.unverifiedCount = action.payload?.unverifiedCount;
     });
@@ -356,5 +293,11 @@ const homeSlice = createSlice({
 });
 
 export default homeSlice.reducer;
-export const { resetHome, setHomeFilter, setEndDate, setStartDate, resetDate } =
-  homeSlice.actions;
+export const {
+  resetHome,
+  setHomeFilter,
+  setEndDate,
+  setStartDate,
+  resetDate,
+  setDateString,
+} = homeSlice.actions;

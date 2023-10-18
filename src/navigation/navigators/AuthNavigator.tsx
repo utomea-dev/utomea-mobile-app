@@ -14,11 +14,10 @@ export const AuthNavigator = () => {
   const hideSplashScreenAndRedirect = async () => {
     const user = await useAuth();
     setTimeout(() => {
-      if (user === "Unknown") {
-        navigation.navigate("Signin");
-      } else {
-        navigation.navigate("MainTabs");
-      }
+      // if (user === "Unknown") {
+      //   navigation.navigate("Signin");
+      //   return;
+      // }
       SplashScreen?.hide();
     }, 500);
   };

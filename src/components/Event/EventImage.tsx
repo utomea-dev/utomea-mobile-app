@@ -15,7 +15,6 @@ const EventImage = ({
       {isVerified && <Verified style={styles.icon} />}
       <Image
         blurRadius={blur}
-        onLoadStart={() => setBlur(40)}
         onLoadEnd={() => setBlur(0)}
         style={[styles.image, imageStyles]}
         source={imageUrl ? { uri: imageUrl } : thumbnail}

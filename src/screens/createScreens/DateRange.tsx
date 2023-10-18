@@ -6,6 +6,7 @@ import Label from "../../components/Label/Label";
 import DatePicker from "../../components/Header/DatePicker";
 import {
   resetHome,
+  setDateString,
   setEndDate,
   setStartDate,
 } from "../../redux/slices/homeSlice";
@@ -33,6 +34,7 @@ const DateRange = ({ navigation }) => {
     const currentDate = new Date().toISOString().split("T")[0];
     const startDate = `${startYear}-${startMonth}-${startDay}`;
     const endDate = `${endYear}-${endMonth}-${endDay}`;
+    console.log("curee00------", currentDate, startDate, endDate);
     const isDateValid = isDateRangeValid(startDate, endDate);
     const isNotFutureDate = isDateRangeValid(endDate, currentDate);
 
@@ -44,6 +46,19 @@ const DateRange = ({ navigation }) => {
       setDateRangeError("Please choose a valid date range");
       return;
     }
+
+    dispatch(
+      setDateString({
+        key: "startDateString",
+        value: `${startYear}-${startMonth}-${startDay}`,
+      })
+    );
+    dispatch(
+      setDateString({
+        key: "endDateString",
+        value: `${endYear}-${endMonth}-${endDay}`,
+      })
+    );
     setDateRangeError("");
     navigation.navigate("Create/create");
   };

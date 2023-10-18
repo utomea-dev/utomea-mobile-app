@@ -9,12 +9,14 @@ const LocationSection = ({
   onPress = () => {},
   location = "",
   validationError = "",
+  disabled = false,
 }) => {
   return (
     <View style={{ marginVertical: 20 }}>
       <View style={[styles.sectionTitle]}>
         <Label label={"Location"} labelStyle={{ marginRight: 10, flex: 0.5 }} />
         <CustomButton
+          disabled={disabled}
           onPress={onPress}
           title={
             <View

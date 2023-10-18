@@ -86,6 +86,7 @@ const categories = [
 const EditEvent = ({ navigation }) => {
   const dispatch = useDispatch();
 
+  const { startDateString, endDateString } = useSelector((state) => state.home);
   const {
     eventDetail: data,
     editEventLoading,
@@ -124,7 +125,7 @@ const EditEvent = ({ navigation }) => {
   useEffect(() => {
     if (data !== null) {
       setPhotos(() => data.photos);
-      setTitle(() => data.title);
+      setTitle(() => data.title.substring(0, 30));
       setLocation(() => data.location);
       setLongitude(() => data.longitude);
       setLatitude(() => data.latitude);
@@ -267,12 +268,8 @@ const EditEvent = ({ navigation }) => {
     const body = {
       latitude,
       longitude,
-      begin_timestamp: `${startYear}-${startMonth}-${
-        Number(startDay) < 10 ? "0" + startDay : startDay
-      }T${startTime}`,
-      end_timestamp: `${endYear}-${endMonth}-${
-        Number(endDay) < 10 ? "0" + endDay : endDay
-      }T${endTime}`,
+      begin_timestamp: `${startDateString}T${startTime}`,
+      end_timestamp: `${endDateString}T${endTime}`,
       title: title.trim().replace(/\s+/g, " "),
       description,
       location,
@@ -293,6 +290,48 @@ const EditEvent = ({ navigation }) => {
     );
   };
 
+  const dateOnClose = () => {
+    hideFlyIn(setDateFlyInVisible);
+    const startDateSplit = startDateString.split("-");
+    const endDateSplit = endDateString.split("-");
+    dispatch(
+      setStartDate({
+        key: "year",
+        value: startDateSplit[0],
+      })
+    );
+    dispatch(
+      setStartDate({
+        key: "month",
+        value: startDateSplit[1],
+      })
+    );
+    dispatch(
+      setStartDate({
+        key: "date",
+        value: startDateSplit[2],
+      })
+    );
+    dispatch(
+      setEndDate({
+        key: "year",
+        value: endDateSplit[0],
+      })
+    );
+    dispatch(
+      setEndDate({
+        key: "month",
+        value: endDateSplit[1],
+      })
+    );
+    dispatch(
+      setEndDate({
+        key: "date",
+        value: endDateSplit[2],
+      })
+    );
+  };
+
   const renderDateFlyIn = () => {
     return (
       <Modal
@@ -301,7 +340,10 @@ const EditEvent = ({ navigation }) => {
         visible={dateFlyInVisible}
         onRequestClose={() => hideFlyIn(setDateFlyInVisible)}
       >
-        <DateFlyIn onClose={() => hideFlyIn(setDateFlyInVisible)} />
+        <DateFlyIn
+          onClose={dateOnClose}
+          closeOnly={() => hideFlyIn(setDateFlyInVisible)}
+        />
       </Modal>
     );
   };
@@ -347,7 +389,7 @@ const EditEvent = ({ navigation }) => {
       {renderLocationFlyIn()}
       {renderDateFlyIn()}
       <GeneralHeader
-        title="Create an Event"
+        title="Edit Event"
         CTA={() => (
           <CustomButton
             isLoading={editEventLoading || uploadImageLoading}
@@ -378,10 +420,13 @@ const EditEvent = ({ navigation }) => {
         <Divider />
         <DateSection
           onPress={handleDatePress}
-          date={`${MONTHS[endMonth]?.long} ${endDay}, ${endYear}`}
+          date={`${MONTHS[endDateString?.split("-")[1]]?.long} ${
+            endDateString?.split("-")[2]
+          }, ${endDateString?.split("-")[0]}`}
         />
         <Divider />
         <LocationSection
+          disabled
           onPress={handleLocationPress}
           validationError={locationError}
           location={location}
@@ -435,7 +480,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   scrollContainer: {
-    flexGrow: 1,
+    // flexGrow: 1,
   },
   modalContainer: {
     flex: 1,

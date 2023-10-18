@@ -7,7 +7,7 @@ import CustomButton from "../../../components/Button/Button";
 const VerifyWindow = ({
   handleVerify = () => {},
   editEventLoading = false,
-  editEventSuccess = false,
+  verifyEventSuccess = false,
   setIsVerified = (e) => {},
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -64,11 +64,11 @@ const VerifyWindow = ({
   };
 
   useEffect(() => {
-    if (editEventSuccess) {
+    if (verifyEventSuccess) {
       setModalVisible(true);
     }
-  }, [editEventSuccess]);
-  console.log("dieeti evenet succss-============", editEventSuccess);
+  }, [verifyEventSuccess]);
+
   return (
     <View style={styles.verifyModal}>
       {renderModal()}

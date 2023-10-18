@@ -43,6 +43,7 @@ const HomeFeed = ({ navigation }) => {
     unverifiedCount,
     skip,
     date,
+    limit,
     totalCount,
   } = useSelector((state) => state.home);
 
@@ -54,12 +55,17 @@ const HomeFeed = ({ navigation }) => {
 
   const fetchMore = () => {
     return;
-    console.log("LNEGHT*************", events.length, totalCount);
-    if (events && events.length < totalCount) {
-      dispatch(getMoreEvents({ skip: events.length }));
+    if (
+      events &&
+      events?.flat().length < totalCount &&
+      events?.flat().length >= limit &&
+      !eventsLoading &&
+      !eventsLoadingInner &&
+      !infiniteLoading
+    ) {
+      dispatch(getMoreEvents({ skip: events?.flat().length }));
       return;
     }
-    console.log("no more events to fetch ---");
     return;
   };
 
@@ -161,7 +167,9 @@ const HomeFeed = ({ navigation }) => {
     return events && events.length ? (
       <FlatList
         data={events}
-        keyExtractor={(item) => item[0].id.toString()}
+        keyExtractor={(item) =>
+          `${item[0].id.toString()}-${Math.ceil(Math.random() * 1000000)}`
+        }
         renderItem={({ item, index }) => {
           const endDate = item[0].end_timestamp.split("T")[0];
           return (

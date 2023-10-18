@@ -36,7 +36,7 @@ const CustomInput = ({
 const styles = StyleSheet.create({
   inputContainer: {},
   input: {
-    height: 42,
+    height: 45,
     backgroundColor: "#222222",
     paddingVertical: 12,
     paddingHorizontal: 14,
