@@ -6,7 +6,7 @@ import CustomInput from "../../components/Input/Input";
 import Logo from "../../assets/images/logo.svg";
 import { StackActions } from "@react-navigation/native";
 
-import { forgotPassword } from "../../redux/slices/authSlice";
+import { forgotPassword, reset } from "../../redux/slices/authSlice";
 
 const ForgotPassword = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -16,6 +16,11 @@ const ForgotPassword = ({ navigation }) => {
 
   const { forgotPasswordLoading, forgotPasswordSuccess, forgotPasswordError } =
     useSelector((state) => state.auth);
+
+  const clear = () => {
+    setEmail("");
+    setValidationError("");
+  };
 
   const isEmailValid = (email) => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -77,7 +82,11 @@ const ForgotPassword = ({ navigation }) => {
           />
           <TouchableOpacity
             disabled={forgotPasswordLoading}
-            onPress={() => navigation.goBack()}
+            onPress={() => {
+              navigation.goBack();
+              clear();
+              dispatch(reset());
+            }}
           >
             <Text style={{ color: "#FFFFFF", textAlign: "center" }}>
               Cancel

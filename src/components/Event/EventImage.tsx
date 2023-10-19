@@ -10,6 +10,8 @@ const EventImage = ({
   imageStyles = {},
 }) => {
   const [blur, setBlur] = useState(20);
+  const placeholderUrl =
+    "https://utomea-events.s3.us-east-2.amazonaws.com/thumbnail.png";
   return (
     <View style={styles.container}>
       {isVerified && <Verified style={styles.icon} />}
@@ -17,7 +19,7 @@ const EventImage = ({
         blurRadius={blur}
         onLoadEnd={() => setBlur(0)}
         style={[styles.image, imageStyles]}
-        source={imageUrl ? { uri: imageUrl } : thumbnail}
+        source={{ uri: imageUrl ? imageUrl : placeholderUrl }}
       />
     </View>
   );

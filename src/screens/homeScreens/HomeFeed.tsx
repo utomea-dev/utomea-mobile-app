@@ -54,10 +54,10 @@ const HomeFeed = ({ navigation }) => {
   };
 
   const fetchMore = () => {
-    return;
     if (
       events &&
-      events?.flat().length < totalCount &&
+      events?.flat().length <
+        (verified === false ? unverifiedCount : totalCount) &&
       events?.flat().length >= limit &&
       !eventsLoading &&
       !eventsLoadingInner &&
@@ -161,9 +161,6 @@ const HomeFeed = ({ navigation }) => {
       );
     }
 
-    if (eventsError)
-      return <Text style={{ color: "#FFFFFF" }}>{eventsError}</Text>;
-
     return events && events.length ? (
       <FlatList
         data={events}
@@ -185,13 +182,15 @@ const HomeFeed = ({ navigation }) => {
         onEndReachedThreshold={0.4}
         onEndReached={({ distanceFromEnd }) => {
           fetchMore();
-          console.log("on end reached ", distanceFromEnd);
         }}
       />
     ) : (
       <Text style={{ color: "#FFFFFF" }}>Sorry, no Events to show</Text>
     );
   };
+
+  if (eventsError)
+    return <Text style={{ color: "#FFFFFF" }}>{eventsError}</Text>;
 
   if (eventsLoading) {
     return (

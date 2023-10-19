@@ -33,6 +33,7 @@ import {
 } from "../../redux/slices/eventDetailSlice";
 import BackDropMenu from "../../components/BackDropMenu/BackDropMenu";
 import VerifyWindow from "./components/VerifyWindow";
+import { resetHomeLoaders } from "../../redux/slices/homeSlice";
 
 const EventDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -63,7 +64,6 @@ const EventDetail = ({ navigation, route }) => {
   };
 
   const menuEditPress = () => {
-    dispatch(resetEventDetailsLoaders());
     navigation.navigate("EditEvent", { mode: "edit" });
     closeMenu();
   };
@@ -210,6 +210,7 @@ const EventDetail = ({ navigation, route }) => {
 
   useEffect(() => {
     dispatch(getEventDetails({ id: eventId }));
+    dispatch(resetHomeLoaders());
   }, [eventId]);
 
   useEffect(() => {

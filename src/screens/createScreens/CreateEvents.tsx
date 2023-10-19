@@ -159,8 +159,9 @@ const CreateEvent = ({ navigation, route }) => {
   };
 
   const removePhotos = (pic) => {
-    const filtered = photos.filter((img) => img.uri !== pic.uri);
-    setPhotos(() => filtered);
+    // const filtered = photos.filter((img) => img.uri !== pic.uri);
+    // setPhotos(() => filtered);
+    return;
   };
 
   const handleDatePress = () => {

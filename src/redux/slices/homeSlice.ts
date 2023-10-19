@@ -22,12 +22,12 @@ const initialState = {
   eventsError: "",
   eventsLoadingInner: false,
   unverifiedCount: 0,
-  totalCount: 0,
+  totalCount: 1,
   startDateString: "",
   endDateString: "",
   date: "",
   verified: "",
-  limit: 50,
+  limit: 10,
   skip: 0,
   startDate: {
     year: currentYear.toString(),
@@ -87,7 +87,10 @@ export const getMoreEvents = createAsyncThunk(
         {}
       );
       const { totalCount, unverifiedCount } = response.data;
-      const result = mergeAll(events, response.data.data);
+      let result = events;
+      if (response.data.data.length > 0) {
+        result = mergeAll(events, response.data.data);
+      }
       return { result, totalCount, unverifiedCount };
     } catch (error) {
       handleError(error);
@@ -164,6 +167,18 @@ const homeSlice = createSlice({
       state.date = "";
       state.verified = "";
       state.limit = 50;
+      state.infiniteLoading = false;
+      state.createEventSuccess = false;
+      state.createEventLoading = false;
+      state.createEventError = "";
+      state.uploadImageSuccess = false;
+      state.uploadImageLoading = false;
+      state.uploadImageError = "";
+    },
+    resetHomeLoaders: (state) => {
+      state.eventsLoading = false;
+      state.eventsLoadingInner = false;
+      state.eventsError = "";
       state.infiniteLoading = false;
       state.createEventSuccess = false;
       state.createEventLoading = false;
@@ -295,6 +310,7 @@ const homeSlice = createSlice({
 export default homeSlice.reducer;
 export const {
   resetHome,
+  resetHomeLoaders,
   setHomeFilter,
   setEndDate,
   setStartDate,

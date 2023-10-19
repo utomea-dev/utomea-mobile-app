@@ -41,7 +41,7 @@ const Tags = ({
           numberOfLines={1}
           onChangeText={(text) => setInput(text)}
           validationError={validationError}
-          placeholder="Type a custom tag to describe this event"
+          customPlaceholder="Type a custom tag to describe this event"
           placeholderTextColor="grey"
           containerStyle={{ flex: 1 }}
           returnKeyType="done"

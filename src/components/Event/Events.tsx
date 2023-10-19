@@ -21,10 +21,10 @@ const Events = ({ date = "", cards, isLast = false, loading = "false" }) => {
             justifyContent: "center",
             alignItems: "center",
             width: "100%",
-            paddingBottom: 10,
+            marginVertical: 40,
           }}
         >
-          <ActivityIndicator color="58DAC3" size="small" />
+          <ActivityIndicator color="58DAC3" size="large" />
         </View>
       )}
     </View>

@@ -35,6 +35,12 @@ const Signup = ({ navigation }) => {
     setValidationError("");
   };
 
+  const clearErrors = () => {
+    setEmailError("");
+    setPasswordError("");
+    setValidationError("");
+  };
+
   const isEmailValid = (email) => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     return emailRegex.test(email);
@@ -48,6 +54,7 @@ const Signup = ({ navigation }) => {
   };
 
   const handleSignup = async () => {
+    clearErrors();
     let errorFlag = false;
 
     if (!email || !isEmailValid(email)) {
@@ -63,7 +70,7 @@ const Signup = ({ navigation }) => {
     }
 
     if (!errorFlag) {
-      setValidationError("");
+      clearErrors();
       dispatch(signupUser({ email, password }));
     }
   };
