@@ -27,7 +27,7 @@ import Description from "../createScreens/components/Description";
 import DateFlyIn from "../createScreens/components/DateFlyIn";
 import LocationFlyIn from "../createScreens/components/LocationFlyIn";
 import GeneralHeader from "../../components/Header/GeneralHeader";
-import { MONTHS } from "../../constants/constants";
+import { EVENT_TYPES, MONTHS } from "../../constants/constants";
 import {
   resetHome,
   setEndDate,
@@ -426,7 +426,7 @@ const EditEvent = ({ navigation }) => {
         />
         <Divider />
         <LocationSection
-          disabled
+          disabled={data?.event_type === EVENT_TYPES.AUTOMATIC}
           onPress={handleLocationPress}
           validationError={locationError}
           location={location}

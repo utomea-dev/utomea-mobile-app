@@ -27,7 +27,7 @@ import Description from "./components/Description";
 import GeneralHeader from "../../components/Header/GeneralHeader";
 import DateFlyIn from "./components/DateFlyIn";
 import LocationFlyIn from "./components/LocationFlyIn";
-import { MONTHS } from "../../constants/constants";
+import { EVENT_TYPES, MONTHS } from "../../constants/constants";
 import {
   createEvent,
   resetHome,
@@ -231,6 +231,7 @@ const CreateEvent = ({ navigation, route }) => {
     if (errorFlag) return;
 
     const body = {
+      event_type: EVENT_TYPES.MANUAL,
       latitude,
       longitude,
       begin_timestamp: startDateString,

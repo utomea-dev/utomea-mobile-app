@@ -1,3 +1,8 @@
+export const EVENT_TYPES = {
+  MANUAL: 1,
+  AUTOMATIC: 2,
+};
+
 export const MONTHS = {
   "01": { long: "January", short: "Jan" },
   "02": { long: "February", short: "Feb" },

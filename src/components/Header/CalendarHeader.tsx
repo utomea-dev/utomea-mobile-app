@@ -84,7 +84,7 @@ const CalendarHeader = ({ isDisabled }) => {
             buttonStyle={{ paddingVertical: 8 }}
           />
           <CustomButton
-            title="Clear filter"
+            title="Clear"
             onPress={handleClearFilter}
             buttonStyle={{ paddingVertical: 8, backgroundColor: "#222222" }}
             containerStyle={{ marginVertical: 8 }}
