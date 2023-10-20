@@ -35,6 +35,7 @@ import {
 } from "../../redux/slices/homeSlice";
 import { StackActions, useFocusEffect } from "@react-navigation/native";
 import { editEvent } from "../../redux/slices/eventDetailSlice";
+import OverlayLoader from "../../components/Loaders/OverlayLoader";
 
 const categories = [
   {
@@ -366,6 +367,10 @@ const EditEvent = ({ navigation }) => {
     );
   };
 
+  const renderloaderOverlay = () => {
+    return (editEventLoading || uploadImageLoading) && <OverlayLoader />;
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       clearErrors();
@@ -386,17 +391,19 @@ const EditEvent = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       enabled
     >
+      {/* {renderloaderOverlay()} */}
       {renderLocationFlyIn()}
       {renderDateFlyIn()}
+
       <GeneralHeader
         title="Edit Event"
         CTA={() => (
           <CustomButton
-            isLoading={editEventLoading || uploadImageLoading}
+            // isLoading={editEventLoading || uploadImageLoading}
             disabled={editEventLoading || uploadImageLoading}
             title="Save"
             onPress={handleEditEvent}
-            buttonStyle={{ paddingVertical: 6 }}
+            buttonStyle={{ paddingVertical: 6, width: 65 }}
           />
         )}
       />

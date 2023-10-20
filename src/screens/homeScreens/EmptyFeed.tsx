@@ -67,7 +67,7 @@ const EmptyFeed = ({ navigation }) => {
       <TouchableOpacity
         key={entry}
         style={styles.button}
-        onPress={() => handlePress(entry)}
+        onPress={() => handleCreateEventButton()}
       >
         <PlusLight />
       </TouchableOpacity>

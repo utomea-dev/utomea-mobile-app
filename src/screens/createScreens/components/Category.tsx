@@ -5,7 +5,7 @@ import CustomButton from "../../../components/Button/Button";
 
 const Category = ({
   categories = [{ id: 0, name: "" }],
-  selectedCategory = 1,
+  selectedCategory = null,
   onPress = (e) => {},
 }) => {
   return (

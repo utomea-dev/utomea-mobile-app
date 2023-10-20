@@ -30,6 +30,7 @@ import {
   resetEventDetails,
   resetEventDetailsLoaders,
 } from "../../redux/slices/eventDetailSlice";
+import { MONTHS } from "../../constants/constants";
 
 const HomeFeed = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -216,6 +217,32 @@ const HomeFeed = ({ navigation }) => {
       ) : (
         <View>
           {renderTabs()}
+          {/* {console.log(
+            "date---",
+            date,
+            events &&
+              events.length > 0 &&
+              events[0][0]?.end_timestamp.split("T")[0]
+          )} */}
+          {events &&
+            events.length > 0 &&
+            date &&
+            date !== events[0][0]?.end_timestamp.split("T")[0] && (
+              <View>
+                <Text style={{ color: "#FFFFFF" }}>{`${
+                  MONTHS[date?.split("-")[1]]?.long
+                } ${date?.split("-")[2]}, ${date?.split("-")[0]}`}</Text>
+                <Text
+                  style={{
+                    color: "#FC7A1B",
+                    marginVertical: 6,
+                    marginBottom: 20,
+                  }}
+                >
+                  No events found for the selected date
+                </Text>
+              </View>
+            )}
           {renderFlatlist()}
         </View>
       )}

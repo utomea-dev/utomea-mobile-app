@@ -100,6 +100,9 @@ const EditPhotos = ({ navigation }) => {
       setPhotos(() => [...remaingPhotos]);
       setSelectedPhotos([]);
       setModalVisible(() => false);
+      if (remaingPhotos.length === 0) {
+        navigation.goBack();
+      }
     }
     if (deletePhotosError) {
       setDeleteError(() => deletePhotosError);

@@ -279,14 +279,16 @@ const EventDetail = ({ navigation, route }) => {
 
           {/* Rating, Date, Categoy */}
           <View style={styles.ratingContainer}>
-            <View style={styles.rating}>
-              <Star />
-              <Text style={{ color: "#FFFFFF" }}>
-                {data?.rating ? data.rating : 0}
-              </Text>
-            </View>
+            {data?.rating > 0 && (
+              <View style={styles.rating}>
+                <Star />
+                <Text style={{ color: "#FFFFFF" }}>
+                  {data?.rating > 0 && data.rating}
+                </Text>
+              </View>
+            )}
 
-            <Divider dividerStyle={styles.divider} />
+            {data?.rating > 0 && <Divider dividerStyle={styles.divider} />}
 
             <Text style={styles.eventDate}>
               {formatDate(data?.end_timestamp.split("T")[0], true)}

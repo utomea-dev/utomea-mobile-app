@@ -92,7 +92,9 @@ const Signin = ({ navigation }) => {
       const user = await useAuth();
       if (user) {
         if (user.privacy_policy_accepted) {
-          navigation.dispatch(StackActions.replace("MainTabs"));
+          navigation.dispatch(
+            StackActions.replace("MainTabs", { params: "comingFromSignin" })
+          );
         } else {
           navigation.dispatch(StackActions.replace("UserDetails"));
         }
@@ -139,7 +141,9 @@ const Signin = ({ navigation }) => {
   useEffect(() => {
     if (signinSuccess) {
       clear();
-      navigation.dispatch(StackActions.replace("MainTabs"));
+      navigation.dispatch(
+        StackActions.replace("MainTabs", { params: "comingFromSignin" })
+      );
     }
   }, [signinSuccess]);
 
