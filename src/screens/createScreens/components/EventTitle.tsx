@@ -2,7 +2,11 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import CustomInput from "../../../components/Input/Input";
 
-const EventTitle = ({ title = "", onChangeText = () => {} }) => {
+const EventTitle = ({
+  title = "",
+  onChangeText = () => {},
+  validationError = "",
+}) => {
   const handleChange = (str) => {
     onChangeText(str);
   };
@@ -12,6 +16,7 @@ const EventTitle = ({ title = "", onChangeText = () => {} }) => {
       <CustomInput
         onChangeText={(text) => handleChange(text)}
         value={title}
+        validationError={validationError}
         label="Event Title"
         placeholder="Choose a suitable name for this event"
         placeholderTextColor="grey"

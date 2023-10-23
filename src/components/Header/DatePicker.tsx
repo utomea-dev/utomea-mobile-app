@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 
-import Close from "../../assets/icons/close.svg";
-import CustomButton from "../Button/Button";
-
 import { monthData } from "../../constants/constants";
 import { daysInMonth } from "../../utils/helpers";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -40,15 +37,15 @@ const DatePicker = ({
   useEffect(() => {
     setTimeout(() => {
       const yearIndex = yearData.findIndex((y) => y.value === year);
-      yearsRef.current.scrollToIndex({ index: yearIndex, animate: false });
+      yearsRef.current?.scrollToIndex({ index: yearIndex, animate: false });
     }, 50);
     setTimeout(() => {
       const monthIndex = monthData.findIndex((m) => m.value === month);
-      monthsRef.current.scrollToIndex({ index: monthIndex });
+      monthsRef.current?.scrollToIndex({ index: monthIndex });
     }, 100);
     setTimeout(() => {
       const dateIndex = dateData.findIndex((d) => d.value === date);
-      datesRef.current.scrollToIndex({ index: dateIndex });
+      datesRef.current?.scrollToIndex({ index: dateIndex });
     }, 150);
   }, []);
 
@@ -61,19 +58,19 @@ const DatePicker = ({
   const handleYearChange = () => {
     const index = Math.floor(scrollY / 120);
     console.log("trigger - year???", scrollY, index);
-    dispatch(setDate({ key: "year", value: yearData[index].value }));
+    dispatch(setDate({ key: "year", value: yearData[index]?.value }));
   };
 
   const handleMonthChange = () => {
     const index = Math.floor(scrollY / 120);
     console.log("trigger - month???", scrollY, index);
-    dispatch(setDate({ key: "month", value: monthData[index].value }));
+    dispatch(setDate({ key: "month", value: monthData[index]?.value }));
   };
 
   const handleDateChange = () => {
     const index = Math.floor(scrollY / 120);
     console.log("trigger - date???", scrollY, index);
-    dispatch(setDate({ key: "date", value: dateData[index].value }));
+    dispatch(setDate({ key: "date", value: dateData[index]?.value }));
   };
 
   const getItemLayout = (data, index) => {
@@ -91,6 +88,7 @@ const DatePicker = ({
           ref={yearsRef}
           data={yearData}
           keyExtractor={(item) => item.label.toString()}
+          initialNumToRender={10}
           getItemLayout={getItemLayout}
           showsVerticalScrollIndicator={false}
           snapToAlignment="start"
@@ -127,6 +125,7 @@ const DatePicker = ({
           ref={monthsRef}
           data={monthData}
           keyExtractor={(item) => item.label.toString()}
+          initialNumToRender={12}
           getItemLayout={getItemLayout}
           snapToAlignment="start"
           snapToInterval={120}
@@ -154,6 +153,7 @@ const DatePicker = ({
           ref={datesRef}
           data={dateData}
           keyExtractor={(item) => item.label.toString()}
+          initialNumToRender={10}
           getItemLayout={getItemLayout}
           snapToAlignment="start"
           snapToInterval={120}

@@ -48,19 +48,22 @@ const Signin = ({ navigation }) => {
   };
 
   const handleSignin = async () => {
-    if (!email || !password) {
-      setValidationError(() => "Signin Failed, Please fill in all the fields");
-      return;
+    let errorFlag = false;
+
+    if (!email || !isEmailValid(email)) {
+      setEmailError(() => "Please enter a valid email address");
+      errorFlag = true;
     }
 
-    if (!isEmailValid(email)) {
-      setValidationError("Please enter a valid email address");
-      return;
+    if (!password) {
+      setPasswordError(() => "Please enter your password");
+      errorFlag = true;
     }
 
-    setValidationError("");
-
-    dispatch(signinUser({ email, password }));
+    if (!errorFlag) {
+      setValidationError("");
+      dispatch(signinUser({ email, password }));
+    }
   };
 
   const handleSocialSignin = () => {
@@ -143,7 +146,7 @@ const Signin = ({ navigation }) => {
         label="Email"
         placeholder="Enter user email"
         placeholderTextColor="grey"
-        // validationError={'Invalid'}
+        validationError={emailError}
         editable={!signinLoading}
         value={email}
         onChangeText={(text) => setEmail(text)}
@@ -154,6 +157,7 @@ const Signin = ({ navigation }) => {
         editable={!signinLoading}
         placeholder="Enter your password"
         placeholderTextColor="grey"
+        validationError={passwordError}
         secureTextEntry={true}
         value={password}
         onChangeText={(text) => setPassword(text)}

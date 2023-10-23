@@ -122,7 +122,7 @@ const eventCreator = async (coords: string, latitude, longitude) => {
             const images = r.edges.map((item) => {
               return {
                 uri: item?.node?.image?.uri,
-                filename: item?.node?.image?.filename,
+                fileName: item?.node?.image?.filename,
               };
             });
 

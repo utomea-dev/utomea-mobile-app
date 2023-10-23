@@ -99,7 +99,7 @@ const CreateEvent = ({ navigation }) => {
   const [location, setLocation] = useState("");
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
   const [rating, setRating] = useState(0);
@@ -110,6 +110,22 @@ const CreateEvent = ({ navigation }) => {
   const [titleError, setTitleError] = useState("");
   const [tagError, setTagError] = useState("");
   const [locationError, setLocationError] = useState("");
+  const [photosError, setPhotosError] = useState("");
+
+  const disableSaveButton = () => {
+    if (
+      photos.length > 0 ||
+      title ||
+      location ||
+      selectedCategory ||
+      description ||
+      tags?.length > 0 ||
+      rating > 0
+    ) {
+      return false;
+    }
+    return true;
+  };
 
   const showFlyIn = (setFlyIn) => {
     setFlyIn(true);
@@ -119,14 +135,11 @@ const CreateEvent = ({ navigation }) => {
     setFlyIn(false);
   };
 
-  const isValidated = () => {
-    return !titleError && !locationError;
-  };
-
   const clearErrors = () => {
     setTitleError("");
     setTagError("");
     setLocationError("");
+    setPhotosError("");
   };
 
   const handleTitle = (t) => {
@@ -157,17 +170,17 @@ const CreateEvent = ({ navigation }) => {
 
   const handleAddTags = (tag: String) => {
     if (tag.length < 3 || tag.length > 20) {
-      setTagError("Tag should be 3 - 20 characters long");
+      setTagError(() => "Tag should be 3 - 20 characters long");
       return;
     }
 
     const isExist = tags.includes(tag);
     if (isExist) {
-      setTagError("Tag already exist");
+      setTagError(() => "Tag already exist");
       return;
     }
 
-    setTagError("");
+    setTagError(() => "");
     const newTags = [...tags, tag].sort();
     setTags(() => newTags);
   };
@@ -177,21 +190,36 @@ const CreateEvent = ({ navigation }) => {
     setTags(() => filteredTags);
   };
 
+  const handleCancel = () => {
+    clearErrors();
+    dispatch(resetHome());
+    navigation.navigate("HomeFeed");
+  };
+
   const handleCreateEvent = () => {
+    clearErrors();
+    let errorFlag = false;
     if (!title) {
-      setTitleError("Please set a title for the Event");
-      return;
+      setTitleError(() => "Please set a title for the Event");
+      errorFlag = true;
     }
 
-    if (title.length < 4) {
-      setTitleError("Title should be atleast 4 characters long");
-      return;
+    if (title.length < 4 || title.length > 30) {
+      setTitleError(() => "Title should be 4-30 characters long");
+      errorFlag = true;
     }
 
     if (!location) {
-      setLocationError("Please set a location for the Event");
-      return;
+      setLocationError(() => "Please set a location for the Event");
+      errorFlag = true;
     }
+
+    if (photos.length > 50) {
+      setPhotosError(() => "Please remove some pics, max 50 allowed");
+      errorFlag = true;
+    }
+
+    if (errorFlag) return;
 
     const body = {
       latitude,
@@ -209,9 +237,9 @@ const CreateEvent = ({ navigation }) => {
       category: selectedCategory,
       rating,
     };
+
     clearErrors();
     dispatch(createEvent({ body, photos }));
-    dispatch(resetHome());
   };
 
   const renderDateFlyIn = () => {
@@ -254,28 +282,10 @@ const CreateEvent = ({ navigation }) => {
   useEffect(() => {
     if (!createEventLoading && !uploadImageLoading && createEventSuccess) {
       clearErrors();
-      console.log("EVENT CREATED______ CLEARING NOW++++");
-      navigation.navigate("HomeFeed");
       dispatch(resetHome());
-      // navigation.dispatch(StackActions.replace("HomeFeed"));
+      navigation.navigate("HomeFeed");
     }
   }, [createEventLoading, uploadImageLoading, createEventSuccess]);
-
-  if (createEventLoading || uploadImageLoading) {
-    return (
-      <View
-        style={{
-          flex: 0.9,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Text>
-          <ActivityIndicator color="#58DAC3" size="large" />
-        </Text>
-      </View>
-    );
-  }
 
   return (
     <KeyboardAvoidingView
@@ -289,6 +299,8 @@ const CreateEvent = ({ navigation }) => {
         title="Create an Event"
         CTA={() => (
           <CustomButton
+            isLoading={createEventLoading}
+            disabled={disableSaveButton() || createEventLoading}
             title="Save"
             onPress={handleCreateEvent}
             buttonStyle={{ paddingVertical: 6 }}
@@ -304,16 +316,25 @@ const CreateEvent = ({ navigation }) => {
           photos={photos}
           addPhotos={handleAddPhotos}
           removePhotos={removePhotos}
+          validationError={photosError}
         />
         <Divider />
-        <EventTitle title={title} onChangeText={handleTitle} />
+        <EventTitle
+          title={title}
+          onChangeText={handleTitle}
+          validationError={titleError}
+        />
         <Divider />
         <DateSection
           onPress={handleDatePress}
           date={`${MONTHS[endMonth].long} ${endDay}, ${endYear}`}
         />
         <Divider />
-        <LocationSection onPress={handleLocationPress} location={location} />
+        <LocationSection
+          onPress={handleLocationPress}
+          validationError={locationError}
+          location={location}
+        />
         <Divider />
         <Category
           categories={categories}
@@ -326,13 +347,19 @@ const CreateEvent = ({ navigation }) => {
           setDescription={setDescription}
         />
         <Divider />
-        <Tags tags={tags} onAdd={handleAddTags} onRemove={handleRemoveTags} />
+        <Tags
+          tags={tags}
+          onAdd={handleAddTags}
+          validationError={tagError}
+          onRemove={handleRemoveTags}
+        />
         <Divider />
         <MyRating rating={rating} setRating={setRating} />
         <Divider />
         <View style={{ marginTop: 20, marginBottom: 75 }}>
           <CustomButton
-            disabled={!isValidated()}
+            isLoading={createEventLoading}
+            disabled={disableSaveButton() || createEventLoading}
             onPress={handleCreateEvent}
             title="Save & Create Event"
             buttonStyle={{ paddingVertical: 8 }}
@@ -340,6 +367,7 @@ const CreateEvent = ({ navigation }) => {
           />
           <CustomButton
             title="Cancel"
+            onPress={handleCancel}
             buttonStyle={{ paddingVertical: 8, backgroundColor: "#222222" }}
             containerStyle={{ marginTop: 16 }}
             textStyle={{ color: "#FFFFFF" }}

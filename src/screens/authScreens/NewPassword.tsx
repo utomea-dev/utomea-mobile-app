@@ -20,21 +20,16 @@ const NewPassword = ({ navigation, route }) => {
   const [validationError, setValidationError] = useState("");
 
   const handleSave = async () => {
-    if (!password || !confirm) {
-      setValidationError(() => "Fields cannot be empty");
+    if (!password || !confirm || password.length < 6) {
+      setValidationError(() => "Password should be atleast 6 characters long");
       return;
     }
     if (password !== confirm) {
       setValidationError(() => "Passwords do not match");
       return;
     }
-    if (password.length < 6) {
-      setValidationError(() => "Password should be atleast 6 characters long");
-      return;
-    }
 
     setValidationError("");
-
     dispatch(resetPassword({ password, confirm_password: confirm, token }));
   };
 
@@ -59,6 +54,7 @@ const NewPassword = ({ navigation, route }) => {
           label="Password"
           placeholder="Enter your password"
           placeholderTextColor="grey"
+          validationError={validationError}
           secureTextEntry={true}
           value={password}
           onChangeText={(text) => setPassword(text)}
@@ -68,15 +64,11 @@ const NewPassword = ({ navigation, route }) => {
           label="Confirm Password"
           placeholder="Re-enter your password"
           placeholderTextColor="grey"
+          validationError={validationError}
           secureTextEntry={true}
           value={confirm}
           onChangeText={(text) => setConfirm(text)}
         />
-        {validationError && (
-          <View style={{ marginTop: 5 }}>
-            <Text style={styles.errorText}>{validationError}</Text>
-          </View>
-        )}
       </View>
       <View style={styles.flex}>
         <CustomButton

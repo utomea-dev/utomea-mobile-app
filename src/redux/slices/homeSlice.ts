@@ -12,9 +12,13 @@ import { showNotification } from "../../utils/helpers";
 import { handleError } from "../errorHandler";
 
 const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth() + 1;
+const currentDate = new Date().getDate();
+
+console.log("DATE________________", currentYear, currentMonth, currentDate);
 
 const initialState = {
-  events: [],
+  events: null,
   eventsLoading: false,
   eventsError: "",
   eventsLoadingInner: false,
@@ -22,17 +26,25 @@ const initialState = {
   totalCount: 0,
   date: "",
   verified: "",
-  limit: 10,
+  limit: 50,
   skip: 0,
   startDate: {
     year: currentYear.toString(),
-    month: "01",
-    date: "1",
+    month:
+      currentMonth < 10
+        ? "0" + currentMonth.toString()
+        : currentMonth.toString(),
+    date:
+      currentDate < 10 ? "0" + currentDate.toString() : currentDate.toString(),
   },
   endDate: {
     year: currentYear.toString(),
-    month: "01",
-    date: "1",
+    month:
+      currentMonth < 10
+        ? "0" + currentMonth.toString()
+        : currentMonth.toString(),
+    date:
+      currentDate < 10 ? "0" + currentDate.toString() : currentDate.toString(),
   },
   infiniteLoading: false,
 
@@ -58,13 +70,12 @@ export const getEvents = createAsyncThunk(
       const newEvents = response.data.data;
       let merged = [];
 
-      if (events.length) {
+      if (events && events.length) {
         const eventsClone = [...events];
         const lastEvent = eventsClone.pop();
         const lastEventDate = lastEvent[0].end_timestamp
           .split("T")[0]
           .split(" ")[0];
-        console.log("lastttt-------------", lastEventDate);
         const newEventDate = newEvents[0][0].end_timestamp
           .split("T")[0]
           .split(" ")[0];
@@ -76,10 +87,8 @@ export const getEvents = createAsyncThunk(
 
         merged = [...eventsClone, ...newEvents];
       } else merged = newEvents;
-      // console.log("MEGED----------------", merged);
       return { merged, totalCount, unverifiedCount };
     } catch (error) {
-      console.log("err--", error);
       handleError(error);
     }
   }
@@ -126,7 +135,6 @@ export const createEvent = createAsyncThunk(
       const body = data.body;
       const photos = data.photos;
       const response = await makeRequest(createEventUrl(), "POST", body, {});
-      console.log("evet created res==========", response.data);
       const id = response.data.body.id;
 
       if (photos.length) {
@@ -147,6 +155,7 @@ const homeSlice = createSlice({
   initialState,
   reducers: {
     resetHome: (state) => {
+      state.events = null;
       state.eventsLoading = false;
       state.eventsLoadingInner = false;
       state.eventsError = "";
@@ -156,13 +165,25 @@ const homeSlice = createSlice({
       state.infiniteLoading = false;
       state.startDate = {
         year: currentYear.toString(),
-        month: "01",
-        date: "1",
+        month:
+          currentMonth < 10
+            ? "0" + currentMonth.toString()
+            : currentMonth.toString(),
+        date:
+          currentDate < 10
+            ? "0" + currentDate.toString()
+            : currentDate.toString(),
       };
       state.endDate = {
         year: currentYear.toString(),
-        month: "01",
-        date: "1",
+        month:
+          currentMonth < 10
+            ? "0" + currentMonth.toString()
+            : currentMonth.toString(),
+        date:
+          currentDate < 10
+            ? "0" + currentDate.toString()
+            : currentDate.toString(),
       };
       state.createEventSuccess = false;
       state.createEventLoading = false;
@@ -170,6 +191,30 @@ const homeSlice = createSlice({
       state.uploadImageSuccess = false;
       state.uploadImageLoading = false;
       state.uploadImageError = "";
+    },
+    resetDate: (state) => {
+      state.startDate = {
+        year: currentYear.toString(),
+        month:
+          currentMonth < 10
+            ? "0" + currentMonth.toString()
+            : currentMonth.toString(),
+        date:
+          currentDate < 10
+            ? "0" + currentDate.toString()
+            : currentDate.toString(),
+      };
+      state.endDate = {
+        year: currentYear.toString(),
+        month:
+          currentMonth < 10
+            ? "0" + currentMonth.toString()
+            : currentMonth.toString(),
+        date:
+          currentDate < 10
+            ? "0" + currentDate.toString()
+            : currentDate.toString(),
+      };
     },
     setStartDate: (state, action) => {
       state.startDate[action.payload.key] = action.payload.value;
@@ -187,7 +232,7 @@ const homeSlice = createSlice({
         ? (state.eventsLoadingInner = true)
         : (state.eventsLoading = true);
       state.eventsError = "";
-      state.events = [];
+      state.events = null;
     });
     builder.addCase(getEvents.fulfilled, (state, action) => {
       state.eventsLoading = false;
@@ -238,5 +283,5 @@ const homeSlice = createSlice({
 });
 
 export default homeSlice.reducer;
-export const { resetHome, setHomeFilter, setEndDate, setStartDate } =
+export const { resetHome, setHomeFilter, setEndDate, setStartDate, resetDate } =
   homeSlice.actions;

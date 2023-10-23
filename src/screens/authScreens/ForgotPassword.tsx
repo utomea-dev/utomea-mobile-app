@@ -61,16 +61,12 @@ const ForgotPassword = ({ navigation }) => {
           label="Email"
           placeholder="Enter your email"
           placeholderTextColor="grey"
+          validationError={validationError}
           value={email}
           onChangeText={(text: string) => setEmail(text)}
           inputStyle={{ paddingVertical: 10 }}
           containerStyle={{ marginTop: 32 }}
         />
-        {validationError && (
-          <View style={{ marginTop: 5 }}>
-            <Text style={styles.errorText}>{validationError}</Text>
-          </View>
-        )}
         <View style={styles.flex}>
           <CustomButton
             disabled={forgotPasswordLoading}

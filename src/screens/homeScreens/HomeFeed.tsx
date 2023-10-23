@@ -18,6 +18,7 @@ import EmptyFeed from "./EmptyFeed";
 import Events from "../../components/Event/Events";
 import {
   getEvents,
+  resetDate,
   resetHome,
   setHomeFilter,
 } from "../../redux/slices/homeSlice";
@@ -71,12 +72,16 @@ const HomeFeed = ({ navigation }) => {
 
   useEffect(() => {
     dispatch(getEvents({ refetch: true }));
-  }, [verified, skip, date]);
+  }, [verified, date]);
+
+  useEffect(() => {
+    dispatch(getEvents());
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(resetHome());
-      dispatch(getEvents());
+      dispatch(resetDate());
+      dispatch(getEvents({ refetch: true }));
     }, [dispatch])
   );
 
@@ -107,7 +112,9 @@ const HomeFeed = ({ navigation }) => {
           <TouchableOpacity onPress={handleTabPress} style={styles.rowFlex}>
             <Text style={{ color: "#ADADAD" }}>Unverified Events</Text>
             {!!unverifiedCount && (
-              <Text style={styles.notification}>{unverifiedCount}</Text>
+              <View style={styles.notificationContainer}>
+                <Text style={styles.notification}>{unverifiedCount}</Text>
+              </View>
             )}
           </TouchableOpacity>
         )}
@@ -116,11 +123,11 @@ const HomeFeed = ({ navigation }) => {
   };
 
   const renderFlatlist = () => {
-    if (eventsLoadingInner) {
+    if (eventsLoadingInner || events === null) {
       return (
         <View
           style={{
-            flex: 0.9,
+            height: "80%",
             justifyContent: "center",
             alignItems: "center",
           }}
@@ -135,13 +142,19 @@ const HomeFeed = ({ navigation }) => {
     if (eventsError)
       return <Text style={{ color: "#FFFFFF" }}>{eventsError}</Text>;
 
-    return events.length ? (
+    return events && events.length ? (
       <FlatList
         data={events}
         keyExtractor={(item) => item[0].id.toString()}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           const endDate = item[0].end_timestamp.split("T")[0];
-          return <Events cards={item} date={formatDate(endDate)} />;
+          return (
+            <Events
+              cards={item}
+              date={formatDate(endDate)}
+              isLast={events?.length === index + 1}
+            />
+          );
         }}
         showsVerticalScrollIndicator={false}
         onEndReachedThreshold={1}
@@ -214,18 +227,25 @@ const styles = StyleSheet.create({
     borderColor: "#3B3B3B",
     borderRadius: 100,
   },
-  notification: {
-    backgroundColor: "#E6010F",
-    color: "#F2F2F2",
-    borderRadius: 20,
-    height: 16,
-    paddingTop: 2,
+  notificationContainer: {
+    height: 18,
     aspectRatio: 1,
-    fontSize: 9,
+    borderRadius: 60,
+    padding: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FC7A1B",
+  },
+  notification: {
+    backgroundColor: "transparent",
+    color: "#F2F2F2",
+    height: 18,
+    aspectRatio: 1,
+    fontSize: 10,
     lineHeight: 12,
     fontWeight: "500",
     textAlign: "center",
-    marginBottom: -2,
+    marginTop: 5,
   },
 });
 
