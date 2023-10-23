@@ -88,7 +88,7 @@ const EventDetail = ({ navigation, route }) => {
     // dispatch
     dispatch(
       editEvent({
-        id: data.id,
+        id: data?.id,
         body: { verified: true },
         navigation,
         photos: [],
