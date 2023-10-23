@@ -199,6 +199,9 @@ const EditEvent = ({ navigation }) => {
   };
 
   const removePhotos = () => {
+    if (data?.photos.length === 0) {
+      return;
+    }
     navigation.navigate("EditPhotos");
   };
 
@@ -391,7 +394,7 @@ const EditEvent = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       enabled
     >
-      {/* {renderloaderOverlay()} */}
+      {renderloaderOverlay()}
       {renderLocationFlyIn()}
       {renderDateFlyIn()}
 
@@ -461,7 +464,7 @@ const EditEvent = ({ navigation }) => {
         <Divider />
         <View style={{ marginTop: 20, marginBottom: 75 }}>
           <CustomButton
-            isLoading={editEventLoading || uploadImageLoading}
+            // isLoading={editEventLoading || uploadImageLoading}
             disabled={editEventLoading || uploadImageLoading}
             onPress={handleEditEvent}
             title="Save Changes"

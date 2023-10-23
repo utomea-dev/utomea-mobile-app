@@ -46,6 +46,7 @@ const HomeFeed = ({ navigation }) => {
     date,
     limit,
     totalCount,
+    isNewUser,
   } = useSelector((state) => state.home);
 
   const handleTabPress = () => {
@@ -212,18 +213,11 @@ const HomeFeed = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <CalendarHeader isDisabled={totalCount === 0} />
-      {totalCount === 0 ? (
+      {isNewUser ? (
         <EmptyFeed navigation={navigation} />
       ) : (
         <View>
           {renderTabs()}
-          {/* {console.log(
-            "date---",
-            date,
-            events &&
-              events.length > 0 &&
-              events[0][0]?.end_timestamp.split("T")[0]
-          )} */}
           {events &&
             events.length > 0 &&
             date &&

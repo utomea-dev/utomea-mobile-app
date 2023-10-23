@@ -23,6 +23,7 @@ const initialState = {
   eventsLoadingInner: false,
   unverifiedCount: 0,
   totalCount: 1,
+  isNewUser: false,
   startDateString: "",
   endDateString: "",
   date: "",
@@ -68,8 +69,13 @@ export const getEvents = createAsyncThunk(
         getEventsUrl({ limit, skip, verified, date }),
         {}
       );
-      const { totalCount, unverifiedCount } = response.data;
-      return { events: response.data.data, totalCount, unverifiedCount };
+      const { totalCount, unverifiedCount, isNewUser } = response.data;
+      return {
+        events: response.data.data,
+        totalCount,
+        unverifiedCount,
+        isNewUser,
+      };
     } catch (error) {
       handleError(error);
     }
@@ -86,12 +92,12 @@ export const getMoreEvents = createAsyncThunk(
         getEventsUrl({ limit, skip, verified, date }),
         {}
       );
-      const { totalCount, unverifiedCount } = response.data;
+      const { totalCount, unverifiedCount, isNewUser } = response.data;
       let result = events;
       if (response.data.data.length > 0) {
         result = mergeAll(events, response.data.data);
       }
-      return { result, totalCount, unverifiedCount };
+      return { result, totalCount, unverifiedCount, isNewUser };
     } catch (error) {
       handleError(error);
     }
@@ -240,6 +246,7 @@ const homeSlice = createSlice({
       state.eventsError = "";
       state.events = action.payload?.events || null;
       state.totalCount = action.payload?.totalCount;
+      state.isNewUser = action.payload?.isNewUser;
       state.unverifiedCount = action.payload?.unverifiedCount;
     });
     builder.addCase(getEvents.rejected, (state, action) => {
@@ -259,6 +266,7 @@ const homeSlice = createSlice({
       state.eventsError = "";
       state.events = action.payload?.result || null;
       state.totalCount = action.payload?.totalCount;
+      state.isNewUser = action.payload?.isNewUser;
       state.unverifiedCount = action.payload?.unverifiedCount;
     });
     builder.addCase(getMoreEvents.rejected, (state, action) => {

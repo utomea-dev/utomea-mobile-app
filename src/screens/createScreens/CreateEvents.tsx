@@ -36,6 +36,7 @@ import {
   setStartDate,
 } from "../../redux/slices/homeSlice";
 import { StackActions, useFocusEffect } from "@react-navigation/native";
+import OverlayLoader from "../../components/Loaders/OverlayLoader";
 
 const categories = [
   {
@@ -343,13 +344,14 @@ const CreateEvent = ({ navigation, route }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       enabled
     >
+      {(createEventLoading || uploadImageLoading) && <OverlayLoader />}
       {renderLocationFlyIn()}
       {renderDateFlyIn()}
       <GeneralHeader
         title="Create an Event"
         CTA={() => (
           <CustomButton
-            isLoading={createEventLoading || uploadImageLoading}
+            // isLoading={createEventLoading || uploadImageLoading}
             disabled={
               disableSaveButton() || createEventLoading || uploadImageLoading
             }
@@ -412,7 +414,7 @@ const CreateEvent = ({ navigation, route }) => {
         <Divider />
         <View style={{ marginTop: 20, marginBottom: 75 }}>
           <CustomButton
-            isLoading={createEventLoading || uploadImageLoading}
+            // isLoading={createEventLoading || uploadImageLoading}
             disabled={
               disableSaveButton() || createEventLoading || uploadImageLoading
             }
