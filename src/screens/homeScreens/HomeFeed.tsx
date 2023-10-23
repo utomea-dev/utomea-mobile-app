@@ -164,28 +164,37 @@ const HomeFeed = ({ navigation }) => {
     }
 
     return events && events.length ? (
-      <FlatList
-        data={events}
-        keyExtractor={(item) =>
-          `${item[0].id.toString()}-${Math.ceil(Math.random() * 1000000)}`
-        }
-        renderItem={({ item, index }) => {
-          const endDate = item[0].end_timestamp.split("T")[0];
-          return (
-            <Events
-              cards={item}
-              date={formatDate(endDate)}
-              loading={infiniteLoading}
-              isLast={events?.length === index + 1}
-            />
-          );
-        }}
-        showsVerticalScrollIndicator={false}
-        onEndReachedThreshold={0.4}
-        onEndReached={({ distanceFromEnd }) => {
-          fetchMore();
-        }}
-      />
+      <View>
+        <FlatList
+          data={events}
+          keyExtractor={(item) =>
+            `${item[0].id.toString()}-${Math.ceil(Math.random() * 1000000)}`
+          }
+          renderItem={({ item, index }) => {
+            const endDate = item[0].end_timestamp.split("T")[0];
+            return (
+              <Events
+                cards={item}
+                date={formatDate(endDate)}
+                loading={infiniteLoading}
+                isFirst={index === 0}
+                displayNotFound={
+                  events &&
+                  events.length > 0 &&
+                  date &&
+                  date !== events[0][0]?.end_timestamp.split("T")[0]
+                }
+                isLast={events?.length === index + 1}
+              />
+            );
+          }}
+          showsVerticalScrollIndicator={false}
+          onEndReachedThreshold={0.4}
+          onEndReached={({ distanceFromEnd }) => {
+            fetchMore();
+          }}
+        />
+      </View>
     ) : (
       <Text style={{ color: "#FFFFFF" }}>Sorry, no Events to show</Text>
     );
@@ -218,25 +227,6 @@ const HomeFeed = ({ navigation }) => {
       ) : (
         <View>
           {renderTabs()}
-          {events &&
-            events.length > 0 &&
-            date &&
-            date !== events[0][0]?.end_timestamp.split("T")[0] && (
-              <View>
-                <Text style={{ color: "#FFFFFF" }}>{`${
-                  MONTHS[date?.split("-")[1]]?.long
-                } ${date?.split("-")[2]}, ${date?.split("-")[0]}`}</Text>
-                <Text
-                  style={{
-                    color: "#FC7A1B",
-                    marginVertical: 6,
-                    marginBottom: 20,
-                  }}
-                >
-                  No events found for the selected date
-                </Text>
-              </View>
-            )}
           {renderFlatlist()}
         </View>
       )}
