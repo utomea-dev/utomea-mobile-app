@@ -22,6 +22,7 @@ const CustomButton = ({
   return (
     <View style={[styles.container, containerStyle]}>
       <TouchableOpacity
+        disabled={disabled}
         style={[styles.button, disabled && styles.disabled, buttonStyle]}
         onPress={onPress}
         {...rest}

@@ -31,7 +31,10 @@ const makeRequest = async (
       return axios.patch(url, body, allOptions);
 
     case "DELETE":
-      return axios.delete(url, allOptions);
+      return axios.delete(url, { data: { ...body }, ...allOptions });
+
+    case "DELETE_NO_BODY":
+      return axios.delete(url, { ...allOptions });
 
     default:
       return axios.get(url, allOptions);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View, Image } from "react-native";
 
 import Verified from "../../assets/icons/verified.svg";
@@ -9,12 +9,17 @@ const EventImage = ({
   imageUrl = "",
   imageStyles = {},
 }) => {
+  const [blur, setBlur] = useState(20);
+  const placeholderUrl =
+    "https://utomea-events.s3.us-east-2.amazonaws.com/thumbnail.png";
   return (
     <View style={styles.container}>
       {isVerified && <Verified style={styles.icon} />}
       <Image
+        blurRadius={blur}
+        onLoadEnd={() => setBlur(0)}
         style={[styles.image, imageStyles]}
-        source={imageUrl ? { uri: imageUrl } : thumbnail}
+        source={{ uri: imageUrl ? imageUrl : placeholderUrl }}
       />
     </View>
   );

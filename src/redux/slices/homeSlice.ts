@@ -8,14 +8,13 @@ import {
 } from "../../api/urls";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { showNotification } from "../../utils/helpers";
+import { deepCloneArray, showNotification } from "../../utils/helpers";
 import { handleError } from "../errorHandler";
+import { mergeAll } from "../helpers";
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth() + 1;
 const currentDate = new Date().getDate();
-
-console.log("DATE________________", currentYear, currentMonth, currentDate);
 
 const initialState = {
   events: null,
@@ -23,10 +22,13 @@ const initialState = {
   eventsError: "",
   eventsLoadingInner: false,
   unverifiedCount: 0,
-  totalCount: 0,
+  totalCount: 1,
+  isNewUser: false,
+  startDateString: "",
+  endDateString: "",
   date: "",
   verified: "",
-  limit: 50,
+  limit: 10,
   skip: 0,
   startDate: {
     year: currentYear.toString(),
@@ -61,33 +63,41 @@ export const getEvents = createAsyncThunk(
   "events/getEvents",
   async (data, { getState }) => {
     try {
-      const { limit, events, skip, verified, date } = getState().home;
+      console.log("RUNING GET EVENTS++++++++++++++++++++++++++++");
+      const { limit, skip, verified, date } = getState().home;
       const response = await makeRequest(
         getEventsUrl({ limit, skip, verified, date }),
         {}
       );
-      const { totalCount, unverifiedCount } = response.data;
-      const newEvents = response.data.data;
-      let merged = [];
+      const { totalCount, unverifiedCount, isNewUser } = response.data;
+      return {
+        events: response.data.data,
+        totalCount,
+        unverifiedCount,
+        isNewUser,
+      };
+    } catch (error) {
+      handleError(error);
+    }
+  }
+);
 
-      if (events && events.length) {
-        const eventsClone = [...events];
-        const lastEvent = eventsClone.pop();
-        const lastEventDate = lastEvent[0].end_timestamp
-          .split("T")[0]
-          .split(" ")[0];
-        const newEventDate = newEvents[0][0].end_timestamp
-          .split("T")[0]
-          .split(" ")[0];
-        if (lastEventDate === newEventDate) {
-          newEvents[0].push(...lastEvent);
-        } else {
-          eventsClone.push(lastEvent);
-        }
-
-        merged = [...eventsClone, ...newEvents];
-      } else merged = newEvents;
-      return { merged, totalCount, unverifiedCount };
+export const getMoreEvents = createAsyncThunk(
+  "events/getMoreEvents",
+  async (data, { getState }) => {
+    try {
+      const { limit, events, verified, date } = getState().home;
+      const { skip } = data;
+      const response = await makeRequest(
+        getEventsUrl({ limit, skip, verified, date }),
+        {}
+      );
+      const { totalCount, unverifiedCount, isNewUser } = response.data;
+      let result = events;
+      if (response.data.data.length > 0) {
+        result = mergeAll(events, response.data.data);
+      }
+      return { result, totalCount, unverifiedCount, isNewUser };
     } catch (error) {
       handleError(error);
     }
@@ -99,7 +109,7 @@ export const uploadImage = createAsyncThunk(
   async (data, { getState, dispatch }) => {
     try {
       const images = data.photos;
-      const id = data.id;
+      const { id } = data;
       const requests = images.map(async (image, index) => {
         const formData = new FormData();
         formData.append("files", {
@@ -120,8 +130,9 @@ export const uploadImage = createAsyncThunk(
         );
       });
       const response = await Promise.allSettled(requests);
+      console.log("IMAGE SUCCESS OR NOT-----", response);
       dispatch(getEvents());
-      return {};
+      return { message: "Image upload successful" };
     } catch (error) {
       handleError(error);
     }
@@ -163,28 +174,18 @@ const homeSlice = createSlice({
       state.verified = "";
       state.limit = 50;
       state.infiniteLoading = false;
-      state.startDate = {
-        year: currentYear.toString(),
-        month:
-          currentMonth < 10
-            ? "0" + currentMonth.toString()
-            : currentMonth.toString(),
-        date:
-          currentDate < 10
-            ? "0" + currentDate.toString()
-            : currentDate.toString(),
-      };
-      state.endDate = {
-        year: currentYear.toString(),
-        month:
-          currentMonth < 10
-            ? "0" + currentMonth.toString()
-            : currentMonth.toString(),
-        date:
-          currentDate < 10
-            ? "0" + currentDate.toString()
-            : currentDate.toString(),
-      };
+      state.createEventSuccess = false;
+      state.createEventLoading = false;
+      state.createEventError = "";
+      state.uploadImageSuccess = false;
+      state.uploadImageLoading = false;
+      state.uploadImageError = "";
+    },
+    resetHomeLoaders: (state) => {
+      state.eventsLoading = false;
+      state.eventsLoadingInner = false;
+      state.eventsError = "";
+      state.infiniteLoading = false;
       state.createEventSuccess = false;
       state.createEventLoading = false;
       state.createEventError = "";
@@ -193,6 +194,8 @@ const homeSlice = createSlice({
       state.uploadImageError = "";
     },
     resetDate: (state) => {
+      state.startDateString = "";
+      state.endDateString = "";
       state.startDate = {
         year: currentYear.toString(),
         month:
@@ -222,6 +225,9 @@ const homeSlice = createSlice({
     setEndDate: (state, action) => {
       state.endDate[action.payload.key] = action.payload.value;
     },
+    setDateString: (state, action) => {
+      state[action.payload.key] = action.payload.value;
+    },
     setHomeFilter: (state, action) => {
       state[action.payload.key] = action.payload.value;
     },
@@ -238,11 +244,33 @@ const homeSlice = createSlice({
       state.eventsLoading = false;
       state.eventsLoadingInner = false;
       state.eventsError = "";
-      state.events = action.payload?.merged || [];
+      state.events = action.payload?.events || null;
       state.totalCount = action.payload?.totalCount;
+      state.isNewUser = action.payload?.isNewUser;
       state.unverifiedCount = action.payload?.unverifiedCount;
     });
     builder.addCase(getEvents.rejected, (state, action) => {
+      state.eventsLoading = false;
+      state.eventsLoadingInner = false;
+      state.eventsError = action.error.message || "Some error occured";
+    });
+
+    builder.addCase(getMoreEvents.pending, (state, action) => {
+      state.infiniteLoading = true;
+      state.eventsError = "";
+    });
+    builder.addCase(getMoreEvents.fulfilled, (state, action) => {
+      state.eventsLoading = false;
+      state.infiniteLoading = false;
+      state.eventsLoadingInner = false;
+      state.eventsError = "";
+      state.events = action.payload?.result || null;
+      state.totalCount = action.payload?.totalCount;
+      state.isNewUser = action.payload?.isNewUser;
+      state.unverifiedCount = action.payload?.unverifiedCount;
+    });
+    builder.addCase(getMoreEvents.rejected, (state, action) => {
+      state.infiniteLoading = false;
       state.eventsLoading = false;
       state.eventsLoadingInner = false;
       state.eventsError = action.error.message || "Some error occured";
@@ -265,16 +293,21 @@ const homeSlice = createSlice({
     });
 
     builder.addCase(uploadImage.pending, (state, action) => {
+      console.log("INSIDE IMAGE LOADING REDUCER");
+
       state.uploadImageLoading = true;
       state.uploadImageError = "";
       state.uploadImageSuccess = false;
     });
     builder.addCase(uploadImage.fulfilled, (state, action) => {
+      console.log("INSIDE IMAGE SUCCESS REDUCER");
       state.uploadImageLoading = false;
       state.uploadImageError = "";
       state.uploadImageSuccess = true;
     });
     builder.addCase(uploadImage.rejected, (state, action) => {
+      console.log("INSIDE IMAGE REJECTED REDUCER");
+
       state.uploadImageLoading = false;
       state.uploadImageSuccess = false;
       state.uploadImageError = action.error.message || "Some error occured";
@@ -283,5 +316,12 @@ const homeSlice = createSlice({
 });
 
 export default homeSlice.reducer;
-export const { resetHome, setHomeFilter, setEndDate, setStartDate, resetDate } =
-  homeSlice.actions;
+export const {
+  resetHome,
+  resetHomeLoaders,
+  setHomeFilter,
+  setEndDate,
+  setStartDate,
+  resetDate,
+  setDateString,
+} = homeSlice.actions;

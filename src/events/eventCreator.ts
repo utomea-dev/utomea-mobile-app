@@ -8,6 +8,7 @@ import { MAPS_API_KEY } from "@env";
 import { formatTime } from "../utils/helpers";
 import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
 import { showNotification } from "../utils/helpers";
+import { EVENT_TYPES } from "../constants/constants";
 
 Geocoder.init("AIzaSyB8iCzJlmSC8Ku6pStVH1l-qVjZi65H96k");
 
@@ -79,11 +80,7 @@ const eventCreator = async (coords: string, latitude, longitude) => {
       );
 
       // run this logic if the time elapsed at the same location more than 30 minutes
-      if (
-        startTimeStamp - Number(oldTime) >
-        1800000
-        // Number(JSON.parse(timeToCreateEvent)) * 60000
-      ) {
+      if (startTimeStamp - Number(oldTime) > 1800000) {
         showNotification({ message: "Creating Event" });
         if (Platform.OS === "android" && !(await hasAndroidPermission())) {
           return;
@@ -139,6 +136,7 @@ const eventCreator = async (coords: string, latitude, longitude) => {
                   address
                 );
                 const body = {
+                  event_type: EVENT_TYPES.AUTOMATIC,
                   latitude,
                   longitude,
                   location: address,

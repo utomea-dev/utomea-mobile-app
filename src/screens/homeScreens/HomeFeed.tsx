@@ -18,6 +18,7 @@ import EmptyFeed from "./EmptyFeed";
 import Events from "../../components/Event/Events";
 import {
   getEvents,
+  getMoreEvents,
   resetDate,
   resetHome,
   setHomeFilter,
@@ -25,6 +26,11 @@ import {
 import { formatDate } from "../../utils/helpers";
 import { useFocusEffect } from "@react-navigation/native";
 import BackgroundLocationService from "../../../Services/LocationBackgroundService";
+import {
+  resetEventDetails,
+  resetEventDetailsLoaders,
+} from "../../redux/slices/eventDetailSlice";
+import { MONTHS } from "../../constants/constants";
 
 const HomeFeed = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -38,7 +44,9 @@ const HomeFeed = ({ navigation }) => {
     unverifiedCount,
     skip,
     date,
+    limit,
     totalCount,
+    isNewUser,
   } = useSelector((state) => state.home);
 
   const handleTabPress = () => {
@@ -48,7 +56,19 @@ const HomeFeed = ({ navigation }) => {
   };
 
   const fetchMore = () => {
-    // dispatch(setHomeFilter({ key: "skip", value: 2 }));
+    if (
+      events &&
+      events?.flat().length <
+        (verified === false ? unverifiedCount : totalCount) &&
+      events?.flat().length >= limit &&
+      !eventsLoading &&
+      !eventsLoadingInner &&
+      !infiniteLoading
+    ) {
+      dispatch(getMoreEvents({ skip: events?.flat().length }));
+      return;
+    }
+    return;
   };
 
   useEffect(() => {
@@ -72,15 +92,19 @@ const HomeFeed = ({ navigation }) => {
 
   useEffect(() => {
     dispatch(getEvents({ refetch: true }));
+    dispatch(resetEventDetailsLoaders());
   }, [verified, date]);
 
   useEffect(() => {
     dispatch(getEvents());
+    dispatch(resetEventDetailsLoaders());
   }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       dispatch(resetDate());
+      dispatch(resetEventDetails());
+      dispatch(resetEventDetailsLoaders());
       dispatch(getEvents({ refetch: true }));
     }, [dispatch])
   );
@@ -139,34 +163,36 @@ const HomeFeed = ({ navigation }) => {
       );
     }
 
-    if (eventsError)
-      return <Text style={{ color: "#FFFFFF" }}>{eventsError}</Text>;
-
     return events && events.length ? (
       <FlatList
         data={events}
-        keyExtractor={(item) => item[0].id.toString()}
+        keyExtractor={(item) =>
+          `${item[0].id.toString()}-${Math.ceil(Math.random() * 1000000)}`
+        }
         renderItem={({ item, index }) => {
           const endDate = item[0].end_timestamp.split("T")[0];
           return (
             <Events
               cards={item}
               date={formatDate(endDate)}
+              loading={infiniteLoading}
               isLast={events?.length === index + 1}
             />
           );
         }}
         showsVerticalScrollIndicator={false}
-        onEndReachedThreshold={1}
+        onEndReachedThreshold={0.4}
         onEndReached={({ distanceFromEnd }) => {
           fetchMore();
-          console.log("on end reached ", distanceFromEnd);
         }}
       />
     ) : (
       <Text style={{ color: "#FFFFFF" }}>Sorry, no Events to show</Text>
     );
   };
+
+  if (eventsError)
+    return <Text style={{ color: "#FFFFFF" }}>{eventsError}</Text>;
 
   if (eventsLoading) {
     return (
@@ -186,12 +212,31 @@ const HomeFeed = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <CalendarHeader />
-      {totalCount === 0 ? (
+      <CalendarHeader isDisabled={totalCount === 0} />
+      {isNewUser ? (
         <EmptyFeed navigation={navigation} />
       ) : (
         <View>
           {renderTabs()}
+          {events &&
+            events.length > 0 &&
+            date &&
+            date !== events[0][0]?.end_timestamp.split("T")[0] && (
+              <View>
+                <Text style={{ color: "#FFFFFF" }}>{`${
+                  MONTHS[date?.split("-")[1]]?.long
+                } ${date?.split("-")[2]}, ${date?.split("-")[0]}`}</Text>
+                <Text
+                  style={{
+                    color: "#FC7A1B",
+                    marginVertical: 6,
+                    marginBottom: 20,
+                  }}
+                >
+                  No events found for the selected date
+                </Text>
+              </View>
+            )}
           {renderFlatlist()}
         </View>
       )}

@@ -1,11 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import withWrapper from "../../hooks/withWrapper";
 import ScreenView from "../../components/ScreenView/ScreenView";
 import { authRoutes } from "../routes/authRoutes";
+import SplashScreen from "react-native-splash-screen";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigation } from "@react-navigation/native";
 
 export const AuthNavigator = () => {
+  const navigation = useNavigation();
   const Stack = createStackNavigator();
+
+  const hideSplashScreenAndRedirect = async () => {
+    const user = await useAuth();
+    setTimeout(() => {
+      // if (user === "Unknown") {
+      //   navigation.navigate("Signin");
+      //   return;
+      // }
+      SplashScreen?.hide();
+    }, 500);
+  };
+  useEffect(() => {
+    hideSplashScreenAndRedirect();
+  }, []);
 
   const screens = authRoutes.map((route, key) => {
     const Component = route.noScreenWrapper

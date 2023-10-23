@@ -27,9 +27,16 @@ import Description from "./components/Description";
 import GeneralHeader from "../../components/Header/GeneralHeader";
 import DateFlyIn from "./components/DateFlyIn";
 import LocationFlyIn from "./components/LocationFlyIn";
-import { MONTHS } from "../../constants/constants";
-import { createEvent, resetHome } from "../../redux/slices/homeSlice";
+import { EVENT_TYPES, MONTHS } from "../../constants/constants";
+import {
+  createEvent,
+  resetHome,
+  setDateString,
+  setEndDate,
+  setStartDate,
+} from "../../redux/slices/homeSlice";
 import { StackActions, useFocusEffect } from "@react-navigation/native";
+import OverlayLoader from "../../components/Loaders/OverlayLoader";
 
 const categories = [
   {
@@ -78,7 +85,7 @@ const categories = [
   },
 ];
 
-const CreateEvent = ({ navigation }) => {
+const CreateEvent = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   const {
@@ -88,6 +95,8 @@ const CreateEvent = ({ navigation }) => {
     uploadImageLoading,
     uploadImageSuccess,
     uploadImageError,
+    startDateString,
+    endDateString,
   } = useSelector((state) => state.home);
   const { startDate, endDate } = useSelector((state) => state.home);
   const { year: startYear, month: startMonth, date: startDay } = startDate;
@@ -151,8 +160,9 @@ const CreateEvent = ({ navigation }) => {
   };
 
   const removePhotos = (pic) => {
-    const filtered = photos.filter((img) => img.uri !== pic.uri);
-    setPhotos(() => filtered);
+    // const filtered = photos.filter((img) => img.uri !== pic.uri);
+    // setPhotos(() => filtered);
+    return;
   };
 
   const handleDatePress = () => {
@@ -193,7 +203,7 @@ const CreateEvent = ({ navigation }) => {
   const handleCancel = () => {
     clearErrors();
     dispatch(resetHome());
-    navigation.navigate("HomeFeed");
+    navigation.navigate("Home");
   };
 
   const handleCreateEvent = () => {
@@ -222,14 +232,11 @@ const CreateEvent = ({ navigation }) => {
     if (errorFlag) return;
 
     const body = {
+      event_type: EVENT_TYPES.MANUAL,
       latitude,
       longitude,
-      begin_timestamp: `${startYear}-${startMonth}-${
-        Number(startDay) < 10 ? "0" + startDay : startDay
-      }`,
-      end_timestamp: `${endYear}-${endMonth}-${
-        Number(endDay) < 10 ? "0" + endDay : endDay
-      }`,
+      begin_timestamp: startDateString,
+      end_timestamp: endDateString,
       title: title.trim().replace(/\s+/g, " "),
       description,
       location,
@@ -237,9 +244,50 @@ const CreateEvent = ({ navigation }) => {
       category: selectedCategory,
       rating,
     };
-
     clearErrors();
     dispatch(createEvent({ body, photos }));
+  };
+
+  const dateOnClose = () => {
+    hideFlyIn(setDateFlyInVisible);
+    const startDateSplit = startDateString.split("-");
+    const endDateSplit = endDateString.split("-");
+    dispatch(
+      setStartDate({
+        key: "year",
+        value: startDateSplit[0],
+      })
+    );
+    dispatch(
+      setStartDate({
+        key: "month",
+        value: startDateSplit[1],
+      })
+    );
+    dispatch(
+      setStartDate({
+        key: "date",
+        value: startDateSplit[2],
+      })
+    );
+    dispatch(
+      setEndDate({
+        key: "year",
+        value: endDateSplit[0],
+      })
+    );
+    dispatch(
+      setEndDate({
+        key: "month",
+        value: endDateSplit[1],
+      })
+    );
+    dispatch(
+      setEndDate({
+        key: "date",
+        value: endDateSplit[2],
+      })
+    );
   };
 
   const renderDateFlyIn = () => {
@@ -250,7 +298,10 @@ const CreateEvent = ({ navigation }) => {
         visible={dateFlyInVisible}
         onRequestClose={() => hideFlyIn(setDateFlyInVisible)}
       >
-        <DateFlyIn onClose={() => hideFlyIn(setDateFlyInVisible)} />
+        <DateFlyIn
+          onClose={dateOnClose}
+          closeOnly={() => hideFlyIn(setDateFlyInVisible)}
+        />
       </Modal>
     );
   };
@@ -283,7 +334,7 @@ const CreateEvent = ({ navigation }) => {
     if (!createEventLoading && !uploadImageLoading && createEventSuccess) {
       clearErrors();
       dispatch(resetHome());
-      navigation.navigate("HomeFeed");
+      navigation.navigate("Home");
     }
   }, [createEventLoading, uploadImageLoading, createEventSuccess]);
 
@@ -293,14 +344,17 @@ const CreateEvent = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       enabled
     >
+      {(createEventLoading || uploadImageLoading) && <OverlayLoader />}
       {renderLocationFlyIn()}
       {renderDateFlyIn()}
       <GeneralHeader
         title="Create an Event"
         CTA={() => (
           <CustomButton
-            isLoading={createEventLoading}
-            disabled={disableSaveButton() || createEventLoading}
+            // isLoading={createEventLoading || uploadImageLoading}
+            disabled={
+              disableSaveButton() || createEventLoading || uploadImageLoading
+            }
             title="Save"
             onPress={handleCreateEvent}
             buttonStyle={{ paddingVertical: 6 }}
@@ -327,7 +381,9 @@ const CreateEvent = ({ navigation }) => {
         <Divider />
         <DateSection
           onPress={handleDatePress}
-          date={`${MONTHS[endMonth].long} ${endDay}, ${endYear}`}
+          date={`${MONTHS[endDateString?.split("-")[1]].long} ${
+            endDateString.split("-")[2]
+          }, ${endDateString.split("-")[0]}`}
         />
         <Divider />
         <LocationSection
@@ -358,8 +414,10 @@ const CreateEvent = ({ navigation }) => {
         <Divider />
         <View style={{ marginTop: 20, marginBottom: 75 }}>
           <CustomButton
-            isLoading={createEventLoading}
-            disabled={disableSaveButton() || createEventLoading}
+            // isLoading={createEventLoading || uploadImageLoading}
+            disabled={
+              disableSaveButton() || createEventLoading || uploadImageLoading
+            }
             onPress={handleCreateEvent}
             title="Save & Create Event"
             buttonStyle={{ paddingVertical: 8 }}

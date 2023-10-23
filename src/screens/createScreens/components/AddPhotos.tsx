@@ -12,6 +12,9 @@ import { launchImageLibrary } from "react-native-image-picker";
 
 import PlusLight from "../../../assets/icons/plus_light.svg";
 import Add from "../../../assets/icons/add.svg";
+import SelectedIcon from "../../../assets/icons/selected.svg";
+import Delete from "../../../assets/icons/delete.svg";
+
 import EventImage from "../../../components/Event/EventImage";
 
 const addPhotosButtons = [1, 2, 3, 4];
@@ -20,13 +23,17 @@ const AddPhotos = ({
   photos = [],
   addPhotos = (e) => {},
   removePhotos = (e) => {},
+  selectedPhotos = [],
   validationError = "",
+  mode = "",
+  ...rest
 }) => {
   const screenWidth = Dimensions.get("window").width;
   const imageWidth = (screenWidth - 56) / 4;
-  const photosToRender = photos.slice(0, 8);
+  const photosToRender = mode === "delete" ? photos : photos.slice(0, 8);
 
   const openImagePicker = async () => {
+    if (mode === "delete") return;
     try {
       const options = {
         mediaType: "photo",
@@ -75,12 +82,20 @@ const AddPhotos = ({
         key={img.fileName}
         style={[styles.photos, { width: imageWidth }]}
       >
-        {i === 7 && photos.length > 8 && (
+        {i === 7 && photos.length > 8 && mode !== "delete" && (
           <View style={styles.overlay}>
             <Text style={styles.overlayText}>+{photos.length - 8}</Text>
           </View>
         )}
-        <EventImage imageUrl={img.uri} imageStyles={{ borderRadius: 8 }} />
+        {mode === "delete" && selectedPhotos.includes(img.id) && (
+          <View style={styles.selected}>
+            <SelectedIcon style={styles.selectedIcon} />
+          </View>
+        )}
+        <EventImage
+          imageUrl={img.uri || img.url}
+          imageStyles={{ borderRadius: 8 }}
+        />
       </TouchableOpacity>
     ));
   };
@@ -88,10 +103,10 @@ const AddPhotos = ({
   return (
     <View style={{ marginVertical: 20 }}>
       <View style={styles.sectionTitle}>
-        <Label label={"Photos"} />
+        <Label label={mode === "delete" ? "All Photos" : "Photos"} />
         {photos.length > 0 && (
           <CustomButton
-            onPress={openImagePicker}
+            onPress={mode === "delete" ? rest.selectAll : openImagePicker}
             title={
               <View
                 style={{
@@ -101,8 +116,14 @@ const AddPhotos = ({
                   gap: 8,
                 }}
               >
-                <Text style={{ color: "#FFFFFF" }}>Add more photos</Text>
-                <Add />
+                <Text style={{ color: "#FFFFFF" }}>
+                  {mode === "delete"
+                    ? selectedPhotos.length === photos.length
+                      ? "Unselect All"
+                      : "Select All"
+                    : "Add more photos"}
+                </Text>
+                {mode !== "delete" && <Add />}
               </View>
             }
             buttonStyle={{ paddingVertical: 6, backgroundColor: "#222222" }}
@@ -160,6 +181,25 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: "700",
     color: "#FFFFFF",
+  },
+  selected: {
+    zIndex: 99,
+    borderRadius: 8,
+    borderWidth: 2,
+    borderColor: "#58DAC3",
+    backgroundColor: "rgba(14, 14, 14, 0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    width: "100%",
+    aspectRatio: 1,
+  },
+  selectedIcon: {
+    zIndex: 99,
+    position: "absolute",
+    top: 0,
+    right: 0,
+    margin: 4,
   },
   photosContainer: {
     paddingTop: 6,

@@ -42,12 +42,19 @@ const Signin = ({ navigation }) => {
     setValidationError("");
   };
 
+  const clearErrors = () => {
+    setEmailError("");
+    setPasswordError("");
+    setValidationError("");
+  };
+
   const isEmailValid = (email) => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     return emailRegex.test(email);
   };
 
   const handleSignin = async () => {
+    clearErrors();
     let errorFlag = false;
 
     if (!email || !isEmailValid(email)) {
@@ -61,7 +68,7 @@ const Signin = ({ navigation }) => {
     }
 
     if (!errorFlag) {
-      setValidationError("");
+      clearErrors();
       dispatch(signinUser({ email, password }));
     }
   };
@@ -85,7 +92,9 @@ const Signin = ({ navigation }) => {
       const user = await useAuth();
       if (user) {
         if (user.privacy_policy_accepted) {
-          navigation.dispatch(StackActions.replace("MainTabs"));
+          navigation.dispatch(
+            StackActions.replace("MainTabs", { params: "comingFromSignin" })
+          );
         } else {
           navigation.dispatch(StackActions.replace("UserDetails"));
         }
@@ -132,7 +141,9 @@ const Signin = ({ navigation }) => {
   useEffect(() => {
     if (signinSuccess) {
       clear();
-      navigation.dispatch(StackActions.replace("MainTabs"));
+      navigation.dispatch(
+        StackActions.replace("MainTabs", { params: "comingFromSignin" })
+      );
     }
   }, [signinSuccess]);
 

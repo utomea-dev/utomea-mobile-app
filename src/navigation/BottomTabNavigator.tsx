@@ -1,6 +1,6 @@
 import * as React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, Keyboard } from "react-native";
 import { HomeNavigator } from "./navigators/HomeNavigator";
 import { SearchNavigator } from "./navigators/SearchNavigator";
 import { CreateNavigator } from "./navigators/CreateNavigator";
@@ -55,6 +55,29 @@ const TabItem = ({ focused, iconUri, label }) => {
 };
 
 const Tabs = () => {
+  const [isKeyboardOpen, setIsKeyboardOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setIsKeyboardOpen(true);
+      }
+    );
+
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setIsKeyboardOpen(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => {
@@ -89,7 +112,7 @@ const Tabs = () => {
           key={index}
           name={tab.name}
           component={tab.component}
-          options={{ title: tab.name.toUpperCase() }}
+          options={{ title: tab.name.toUpperCase(), unmountOnBlur: true }}
         />
       ))}
     </Tab.Navigator>

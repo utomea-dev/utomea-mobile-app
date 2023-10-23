@@ -3,12 +3,18 @@ import { StyleSheet, Text, View, Modal } from "react-native";
 import Close from "../../../assets/icons/close.svg";
 import CustomButton from "../../../components/Button/Button";
 import DatePicker from "../../../components/Header/DatePicker";
-import { useSelector } from "react-redux";
-import { setEndDate, setStartDate } from "../../../redux/slices/homeSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setDateString,
+  setEndDate,
+  setStartDate,
+} from "../../../redux/slices/homeSlice";
 import Label from "../../../components/Label/Label";
 import { isDateRangeValid } from "../../../utils/helpers";
 
-const DateFlyIn = ({ onClose }) => {
+const DateFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
+  const dispatch = useDispatch();
+
   const {
     year: startYear,
     month: startMonth,
@@ -37,8 +43,20 @@ const DateFlyIn = ({ onClose }) => {
       return;
     }
 
+    dispatch(
+      setDateString({
+        key: "startDateString",
+        value: `${startYear}-${startMonth}-${startDay}`,
+      })
+    );
+    dispatch(
+      setDateString({
+        key: "endDateString",
+        value: `${endYear}-${endMonth}-${endDay}`,
+      })
+    );
     setDateRangeError("");
-    onClose();
+    closeOnly();
   };
 
   return (
