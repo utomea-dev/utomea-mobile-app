@@ -374,6 +374,14 @@ const EditEvent = ({ navigation }) => {
     return (editEventLoading || uploadImageLoading) && <OverlayLoader />;
   };
 
+  const renderDisableOverlay = () => {
+    return (
+      (editEventLoading || uploadImageLoading) && (
+        <View style={styles.disableOverlay} />
+      )
+    );
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       clearErrors();
@@ -415,6 +423,7 @@ const EditEvent = ({ navigation }) => {
         style={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
+        {renderDisableOverlay()}
         <AddPhotos
           photos={photos}
           addPhotos={handleAddPhotos}
@@ -491,6 +500,12 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     // flexGrow: 1,
+  },
+  disableOverlay: {
+    zIndex: 999,
+    position: "absolute",
+    height: "100%",
+    width: "100%",
   },
   modalContainer: {
     flex: 1,

@@ -324,6 +324,14 @@ const CreateEvent = ({ navigation, route }) => {
     );
   };
 
+  const renderDisableOverlay = () => {
+    return (
+      (createEventLoading || uploadImageLoading) && (
+        <View style={styles.disableOverlay} />
+      )
+    );
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       clearErrors();
@@ -366,6 +374,7 @@ const CreateEvent = ({ navigation, route }) => {
         style={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
+        {renderDisableOverlay()}
         <AddPhotos
           photos={photos}
           addPhotos={handleAddPhotos}
@@ -381,7 +390,7 @@ const CreateEvent = ({ navigation, route }) => {
         <Divider />
         <DateSection
           onPress={handleDatePress}
-          date={`${MONTHS[endDateString?.split("-")[1]].long} ${
+          date={`${MONTHS[endDateString?.split("-")[1]]?.long} ${
             endDateString.split("-")[2]
           }, ${endDateString.split("-")[0]}`}
         />
@@ -443,6 +452,12 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
+  },
+  disableOverlay: {
+    zIndex: 999,
+    position: "absolute",
+    height: "100%",
+    width: "100%",
   },
   photosButton: {
     borderWidth: 1,
