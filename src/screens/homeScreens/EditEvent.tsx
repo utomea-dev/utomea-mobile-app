@@ -499,7 +499,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   scrollContainer: {
-    // flexGrow: 1,
+    flexGrow: 1,
   },
   disableOverlay: {
     zIndex: 999,

@@ -30,3 +30,7 @@ export const deleteEventUrl = (id: number) => `${baseUrl}/events/${id}`;
 export const deletePhotosUrl = () => `${baseUrl}/photos`;
 export const uploadEventPhotosUrl = (id: number) =>
   `${baseUrl}/events/upload/${id}`;
+
+// ======================== Search urls ============================
+export const searchUrl = () => `${baseUrl}/events/search`;
+export const autoSuggestionUrl = () => `${baseUrl}/search/autosuggest`;

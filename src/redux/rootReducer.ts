@@ -5,6 +5,7 @@ import themeSlice from "./slices/themeSlice";
 import authSlice from "./slices/authSlice";
 import homeSlice from "./slices/homeSlice";
 import eventDetailSlice from "./slices/eventDetailSlice";
+import searchSlice from "./slices/searchSlice";
 
 const createReducer = () =>
   combineReducers({
@@ -13,6 +14,7 @@ const createReducer = () =>
     theme: themeSlice,
     auth: authSlice,
     home: homeSlice,
+    search: searchSlice,
   });
 
 export default createReducer;

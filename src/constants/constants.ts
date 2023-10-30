@@ -32,3 +32,58 @@ export const monthData = [
   { label: "Nov", value: "11" },
   { label: "Dec", value: "12" },
 ];
+
+export const CATEGORIES = [
+  {
+    id: 1,
+    name: "Work",
+  },
+  {
+    id: 2,
+    name: "Home",
+  },
+  {
+    id: 3,
+    name: "Entertainment",
+  },
+  {
+    id: 4,
+    name: "Travel",
+  },
+  {
+    id: 5,
+    name: "Dining out",
+  },
+  {
+    id: 6,
+    name: "Family",
+  },
+  {
+    id: 7,
+    name: "Friends",
+  },
+  {
+    id: 8,
+    name: "Pet",
+  },
+  {
+    id: 9,
+    name: "School",
+  },
+  {
+    id: 10,
+    name: "Exercise",
+  },
+  {
+    id: 11,
+    name: "Sport",
+  },
+];
+
+export const RATINGS = [
+  { id: 5, name: "5 Stars" },
+  { id: 4, name: "4 Stars" },
+  { id: 3, name: "3 Stars" },
+  { id: 2, name: "2 Stars" },
+  { id: 1, name: "1 Star" },
+];
