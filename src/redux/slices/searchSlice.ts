@@ -5,9 +5,15 @@ import { searchUrl, autoSuggestionUrl } from "../../api/urls";
 import { handleError } from "../errorHandler";
 import { setDateString, uploadImage } from "./homeSlice";
 
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, "0");
+const day = String(today.getDate()).padStart(2, "0");
+
 const initialState = {
   data: null,
   suggestions: null,
+  // dateRange: `${year}-${month}-${day}/${year}-${month}-${day}`,
   dateRange: "",
   searchString: "",
   selectedCtgs: [],

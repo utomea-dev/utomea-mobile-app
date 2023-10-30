@@ -13,19 +13,11 @@ import Close from "../../../assets/icons/close.svg";
 
 import { isDateRangeValid } from "../../../utils/helpers";
 
-const DateRangeTab = () => {
+const DateRangeTab = ({ startDate, endDate }) => {
   const dispatch = useDispatch();
 
-  const {
-    year: startYear,
-    month: startMonth,
-    date: startDay,
-  } = useSelector((state) => state.home.startDate);
-  const {
-    year: endYear,
-    month: endMonth,
-    date: endDay,
-  } = useSelector((state) => state.home.endDate);
+  const { year: startYear, month: startMonth, date: startDay } = startDate;
+  const { year: endYear, month: endMonth, date: endDay } = endDate;
 
   const [dateRangeError, setDateRangeError] = useState("");
 

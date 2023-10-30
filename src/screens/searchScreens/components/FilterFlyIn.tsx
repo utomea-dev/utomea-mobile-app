@@ -7,12 +7,13 @@ import FilterTabs from "./FilterTabs";
 const DateRangeTab = lazy(() => import("./DateRangeTab"));
 const CategoryTab = lazy(() => import("./CategoryTab"));
 const RatingTab = lazy(() => import("./RatingTab"));
-import { CATEGORIES, RATINGS } from "../../../constants/constants";
+import { CATEGORIES, MONTHS, RATINGS } from "../../../constants/constants";
 import {
   resetSearch,
   setCtgs,
   setRtgs,
   setFilterTags,
+  setDateRange,
 } from "../../../redux/slices/searchSlice";
 const tabs = ["Date Range", "Category", "Rating"];
 
@@ -22,11 +23,12 @@ const FilterFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
   const { selectedCtgs, selectedRtgs, dateRange } = useSelector(
     (state) => state.search
   );
+  const { startDate, endDate } = useSelector((state) => state.home);
+  const { year: sy, month: sm, date: sd } = startDate;
+  const { year: ey, month: em, date: ed } = endDate;
 
   const [isReady, setIsReady] = useState(false);
   const [activeTab, setActiveTab] = useState("Date Range");
-  const [startDate, setStartDate] = useState();
-  const [endDate, setDateRange] = useState();
   const [selectedCategories, setSelectedCategories] = useState(selectedCtgs);
   const [selectedRatings, setSelectedRatings] = useState(selectedRtgs);
 
@@ -44,16 +46,16 @@ const FilterFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
     const dateTag = {
       type: "date",
       id: null,
-      name: `${startDate} - ${endDate}`,
+      name: `${MONTHS[sm]?.short} ${sd}, ${sy} - ${MONTHS[em]?.short} ${ed}, ${ey}`,
     };
 
     let allTags = [];
-    if (startDate) {
+    if (dateRange) {
       allTags.push(dateTag);
     }
     allTags = [...allTags, ...ctgTags, ...rtgTags];
     dispatch(setFilterTags(allTags));
-
+    dispatch(setDateRange(`${sy}-${sm}-${sd}/${ey}-${em}-${ed}`));
     dispatch(setCtgs(selectedCategories));
     dispatch(setRtgs(selectedRatings));
     onClose();
@@ -106,7 +108,9 @@ const FilterFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
               {/* Tab Content(right panel) */}
               <View style={styles.content}>
                 <Suspense fallback={<ActivityIndicator />}>
-                  {activeTab === "Date Range" && <DateRangeTab />}
+                  {activeTab === "Date Range" && (
+                    <DateRangeTab startDate={startDate} endDate={endDate} />
+                  )}
                   {activeTab === "Category" && (
                     <CategoryTab
                       categories={CATEGORIES}
