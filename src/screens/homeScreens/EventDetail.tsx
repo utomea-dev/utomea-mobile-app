@@ -245,7 +245,7 @@ const EventDetail = ({ navigation, route }) => {
       {renderModal()}
 
       {/* Header */}
-      <View>
+      <View style={{ zIndex: 999 }}>
         <GeneralHeader
           title="Event Detail"
           CTA={() => (
