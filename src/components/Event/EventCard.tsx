@@ -7,19 +7,28 @@ import Tag from "../../assets/icons/tag.svg";
 import { formatDate } from "../../utils/helpers";
 import { useNavigation } from "@react-navigation/native";
 
-const EventCard = ({ data }) => {
+const EventCard = ({ data, filtered = false }) => {
   const navigation = useNavigation();
 
   const gotoEventDetail = () => {
     const { id } = data;
+    if (filtered) {
+      navigation.navigate("Home", { screen: "EventDetail", params: { id } });
+      return;
+    }
     navigation.navigate("EventDetail", { id });
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={gotoEventDetail}>
+    <TouchableOpacity style={[styles.container]} onPress={gotoEventDetail}>
       {/* Event image */}
       <View style={styles.imageContainer}>
-        <EventImage isVerified={data.verified} imageUrl={data.hero_image} />
+        <EventImage
+          isVerified={data.verified}
+          imageUrl={
+            data.hero_image || (data.photos.length > 0 && data.photos[0].url)
+          }
+        />
       </View>
 
       {/* Event description */}

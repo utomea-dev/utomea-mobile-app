@@ -19,6 +19,10 @@ const DatePicker = ({
   month = "05",
   date = "05",
   setDate = () => {},
+  blockStyle = {},
+  containerStyle = {},
+  textStyle = {},
+  snap = 120,
 }) => {
   const dispatch = useDispatch();
 
@@ -56,27 +60,27 @@ const DatePicker = ({
   }, [year, month]);
 
   const handleYearChange = () => {
-    const index = Math.floor(scrollY / 120);
+    const index = Math.floor(scrollY / snap);
     console.log("trigger - year???", scrollY, index);
     dispatch(setDate({ key: "year", value: yearData[index]?.value }));
   };
 
   const handleMonthChange = () => {
-    const index = Math.floor(scrollY / 120);
+    const index = Math.floor(scrollY / snap);
     console.log("trigger - month???", scrollY, index);
     dispatch(setDate({ key: "month", value: monthData[index]?.value }));
   };
 
   const handleDateChange = () => {
-    const index = Math.floor(scrollY / 120);
+    const index = Math.floor(scrollY / snap);
     console.log("trigger - date???", scrollY, index);
     dispatch(setDate({ key: "date", value: dateData[index]?.value }));
   };
 
   const getItemLayout = (data, index) => {
     return {
-      length: styles.blockContent.height,
-      offset: styles.blockContent.height * index,
+      length: snap,
+      offset: snap * index,
       index,
     };
   };
@@ -92,15 +96,15 @@ const DatePicker = ({
           getItemLayout={getItemLayout}
           showsVerticalScrollIndicator={false}
           snapToAlignment="start"
-          snapToInterval={120}
+          snapToInterval={snap}
           onMomentumScrollEnd={handleYearChange}
           onScroll={({ nativeEvent }) => {
             scrollY = nativeEvent.contentOffset.y;
           }}
           renderItem={({ item }) => {
             return (
-              <TouchableOpacity style={styles.blockContent}>
-                <Text style={styles.text}>{item.label}</Text>
+              <TouchableOpacity style={[styles.blockContent, blockStyle]}>
+                <Text style={[styles.text, textStyle]}>{item.label}</Text>
               </TouchableOpacity>
             );
           }}
@@ -129,7 +133,7 @@ const DatePicker = ({
           initialScrollIndex={1}
           getItemLayout={getItemLayout}
           snapToAlignment="start"
-          snapToInterval={120}
+          snapToInterval={snap}
           showsVerticalScrollIndicator={false}
           onMomentumScrollEnd={handleMonthChange}
           onScroll={({ nativeEvent }) => {
@@ -137,8 +141,8 @@ const DatePicker = ({
           }}
           renderItem={({ item }) => {
             return (
-              <TouchableOpacity style={styles.blockContent}>
-                <Text style={styles.text}>{item.label}</Text>
+              <TouchableOpacity style={[styles.blockContent, blockStyle]}>
+                <Text style={[styles.text, textStyle]}>{item.label}</Text>
               </TouchableOpacity>
             );
           }}
@@ -158,7 +162,7 @@ const DatePicker = ({
           initialScrollIndex={1}
           getItemLayout={getItemLayout}
           snapToAlignment="start"
-          snapToInterval={120}
+          snapToInterval={snap}
           showsVerticalScrollIndicator={false}
           onMomentumScrollEnd={handleDateChange}
           onScroll={({ nativeEvent }) => {
@@ -166,8 +170,8 @@ const DatePicker = ({
           }}
           renderItem={({ item }) => {
             return (
-              <TouchableOpacity style={styles.blockContent}>
-                <Text style={styles.text}>{item.label}</Text>
+              <TouchableOpacity style={[styles.blockContent, blockStyle]}>
+                <Text style={[styles.text, textStyle]}>{item.label}</Text>
               </TouchableOpacity>
             );
           }}
@@ -177,7 +181,7 @@ const DatePicker = ({
   };
 
   return (
-    <View style={styles.datePicker}>
+    <View style={[styles.datePicker, containerStyle]}>
       {RenderYears()}
       {RenderMonths()}
       {RenderDates()}
