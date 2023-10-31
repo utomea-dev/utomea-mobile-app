@@ -54,6 +54,7 @@ const Search = ({ navigation }) => {
   } = useSelector((state) => state.search);
 
   const [isFlyInVisible, setIsFlyInVisible] = useState(false);
+  const [showFilterIcon, setShowFilterIcon] = useState(true);
   const [search, setSearch] = useState("");
 
   let debounceTimer;
@@ -175,7 +176,9 @@ const Search = ({ navigation }) => {
           </TouchableOpacity>
         )}
         <CustomInput
-          customPlaceholder="Search for title, location or category"
+          onFocus={() => setShowFilterIcon(false)}
+          onBlur={() => setShowFilterIcon(true)}
+          customPlaceholder="Search for title or location"
           placeholderTextColor="grey"
           containerStyle={{ flex: 1 }}
           placeholderStyle={{ left: 42, width: "80%" }}
@@ -201,7 +204,7 @@ const Search = ({ navigation }) => {
             />
           </View>
         )}
-        {!search && (
+        {showFilterIcon && (
           <TouchableOpacity onPress={showFlyIn} style={styles.filterIcon}>
             <FilterIcon />
           </TouchableOpacity>
@@ -209,7 +212,7 @@ const Search = ({ navigation }) => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {!!(filterTags.length > 0) && searchString.length === 0 && (
+        {!!(filterTags.length > 0) && (
           <View>
             <FilterChips onRemove={onRemove} tags={filterTags} />
           </View>
