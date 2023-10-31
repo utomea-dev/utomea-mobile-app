@@ -209,7 +209,7 @@ const Search = ({ navigation }) => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {!!(filterTags.length > 0) && (
+        {!!(filterTags.length > 0) && searchString.length === 0 && (
           <View>
             <FilterChips onRemove={onRemove} tags={filterTags} />
           </View>
