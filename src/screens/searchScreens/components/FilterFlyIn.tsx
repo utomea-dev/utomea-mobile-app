@@ -50,9 +50,7 @@ const FilterFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
     };
 
     let allTags = [];
-    if (dateRange) {
-      allTags.push(dateTag);
-    }
+    allTags.push(dateTag);
     allTags = [...allTags, ...ctgTags, ...rtgTags];
     dispatch(setFilterTags(allTags));
     dispatch(setDateRange(`${sy}-${sm}-${sd}/${ey}-${em}-${ed}`));

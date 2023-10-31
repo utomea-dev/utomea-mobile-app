@@ -9,7 +9,7 @@ import Check from "../../../assets/icons/check.svg";
 
 import { MAPS_API_KEY } from "@env";
 
-const GOOGLE_PLACES_API_KEY = "AIzaSyB8iCzJlmSC8Ku6pStVH1l-qVjZi65H96k";
+const GOOGLE_PLACES_API_KEY = MAPS_API_KEY;
 
 const LocationFlyIn = ({ onClose, setLocation, setLatitude, setLongitude }) => {
   return (
@@ -35,7 +35,7 @@ const LocationFlyIn = ({ onClose, setLocation, setLatitude, setLongitude }) => {
           listUnderlayColor="#07AA8C"
           enablePoweredByContainer={false}
           query={{
-            key: "AIzaSyB8iCzJlmSC8Ku6pStVH1l-qVjZi65H96k",
+            key: GOOGLE_PLACES_API_KEY,
             language: "en",
           }}
           onPress={(data, details) => {

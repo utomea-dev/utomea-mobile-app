@@ -27,7 +27,7 @@ const FilteredEvents = () => {
           }}
         >
           <Text>
-            <ActivityIndicator color="#58DAC3" size="large" />;
+            <ActivityIndicator color="#58DAC3" size="large" />
           </Text>
         </View>
       );
@@ -39,7 +39,7 @@ const FilteredEvents = () => {
 
     return (
       events &&
-      events.length && (
+      !!events.length && (
         <View style={styles.eventsContainer}>
           {events.map((item, i) => (
             <View key={i + 1} style={{ marginBottom: 16 }}>

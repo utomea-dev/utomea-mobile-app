@@ -1,50 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GeneralHeader from "../../components/Header/GeneralHeader";
-import PlusDark from "../../assets/icons/plus_dark.svg";
+import Clock from "../../assets/icons/Clock.png";
+import Location from "../../assets/icons/Location.png";
+import Checkmark from "../../assets/icons/Checkmark.png";
+import Shield from "../../assets/icons/Shield.png";
+import Notification from "../../assets/icons/Notification.png";
+import { Linking, Platform } from "react-native";
+
 import { useNavigation } from "@react-navigation/native";
+import Options from "./Components/Options";
+import RenderToggleOption from "./Components/ToggleOption";
 
 function AppPreference({ navigation }) {
-  const handleLogout = () => {
-    AsyncStorage.clear();
-    navigation.navigate("Signin");
-  };
-  const renderOption = (title, onPress) => {
-    return (
-      <TouchableOpacity style={styles.option} onPress={onPress}>
-        <Text style={styles.optionText}>{title}</Text>
-        <View style={styles.arrowContainer}>
-          <Text style={styles.arrow}>➜</Text>
-        </View>
-      </TouchableOpacity>
-    );
+  const [appNotificationsEnabled, setAppNotificationsEnabled] = useState(false);
+
+  const handleAppNotificationsToggle = () => {
+    if (Platform.OS === "ios") {
+      Linking.openSettings(); // Open the app's settings
+    } else {
+    }
   };
   return (
     <View style={styles.container}>
       <GeneralHeader title={`App Preferences `} />
-      {/* Your profile content here */}
-      {renderOption("Set Auto-entry Time", () => {
-        // Handle navigation to Option 1 page here
-        navigation.navigate("Profile/appPreference");
-      })}
-      {renderOption("Excluded Locations", () => {
-        // Handle navigation to Option 1 page here
-        navigation.navigate("Option1");
-      })}
-      {renderOption("Privacy Policy", () => {
-        // Handle navigation to Option 1 page here
-        navigation.navigate("Option1");
-      })}
-      {renderOption("Auto-Verification", () => {
-        // Handle navigation to Option 1 page here
-        navigation.navigate("Option1");
-      })}
-      {renderOption("App Notifications", () => {
-        // Handle navigation to Option 1 page here
-        navigation.navigate("Option1");
-      })}
+      <Options
+        title={"Set Auto-entry Time"}
+        onPress={() => {
+          navigation.navigate("Profile/entryTime");
+        }}
+        iconSource={Clock}
+      />
+      <Options
+        title={"Excluded Locations"}
+        onPress={() => {
+          navigation.navigate("Profile/appPreference");
+        }}
+        iconSource={Location}
+      />
+      <Options
+        title={"Privacy Policy"}
+        onPress={() => {
+          navigation.navigate("Profile/privacyPolicy");
+        }}
+        iconSource={Shield}
+      />
+      <Options
+        title={"Auto-Verification"}
+        onPress={() => {
+          navigation.navigate("Profile/autoVerification");
+        }}
+        iconSource={Checkmark}
+      />
+      <RenderToggleOption
+        title="App Notifications"
+        onToggle={handleAppNotificationsToggle}
+      />
     </View>
   );
 }
