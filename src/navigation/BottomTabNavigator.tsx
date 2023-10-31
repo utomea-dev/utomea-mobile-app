@@ -118,6 +118,9 @@ const Tabs = () => {
           name={tab.name}
           component={tab.component}
           options={{ title: tab.name.toUpperCase(), unmountOnBlur: true }}
+          listeners={({ navigation }) => ({
+            blur: () => navigation.setParams({ screen: undefined }),
+          })}
         />
       ))}
     </Tab.Navigator>
