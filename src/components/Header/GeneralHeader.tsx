@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 
 import LeftArrow from "../../assets/icons/left_arrow.svg";
 
 const GeneralHeader = ({ title = "", CTA = () => {} }) => {
   const navigation = useNavigation();
+  const route = useRoute();
   const onBack = () => {
+    if (route.params?.previousScreen === "search") {
+      navigation.navigate("Search");
+      return;
+    }
     navigation.goBack();
   };
 

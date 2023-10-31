@@ -157,20 +157,23 @@ const Search = ({ navigation }) => {
       <GeneralHeader title="Search" />
 
       <View style={styles.searchContainer}>
-        <TouchableOpacity style={styles.searchIcon}>
-          {!searchString ? (
+        {!searchString ? (
+          <TouchableOpacity style={styles.searchIcon}>
             <SearchIcon />
-          ) : (
-            <CloseIcon
-              onPress={() => {
-                setSearch("");
-                dispatch(clearSuggestions());
-                dispatch(setSearchString(""));
-                dispatch(clearData());
-              }}
-            />
-          )}
-        </TouchableOpacity>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              setSearch("");
+              dispatch(clearSuggestions());
+              dispatch(setSearchString(""));
+              dispatch(clearData());
+            }}
+            style={styles.searchIcon}
+          >
+            <CloseIcon />
+          </TouchableOpacity>
+        )}
         <CustomInput
           customPlaceholder="Search for title, location or category"
           placeholderTextColor="grey"
