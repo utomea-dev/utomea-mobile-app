@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Keyboard,
 } from "react-native";
 import React, { useState } from "react";
 import CustomButton from "../../../components/Button/Button";
@@ -20,21 +21,21 @@ const Suggestions = ({ suggestions = [], loading = false }) => {
   const dispatch = useDispatch();
 
   const handlePress = (str, i) => {
-    console.log("clicked----", str, i);
+    Keyboard.dismiss();
     setSelected(i);
     dispatch(setSearchString(str));
 
     setTimeout(() => {
       dispatch(clearSuggestions());
       setSelected(null);
-    }, 500);
+    }, 200);
   };
 
   if (loading) {
     return (
       <View
         style={{
-          paddingVertical: 80,
+          paddingVertical: 30,
           backgroundColor: "rgba(14, 14, 14, 0.95)",
         }}
       >
@@ -43,11 +44,14 @@ const Suggestions = ({ suggestions = [], loading = false }) => {
     );
   }
   return (
-    <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+    >
       {suggestions && suggestions.length > 0 ? (
         suggestions.map((sugg, i) => (
-          <TouchableOpacity
-            onPress={() => handlePress(sugg, i)}
+          <View
             key={i}
             style={[
               styles.button,
@@ -58,19 +62,32 @@ const Suggestions = ({ suggestions = [], loading = false }) => {
               },
             ]}
           >
-            <Text
-              numberOfLines={1}
-              ellipsizeMode="tail"
-              style={{ color: "#FFFFFF" }}
+            <TouchableOpacity
+              style={{
+                zIndex: 999,
+                paddingVertical: 12,
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+              onPress={() => handlePress(sugg, i)}
             >
-              {sugg}
-            </Text>
-            {selected === i && <CheckIcon />}
-          </TouchableOpacity>
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={{ color: "#FFFFFF" }}
+              >
+                {sugg}
+              </Text>
+              {selected === i && <CheckIcon />}
+            </TouchableOpacity>
+          </View>
         ))
       ) : (
         <Text
           style={{
+            zIndex: 999,
             color: "#FFFFFF",
             backgroundColor: "rgba(14, 14, 14, 0.95)",
             marginVertical: 12,
@@ -88,14 +105,14 @@ export default Suggestions;
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 99,
+    zIndex: 998,
     width: "100%",
     maxHeight: 300,
   },
   button: {
+    zIndex: 999,
     flexDirection: "row",
     borderRadius: 8,
-    paddingVertical: 12,
     paddingHorizontal: 14,
     justifyContent: "space-between",
     alignItems: "center",

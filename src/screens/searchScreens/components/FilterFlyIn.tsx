@@ -1,6 +1,13 @@
 import React, { useState, lazy, Suspense, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { StyleSheet, Text, View, Modal, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Modal,
+  ActivityIndicator,
+  TouchableOpacity,
+} from "react-native";
 import Close from "../../../assets/icons/close.svg";
 import CustomButton from "../../../components/Button/Button";
 import FilterTabs from "./FilterTabs";
@@ -15,6 +22,7 @@ import {
   setFilterTags,
   setDateRange,
 } from "../../../redux/slices/searchSlice";
+import { resetDate } from "../../../redux/slices/homeSlice";
 const tabs = ["Date Range", "Category", "Rating"];
 
 const FilterFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
@@ -61,6 +69,7 @@ const FilterFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
 
   const handleClearFilters = () => {
     dispatch(resetSearch());
+    dispatch(resetDate());
     onClose();
   };
 
@@ -69,7 +78,7 @@ const FilterFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
       if (!isReady) {
         setIsReady(true);
       }
-    }, 0);
+    }, 10);
   }, []);
 
   return (
@@ -78,7 +87,12 @@ const FilterFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
       <View style={styles.headerContainer}>
         <View style={styles.flex}>
           <Text style={styles.title}>Filter & Search</Text>
-          <Close onPress={onClose} />
+          <TouchableOpacity
+            style={{ padding: 5, paddingLeft: 0 }}
+            onPress={onClose}
+          >
+            <Close />
+          </TouchableOpacity>
         </View>
       </View>
       {!isReady && (

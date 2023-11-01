@@ -54,6 +54,7 @@ const Search = ({ navigation }) => {
   } = useSelector((state) => state.search);
 
   const [isFlyInVisible, setIsFlyInVisible] = useState(false);
+  const [showFilterIcon, setShowFilterIcon] = useState(true);
   const [search, setSearch] = useState("");
 
   let debounceTimer;
@@ -157,22 +158,27 @@ const Search = ({ navigation }) => {
       <GeneralHeader title="Search" />
 
       <View style={styles.searchContainer}>
-        <TouchableOpacity style={styles.searchIcon}>
-          {!searchString ? (
+        {!searchString ? (
+          <TouchableOpacity style={styles.searchIcon}>
             <SearchIcon />
-          ) : (
-            <CloseIcon
-              onPress={() => {
-                setSearch("");
-                dispatch(clearSuggestions());
-                dispatch(setSearchString(""));
-                dispatch(clearData());
-              }}
-            />
-          )}
-        </TouchableOpacity>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => {
+              setSearch("");
+              dispatch(clearSuggestions());
+              dispatch(setSearchString(""));
+              dispatch(clearData());
+            }}
+            style={styles.searchIcon}
+          >
+            <CloseIcon />
+          </TouchableOpacity>
+        )}
         <CustomInput
-          customPlaceholder="Search for title, location or category"
+          onFocus={() => setShowFilterIcon(false)}
+          onBlur={() => setShowFilterIcon(true)}
+          customPlaceholder="Search for title or location"
           placeholderTextColor="grey"
           containerStyle={{ flex: 1 }}
           placeholderStyle={{ left: 42, width: "80%" }}
@@ -189,7 +195,6 @@ const Search = ({ navigation }) => {
               position: "absolute",
               top: 46,
               width: "100%",
-              zIndex: 999,
             }}
           >
             <Suggestions
@@ -198,7 +203,7 @@ const Search = ({ navigation }) => {
             />
           </View>
         )}
-        {!search && (
+        {showFilterIcon && (
           <TouchableOpacity onPress={showFlyIn} style={styles.filterIcon}>
             <FilterIcon />
           </TouchableOpacity>
@@ -231,6 +236,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    zIndex: 999,
   },
   suggestionsContainer: {
     flex: 1,

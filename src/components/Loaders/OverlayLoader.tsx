@@ -29,6 +29,7 @@ export default OverlayLoader;
 
 const styles = StyleSheet.create({
   loaderContainer: {
+    zIndex: 999,
     // justifyContent: "center",
     // alignItems: "center",
     // position: "absolute",

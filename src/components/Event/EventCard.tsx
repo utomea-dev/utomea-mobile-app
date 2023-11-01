@@ -13,7 +13,10 @@ const EventCard = ({ data, filtered = false }) => {
   const gotoEventDetail = () => {
     const { id } = data;
     if (filtered) {
-      navigation.navigate("Home", { screen: "EventDetail", params: { id } });
+      navigation.navigate("Home", {
+        screen: "EventDetail",
+        params: { id, previousScreen: "search" },
+      });
       return;
     }
     navigation.navigate("EventDetail", { id });

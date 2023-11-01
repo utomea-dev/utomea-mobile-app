@@ -26,9 +26,11 @@ const EntryTime = ({ navigation }) => {
   const [active, setActive] = useState(30);
 
   const handleSave = async () => {
-    updateUserData.auto_entry_time = active;
-    console.log("Dispatching updateUser action with data: ", updateUserData);
-    dispatch(updateUser({ body: updateUserData }));
+    const entryTime = { ...updateUserData };
+    entryTime.auto_entry_time = active;
+    // updateUserData.auto_entry_time = active;
+    console.log("Dispatching updateUser action with data: ", entryTime, active);
+    dispatch(updateUser({ body: entryTime }));
   };
 
   const handlePress = (entry) => {

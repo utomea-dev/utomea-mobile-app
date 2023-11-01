@@ -2,10 +2,23 @@ import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Rightback from "../../../assets/icons/right-back.png";
 
-function Options({ title, onPress, iconSource }) {
+function Options({
+  title,
+  subtitle, // Supporting text
+  onPress,
+  iconSource,
+  imageSource,
+  titleStyle, // Custom style for the title
+  subtitleStyle, // Custom style for the subtitle
+  containerStyle, // Custom style for the whole option container
+  arrowStyle, // Custom style for the arrow
+}) {
   return (
-    <TouchableOpacity style={styles.option} onPress={onPress}>
-      {iconSource ? ( // Check if iconSource is provided
+    <TouchableOpacity
+      style={[styles.option, containerStyle]} // Apply custom container style
+      onPress={onPress}
+    >
+      {iconSource ? (
         <View style={styles.iconContainer}>
           <Image
             source={iconSource}
@@ -19,16 +32,18 @@ function Options({ title, onPress, iconSource }) {
           />
         </View>
       ) : null}
-      {/* Hide the iconContainer if iconSource is not provided */}
       <View style={styles.textContainer}>
-        <Text style={styles.optionText}>{title}</Text>
+        <Text style={[styles.optionText, titleStyle]}>{title}</Text>
+        {subtitle && (
+          <Text style={[styles.subtitleText, subtitleStyle]}>{subtitle}</Text>
+        )}
       </View>
-      <View style={styles.arrowContainer}>
+      <View style={[styles.arrowContainer, arrowStyle]}>
         <Image
           source={Rightback}
           style={{
             width: 30,
-            height: 20,
+            height: 26,
           }}
         />
       </View>
@@ -47,16 +62,22 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   iconContainer: {
-    marginRight: 12, // Adjust the spacing between icon and title
+    marginRight: 12,
   },
   textContainer: {
-    flex: 1, // Take up available space, pushing the arrow to the right
+    flex: 1,
   },
   optionText: {
     fontSize: 16,
     color: "#FFFFFF",
     lineHeight: 20,
     fontWeight: "500",
+  },
+  subtitleText: {
+    fontSize: 10.5,
+    color: "#F2F2F2", // Customize subtitle text color
+    lineHeight: 18,
+    fontWeight: "400",
   },
   arrowContainer: {
     width: 20,

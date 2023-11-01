@@ -29,7 +29,7 @@ const LocationSection = ({
               }}
             >
               <Text
-                style={{ color: "#FFFFFF" }}
+                style={{ color: "#FFFFFF", top: 2 }}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >

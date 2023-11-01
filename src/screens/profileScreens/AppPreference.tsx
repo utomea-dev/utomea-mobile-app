@@ -9,6 +9,7 @@ import Checkmark from "../../assets/icons/Checkmark.png";
 import Shield from "../../assets/icons/Shield.png";
 import Notification from "../../assets/icons/Notification.png";
 import { Linking, Platform } from "react-native";
+import Rightback from "../../assets/icons/right-back.png";
 
 import { useNavigation } from "@react-navigation/native";
 import Options from "./Components/Options";
@@ -32,13 +33,15 @@ function AppPreference({ navigation }) {
           navigation.navigate("Profile/entryTime");
         }}
         iconSource={Clock}
+        imageSource={Rightback}
       />
       <Options
         title={"Excluded Locations"}
         onPress={() => {
-          navigation.navigate("Profile/appPreference");
+          navigation.navigate("Profile/excludedLocation");
         }}
         iconSource={Location}
+        imageSource={Rightback}
       />
       <Options
         title={"Privacy Policy"}
@@ -46,6 +49,7 @@ function AppPreference({ navigation }) {
           navigation.navigate("Profile/privacyPolicy");
         }}
         iconSource={Shield}
+        imageSource={Rightback}
       />
       <Options
         title={"Auto-Verification"}
@@ -53,6 +57,7 @@ function AppPreference({ navigation }) {
           navigation.navigate("Profile/autoVerification");
         }}
         iconSource={Checkmark}
+        imageSource={Rightback}
       />
       <RenderToggleOption
         title="App Notifications"

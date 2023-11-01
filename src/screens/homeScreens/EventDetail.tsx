@@ -9,7 +9,7 @@ import {
   Dimensions,
   ScrollView,
   ActivityIndicator,
-  TouchableWithoutFeedback,
+  BackHandler,
 } from "react-native";
 import CustomButton from "../../components/Button/Button";
 
@@ -180,13 +180,6 @@ const EventDetail = ({ navigation, route }) => {
             />
           </View>
         )}
-        {/* {menuVisible && (
-          <Modal transparent={true} animationType="fade">
-            <TouchableWithoutFeedback onPress={closeMenu}>
-              <View style={styles.backDrop} />
-            </TouchableWithoutFeedback>
-          </Modal>
-        )} */}
       </View>
     );
   };
@@ -201,6 +194,24 @@ const EventDetail = ({ navigation, route }) => {
       </TouchableOpacity>
     ));
   };
+
+  useEffect(() => {
+    const backAction = () => {
+      if (route.params?.previousScreen === "search") {
+        navigation.navigate("Search");
+      } else {
+        navigation.goBack();
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     if (data) {

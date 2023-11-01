@@ -20,7 +20,7 @@ const DateSection = ({ onPress = () => {}, date }) => {
               gap: 8,
             }}
           >
-            <Text style={{ color: "#FFFFFF" }}>{date}</Text>
+            <Text style={{ color: "#FFFFFF", top: 2 }}>{date}</Text>
             <Edit />
           </View>
         }

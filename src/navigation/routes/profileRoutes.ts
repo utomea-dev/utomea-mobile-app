@@ -1,6 +1,7 @@
 import AppPreference from "../../screens/profileScreens/AppPreference";
 import AutoVerification from "../../screens/profileScreens/AutoVerification";
 import EntryTime from "../../screens/profileScreens/EntryTime";
+import ExcludedLocation from "../../screens/profileScreens/ExcludedLocation";
 import PrivacyPolicy from "../../screens/profileScreens/PrivacyPolicy";
 import Profile from "../../screens/profileScreens/Profile";
 
@@ -28,6 +29,11 @@ export const profileRoutes = [
   {
     name: "Profile/autoVerification",
     component: AutoVerification,
+    options: { headerShown: false },
+  },
+  {
+    name: "Profile/excludedLocation",
+    component: ExcludedLocation,
     options: { headerShown: false },
   },
 ];

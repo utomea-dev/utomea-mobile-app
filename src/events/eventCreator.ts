@@ -10,7 +10,7 @@ import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
 import { showNotification } from "../utils/helpers";
 import { EVENT_TYPES } from "../constants/constants";
 
-Geocoder.init("AIzaSyB8iCzJlmSC8Ku6pStVH1l-qVjZi65H96k");
+Geocoder.init(MAPS_API_KEY);
 
 const eventCreator = async (coords: string, latitude, longitude) => {
   console.log("EVENT CREATION STARTS ??????????????????????????");
