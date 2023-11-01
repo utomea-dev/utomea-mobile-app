@@ -21,8 +21,11 @@ const FilterChips = ({ tags = [], onRemove = (e) => {} }) => {
                   gap: 4,
                 }}
               >
-                <Text style={{ color: "#ADADAD" }}>{tag.name}</Text>
-                <TouchableOpacity onPress={() => onRemove(tag)}>
+                <Text style={{ color: "#ADADAD", top: 2 }}>{tag.name}</Text>
+                <TouchableOpacity
+                  style={{ top: 2 }}
+                  onPress={() => onRemove(tag)}
+                >
                   <CloseSmall />
                 </TouchableOpacity>
               </View>

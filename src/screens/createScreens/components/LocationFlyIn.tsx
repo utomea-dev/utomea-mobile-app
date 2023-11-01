@@ -35,7 +35,7 @@ const LocationFlyIn = ({ onClose, setLocation, setLatitude, setLongitude }) => {
           listUnderlayColor="#07AA8C"
           enablePoweredByContainer={false}
           query={{
-            key: MAPS_API_KEY,
+            key: GOOGLE_PLACES_API_KEY,
             language: "en",
           }}
           onPress={(data, details) => {

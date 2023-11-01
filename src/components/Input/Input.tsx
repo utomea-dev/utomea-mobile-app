@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   placeholder: {
     color: "gray",
     position: "absolute",
-    top: 12,
+    top: 14,
     left: 14,
     width: "90%",
   },

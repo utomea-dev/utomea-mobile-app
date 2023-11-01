@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ToastAndroid,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import Email from "../../assets/images/email.svg";
 
 import { forgotPassword, reset } from "../../redux/slices/authSlice";
@@ -23,7 +17,7 @@ const CheckEmail = ({ navigation }) => {
 
   const handleSendAgain = () => {
     dispatch(forgotPassword({ email }));
-    ToastAndroid.show("Email sent again", ToastAndroid.SHORT);
+    // navigation.navigate("NewPassword");
   };
 
   return (

@@ -51,6 +51,7 @@ const AddPhotos = ({
         return;
       }
       const images = result?.assets?.map((img) => {
+        console.log("immggggggg-----", img);
         return { fileName: img.fileName, fileSize: img.fileSize, uri: img.uri };
       });
 

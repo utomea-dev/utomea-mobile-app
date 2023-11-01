@@ -195,7 +195,6 @@ const Search = ({ navigation }) => {
               position: "absolute",
               top: 46,
               width: "100%",
-              zIndex: 999,
             }}
           >
             <Suggestions
@@ -237,6 +236,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    zIndex: 999,
   },
   suggestionsContainer: {
     flex: 1,
