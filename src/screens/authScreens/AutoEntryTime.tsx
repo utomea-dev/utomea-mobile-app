@@ -39,7 +39,7 @@ const AutoEntryTime = ({ navigation }) => {
 
   useEffect(() => {
     if (updateUserSuccess) {
-      navigation.navigate("MainTabs", { prevScreen: "AutoEntryTime" });
+      navigation.navigate("MainTabs", { screen: "Home" });
     }
   }, [updateUserSuccess]);
 
