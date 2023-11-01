@@ -19,7 +19,6 @@ function Profile({ navigation }) {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      // Handle user details retrieval with async/await
       try {
         if (userDetails) {
           const user = await AsyncStorage.getItem("utomea_user");
@@ -28,8 +27,6 @@ function Profile({ navigation }) {
             const { name } = userData.user;
             console.log("User name:", name);
             setUserName(name);
-
-            // You can set the name in your component state or display it in your UI as needed
           }
         }
       } catch (error) {
@@ -37,7 +34,6 @@ function Profile({ navigation }) {
       }
     };
 
-    // Call the async function to fetch user details
     fetchUserDetails();
   }, [userDetails, navigation]);
   return (
@@ -77,7 +73,7 @@ function Profile({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 0, // Adjust this value as needed to control the header's position,
+    paddingTop: 0,
   },
 
   logoutButtonContainer: {
