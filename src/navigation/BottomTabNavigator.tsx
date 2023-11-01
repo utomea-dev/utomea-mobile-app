@@ -89,7 +89,7 @@ const Tabs = () => {
         return {
           headerShown: false,
           tabBarStyle: {
-            display: "flex",
+            display: isKeyboardOpen ? "none" : "flex",
             padding: 12,
             paddingRight: 40,
             paddingBottom: 16,

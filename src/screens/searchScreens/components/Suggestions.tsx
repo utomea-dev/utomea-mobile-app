@@ -85,17 +85,23 @@ const Suggestions = ({ suggestions = [], loading = false }) => {
           </View>
         ))
       ) : (
-        <Text
+        <View
           style={{
-            zIndex: 999,
-            color: "#FFFFFF",
+            borderBottomColor: "#3B3B3B",
             backgroundColor: "rgba(14, 14, 14, 0.95)",
-            marginVertical: 12,
-            paddingBottom: 24,
           }}
         >
-          No suggestions found
-        </Text>
+          <Text
+            style={{
+              zIndex: 999,
+              color: "#FFFFFF",
+              backgroundColor: "rgba(14, 14, 14, 0.95)",
+              marginVertical: 12,
+            }}
+          >
+            No suggestions found
+          </Text>
+        </View>
       )}
     </ScrollView>
   );
@@ -108,6 +114,8 @@ const styles = StyleSheet.create({
     zIndex: 998,
     width: "100%",
     maxHeight: 300,
+    borderBottomColor: "#3B3B3B",
+    borderBottomWidth: 1,
   },
   button: {
     zIndex: 999,
