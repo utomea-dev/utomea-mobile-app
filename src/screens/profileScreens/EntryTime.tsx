@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import CustomButton from "../../components/Button/Button";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 
 import { updateUser } from "../../redux/slices/authSlice";
 import GeneralHeader from "../../components/Header/GeneralHeader";
@@ -25,23 +26,43 @@ const EntryTime = ({ navigation }) => {
 
   const [active, setActive] = useState(30);
 
+  useEffect(() => {
+    const fetchUserAutoEntryTime = async () => {
+      try {
+        const userAutoEntryTime = await AsyncStorage.getItem(
+          "utomea_user_auto_entry_time"
+        );
+        if (
+          userAutoEntryTime &&
+          entryTime.includes(parseInt(userAutoEntryTime))
+        ) {
+          setActive(parseInt(userAutoEntryTime));
+        }
+      } catch (error) {
+        console.error("Error fetching user's auto entry time:", error);
+      }
+    };
+
+    fetchUserAutoEntryTime();
+  }, []);
   const handleSave = async () => {
     const entryTime = { ...updateUserData };
     entryTime.auto_entry_time = active;
-    // updateUserData.auto_entry_time = active;
     console.log("Dispatching updateUser action with data: ", entryTime, active);
     dispatch(updateUser({ body: entryTime }));
+
+    try {
+      await AsyncStorage.setItem(
+        "utomea_user_auto_entry_time",
+        active.toString()
+      );
+    } catch (error) {
+      console.error("Error storing user's auto entry time:", error);
+    }
   };
 
   const handlePress = (entry) => {
-    console.log(
-      "updateUserData.auto_entry_time:",
-      updateUserData.auto_entry_time
-    );
-
-    console.log("entry---------", entry);
-    setActive(() => entry);
-    console.log("activeeee--------", active);
+    setActive(entry);
   };
 
   useEffect(() => {
@@ -66,6 +87,7 @@ const EntryTime = ({ navigation }) => {
       </TouchableOpacity>
     ));
   };
+
   return (
     <View style={styles.container}>
       <GeneralHeader title={`Set Auto-entry Time`} />

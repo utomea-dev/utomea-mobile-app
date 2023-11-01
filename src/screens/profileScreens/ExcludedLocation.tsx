@@ -83,14 +83,12 @@ const ExcludedLocation = ({ navigation }) => {
         setConfirmationModalVisible(false);
         setSelectedLocation(null);
 
-        // Show success message
         Alert.alert("Success", "Location deleted successfully");
       }
     } catch (error) {
       console.error("Error deleting location:", error);
       setDeleteLoading(false);
 
-      // Show error message
       Alert.alert("Error", "Failed to delete location");
     }
   };
