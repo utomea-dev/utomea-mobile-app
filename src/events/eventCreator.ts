@@ -9,6 +9,8 @@ import { formatTime } from "../utils/helpers";
 import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
 import { showNotification } from "../utils/helpers";
 import { EVENT_TYPES } from "../constants/constants";
+import { checkExcludedLocation } from "./checkExcludedLocations";
+import { useAuth } from "../hooks/useAuth";
 
 Geocoder.init(MAPS_API_KEY);
 
@@ -67,8 +69,9 @@ const eventCreator = async (coords: string, latitude, longitude) => {
         message: `old: ${oldAddress} - new: ${currentAddress}`,
       });
 
-      // const timeToCreateEvent = 30;
-      (await AsyncStorage.getItem("timeToCreateEvent")) || 30;
+      const userDetails = await useAuth();
+      const eventTimer = userDetails?.auto_entry_time * 60000;
+      console.log("TIMER----", eventTimer);
       await AsyncStorage.setItem("currentAddress", coords);
       await AsyncStorage.setItem(
         "eventStartTime",
@@ -80,7 +83,10 @@ const eventCreator = async (coords: string, latitude, longitude) => {
       );
 
       // run this logic if the time elapsed at the same location more than 30 minutes
-      if (startTimeStamp - Number(oldTime) > 1800000) {
+      if (startTimeStamp - Number(oldTime) > eventTimer) {
+        // if location is in exclusion list, it wont trigger event creation and will return from here
+        if (await checkExcludedLocation(latitude, longitude)) return;
+
         showNotification({ message: "Creating Event" });
         if (Platform.OS === "android" && !(await hasAndroidPermission())) {
           return;
