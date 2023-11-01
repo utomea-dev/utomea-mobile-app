@@ -2,26 +2,38 @@ import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Menu from "../../../assets/icons/Menu.png";
 
+function truncateText(text, maxWords) {
+  const words = text.split(" ");
+  if (words.length <= maxWords) {
+    return text;
+  } else {
+    const truncatedText = words.slice(0, maxWords).join(" ");
+    return truncatedText;
+  }
+}
+
 function Excluded({
   title,
-  subtitle, // Supporting text
+  subtitle,
   onPress,
-  titleStyle, // Custom style for the title
-  subtitleStyle, // Custom style for the subtitle
-  containerStyle, // Custom style for the whole option container
+  titleStyle,
+  subtitleStyle,
+  containerStyle,
 }) {
+  const truncatedTitle = truncateText(title, 5);
+  const truncatedSubtitle = truncateText(subtitle, 8);
+
   return (
     <View style={styles.option}>
       <View style={styles.textContainer}>
-        <Text style={[styles.optionText, titleStyle]}>{title}</Text>
+        <Text style={[styles.optionText, titleStyle]}>{truncatedTitle}</Text>
         {subtitle && (
-          <Text style={[styles.subtitleText, subtitleStyle]}>{subtitle}</Text>
+          <Text style={[styles.subtitleText, subtitleStyle]}>
+            {truncatedSubtitle}
+          </Text>
         )}
       </View>
-      <TouchableOpacity
-        style={[styles.option, containerStyle]} // Apply custom container style
-        onPress={onPress}
-      >
+      <TouchableOpacity style={[containerStyle]} onPress={onPress}>
         <View>
           <Image
             source={Menu}
@@ -58,10 +70,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     lineHeight: 20,
     fontWeight: "500",
+    overflow: "hidden",
   },
   subtitleText: {
     fontSize: 10.5,
-    color: "#F2F2F2", // Customize subtitle text color
+    color: "#F2F2F2",
     lineHeight: 18,
     fontWeight: "400",
   },

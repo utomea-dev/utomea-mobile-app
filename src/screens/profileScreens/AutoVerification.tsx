@@ -10,6 +10,7 @@ import {
 import GeneralHeader from "../../components/Header/GeneralHeader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios"; // Import Axios for making API calls
+import RenderToggleOption from "./Components/ToggleOption";
 
 function AutoVerification({ navigation }) {
   const [isAutoVerificationEnabled, setIsAutoVerificationEnabled] =
@@ -17,27 +18,21 @@ function AutoVerification({ navigation }) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Initialize the default setting in AsyncStorage if not already set
-    const initAutoVerificationSetting = async () => {
+    // Fetch the initial toggle state from AsyncStorage when the component mounts
+    const fetchAutoVerificationSetting = async () => {
       try {
-        const token = await AsyncStorage.getItem("token");
-        const autoVerificationSetting = await AsyncStorage.getItem(
-          "auto_verification"
-        );
+        const token = await AsyncStorage.getItem("token"); // Retrieve the bearer token
+        // Simulate a response (replace with actual API response)
+        const response = { data: { auto_verification: true } };
 
-        if (autoVerificationSetting === null) {
-          // If the setting is not in AsyncStorage, set it to false (disabled)
-          await AsyncStorage.setItem("auto_verification", "false");
-        } else {
-          // If the setting is in AsyncStorage, update the state accordingly
-          setIsAutoVerificationEnabled(autoVerificationSetting === "true");
-        }
+        const autoVerificationSetting = response.data.auto_verification;
+        setIsAutoVerificationEnabled(autoVerificationSetting);
       } catch (error) {
-        console.error("Error initializing auto-verification setting:", error);
+        console.error("Error fetching auto-verification setting:", error);
       }
     };
 
-    initAutoVerificationSetting();
+    fetchAutoVerificationSetting();
   }, []);
 
   const handleToggle = async (isEnabled) => {
@@ -54,6 +49,7 @@ function AutoVerification({ navigation }) {
       const apiUrl =
         "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
       const requestBody = { auto_verification: isEnabled };
+      console.log("request body--------", requestBody);
 
       // Make a PUT request to update the setting
       const response = await axios.put(apiUrl, requestBody, {
@@ -79,9 +75,6 @@ function AutoVerification({ navigation }) {
         "Failed to update auto-verification setting. Please try again."
       );
     }
-
-    // Update the setting in AsyncStorage
-    await AsyncStorage.setItem("auto_verification", isEnabled.toString());
   };
 
   return (

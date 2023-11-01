@@ -83,6 +83,7 @@ export const updateUser = createAsyncThunk(
         let user = (await AsyncStorage.getItem("utomea_user")) || "Unknown";
         user = JSON.parse(user);
         user.user.privacy_policy_accepted = true;
+        user.user.auto_entry_time = body.auto_entry_time;
         await AsyncStorage.setItem("utomea_user", JSON.stringify(user));
       }
 

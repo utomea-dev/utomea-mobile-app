@@ -27,8 +27,10 @@ const AutoEntryTime = ({ navigation }) => {
   const [active, setActive] = useState(30);
 
   const handleSave = async () => {
-    updateUserData.auto_entry_time = active;
-    dispatch(updateUser({ body: updateUserData }));
+    const userClone = { ...updateUserData };
+    userClone.auto_entry_time = active;
+
+    dispatch(updateUser({ body: userClone }));
   };
 
   const handlePress = (entry) => {

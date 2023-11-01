@@ -8,7 +8,11 @@ import {
 } from "../../api/urls";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { deepCloneArray, showNotification } from "../../utils/helpers";
+import {
+  daysInMonth,
+  deepCloneArray,
+  showNotification,
+} from "../../utils/helpers";
 import { handleError } from "../errorHandler";
 import { mergeAll } from "../helpers";
 
@@ -220,10 +224,44 @@ const homeSlice = createSlice({
       };
     },
     setStartDate: (state, action) => {
+      const { year, month, date } = state.startDate;
       state.startDate[action.payload.key] = action.payload.value;
+
+      if (action.payload.key === "month") {
+        if (date === daysInMonth(year, month).toString()) {
+          state.startDate.date = daysInMonth(
+            year,
+            action.payload.value
+          ).toString();
+        }
+      } else if (action.payload.key === "year") {
+        if (date === daysInMonth(year, month).toString()) {
+          state.startDate.date = daysInMonth(
+            action.payload.value,
+            month
+          ).toString();
+        }
+      }
     },
     setEndDate: (state, action) => {
+      const { year, month, date } = state.endDate;
       state.endDate[action.payload.key] = action.payload.value;
+
+      if (action.payload.key === "month") {
+        if (date === daysInMonth(year, month).toString()) {
+          state.endDate.date = daysInMonth(
+            year,
+            action.payload.value
+          ).toString();
+        }
+      } else if (action.payload.key === "year") {
+        if (date === daysInMonth(year, month).toString()) {
+          state.endDate.date = daysInMonth(
+            action.payload.value,
+            month
+          ).toString();
+        }
+      }
     },
     setDateString: (state, action) => {
       state[action.payload.key] = action.payload.value;
