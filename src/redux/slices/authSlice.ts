@@ -136,6 +136,11 @@ const authSLice = createSlice({
       state.updateUserForm[action.payload.key] = action.payload.value;
     },
     reset: (state) => {
+      state.updateUserForm = {
+        name: "",
+        privacy_policy_accepted: true,
+        auto_entry_time: 30,
+      };
       state.user = {};
       state.email = "";
       state.signupSuccess = false;
