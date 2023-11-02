@@ -25,6 +25,7 @@ const LocationFlyIn = ({ onClose, setLocation, setLatitude, setLongitude }) => {
         <GooglePlacesAutocomplete
           styles={styles.locationStyles}
           placeholder="Search for a location"
+          placeholderText={{ color: "grey" }}
           suppressDefaultStyles
           fetchDetails
           disableScroll={false}

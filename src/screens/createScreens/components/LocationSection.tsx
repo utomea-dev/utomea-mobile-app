@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Platform } from "react-native";
 import React from "react";
 import Label from "../../../components/Label/Label";
 import CustomButton from "../../../components/Button/Button";
@@ -29,7 +29,7 @@ const LocationSection = ({
               }}
             >
               <Text
-                style={{ color: "#FFFFFF", top: 2 }}
+                style={styles.fontStyle}
                 numberOfLines={1}
                 ellipsizeMode="tail"
               >
@@ -64,6 +64,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "transparent",
+  },
+  fontStyle: {
+    top: Platform.OS === "android" ? 0 : 2,
+    color: "#FFFFFF",
+    fontSize: 12,
+    lineHeight: 16,
   },
   errorText: {
     fontSize: 12,

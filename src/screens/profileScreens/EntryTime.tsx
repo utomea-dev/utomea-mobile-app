@@ -46,10 +46,9 @@ const EntryTime = ({ navigation }) => {
     fetchUserAutoEntryTime();
   }, []);
   const handleSave = async () => {
-    const entryTime = { ...updateUserData };
-    entryTime.auto_entry_time = active;
+    const body = { auto_entry_time: active };
     console.log("Dispatching updateUser action with data: ", entryTime, active);
-    dispatch(updateUser({ body: entryTime }));
+    dispatch(updateUser({ body }));
 
     try {
       await AsyncStorage.setItem(

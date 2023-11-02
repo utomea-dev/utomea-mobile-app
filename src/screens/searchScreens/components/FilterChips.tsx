@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import React, { useState } from "react";
 import CustomButton from "../../../components/Button/Button";
 
@@ -23,6 +29,7 @@ const FilterChips = ({ tags = [], onRemove = (e) => {} }) => {
               >
                 <Text
                   style={{
+                    top: Platform.OS === "android" ? 0 : 2,
                     color: "#ADADAD",
                     fontSize: 12,
                     lineHeight: 16,
