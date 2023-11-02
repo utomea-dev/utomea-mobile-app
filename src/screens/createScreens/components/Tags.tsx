@@ -69,9 +69,20 @@ const Tags = ({
                   gap: 4,
                 }}
               >
-                <Text style={{ color: "#ADADAD", top: 2 }}>{tag}</Text>
+                <Text
+                  style={{
+                    color: "#ADADAD",
+                    fontSize: 12,
+                    lineHeight: 16,
+                    top: 2,
+                  }}
+                >
+                  {tag}
+                </Text>
                 <TouchableOpacity
-                  style={{ top: 2 }}
+                  style={{
+                    top: 2,
+                  }}
                   onPress={() => onRemove(tag)}
                 >
                   <CloseSmall />

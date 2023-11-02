@@ -6,6 +6,7 @@ import authSlice from "./slices/authSlice";
 import homeSlice from "./slices/homeSlice";
 import eventDetailSlice from "./slices/eventDetailSlice";
 import searchSlice from "./slices/searchSlice";
+import excludeLocationSlice from "./slices/excludeLocationSlice";
 
 const createReducer = () =>
   combineReducers({
@@ -15,6 +16,7 @@ const createReducer = () =>
     auth: authSlice,
     home: homeSlice,
     search: searchSlice,
+    exclude: excludeLocationSlice,
   });
 
 export default createReducer;

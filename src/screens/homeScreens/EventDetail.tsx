@@ -34,6 +34,8 @@ import {
 import BackDropMenu from "../../components/BackDropMenu/BackDropMenu";
 import VerifyWindow from "./components/VerifyWindow";
 import { resetHomeLoaders } from "../../redux/slices/homeSlice";
+import { excludeLocation } from "../../redux/slices/excludeLocationSlice";
+import { checkExcludedLocation } from "../../events/checkExcludedLocations";
 
 const EventDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -51,8 +53,15 @@ const EventDetail = ({ navigation, route }) => {
     deleteEventError,
   } = useSelector((state) => state.eventDetail);
 
+  const {
+    excludeLocationLoading,
+    excludeLocationError,
+    excludeLocationSuccess,
+  } = useSelector((state) => state.exclude);
+
   const [isVerified, setIsVerified] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
+  const [excludeModalVisible, setExcludeModalVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
   const closeMenu = () => {
@@ -76,12 +85,30 @@ const EventDetail = ({ navigation, route }) => {
 
   const menuExcludePress = (e) => {
     e.stopPropagation();
+    setExcludeModalVisible(() => true);
     closeMenu();
   };
 
   const handleConfirmDelete = (e) => {
     e.stopPropagation();
     dispatch(deleteEvent({ id: data.id }));
+  };
+
+  const handleConfirmExclude = (e) => {
+    e.stopPropagation();
+    if (!data) {
+      return;
+    }
+
+    const body = {
+      identifier: data.title,
+      latitude: data.latitude,
+      longitude: data.longitude,
+      radius: 200,
+    };
+
+    console.log("SEDNING THIS-----", body);
+    dispatch(excludeLocation(body));
   };
 
   const handleVerify = () => {
@@ -168,6 +195,74 @@ const EventDetail = ({ navigation, route }) => {
     );
   };
 
+  // const test = async (lat, long) => {
+  //   checkExcludedLocation(lat, long);
+  // };
+  // useEffect(() => {
+  //   if (!data) return;
+  //   test(data.latitude, data.longitude);
+  // }, [data]);
+
+  const renderExcludeModal = () => {
+    return (
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={excludeModalVisible}
+        onRequestClose={() => setExcludeModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modal}>
+            <Text
+              style={{
+                fontSize: 24,
+                lineHeight: 28,
+                fontWeight: "700",
+                color: "#FFFFFF",
+                marginVertical: 8,
+              }}
+            >
+              Are you sure?
+            </Text>
+            <Text
+              style={{
+                color: "#ADADAD",
+                textAlign: "center",
+                paddingHorizontal: 4,
+              }}
+            >
+              If you choose to ‘Exclude Location’ for this event, future events
+              will not be created at this location.
+            </Text>
+            <View
+              style={{
+                marginTop: 40,
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                gap: 12,
+              }}
+            >
+              <CustomButton
+                disabled={excludeLocationLoading}
+                title="Cancel"
+                buttonStyle={{ backgroundColor: "#222222" }}
+                textStyle={{ color: "#FFFFFF" }}
+                onPress={() => setExcludeModalVisible(false)}
+              />
+              <CustomButton
+                disabled={excludeLocationLoading}
+                isLoading={excludeLocationLoading}
+                title="Yes, Exclude Location"
+                onPress={handleConfirmExclude}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
   const renderMenu = () => {
     return (
       <View style={styles.menu}>
@@ -231,6 +326,12 @@ const EventDetail = ({ navigation, route }) => {
     }
   }, [deleteEventSuccess]);
 
+  useEffect(() => {
+    if (excludeLocationSuccess) {
+      setExcludeModalVisible(false);
+    }
+  }, [excludeLocationSuccess]);
+
   if (eventDetailLoading || data === null) {
     return (
       <View
@@ -254,6 +355,7 @@ const EventDetail = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       {renderModal()}
+      {renderExcludeModal()}
 
       {/* Header */}
       <View style={{ zIndex: 999 }}>

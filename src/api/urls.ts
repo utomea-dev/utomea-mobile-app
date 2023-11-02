@@ -34,3 +34,9 @@ export const uploadEventPhotosUrl = (id: number) =>
 // ======================== Search urls ============================
 export const searchUrl = () => `${baseUrl}/events/search`;
 export const autoSuggestionUrl = () => `${baseUrl}/search/autosuggest`;
+
+// ===================== Exclusion List urls =======================
+export const getExcludedLocationsUrl = () => `${baseUrl}/excluded-locations`;
+export const excludeLocationUrl = () => `${baseUrl}/exclude-location`;
+export const deleteExcludeLocationUrl = (id) =>
+  `${baseUrl}/excluded-location/${id}`;

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import SplashScreen from "react-native-splash-screen";
 
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -49,6 +50,16 @@ const slides = [
 const App = () => {
   const [showHomePage, setShowHomePage] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
+
+  const hideSplashScreenAndRedirect = async () => {
+    const user = await useAuth();
+    setTimeout(() => {
+      SplashScreen?.hide();
+    }, 500);
+  };
+  useEffect(() => {
+    hideSplashScreenAndRedirect();
+  }, []);
 
   const linking = {
     prefixes: ["https://utomeaapp", "utomeaapp://"],

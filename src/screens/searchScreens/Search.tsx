@@ -158,7 +158,7 @@ const Search = ({ navigation }) => {
       <GeneralHeader title="Search" />
 
       <View style={styles.searchContainer}>
-        {!searchString ? (
+        {!search ? (
           <TouchableOpacity style={styles.searchIcon}>
             <SearchIcon />
           </TouchableOpacity>
@@ -192,6 +192,7 @@ const Search = ({ navigation }) => {
         {suggestions !== null && (
           <View
             style={{
+              zIndex: 9999,
               position: "absolute",
               top: 46,
               width: "100%",
@@ -273,26 +274,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#3B3B3B",
     borderRadius: 100,
-  },
-  notificationContainer: {
-    height: 18,
-    aspectRatio: 1,
-    borderRadius: 60,
-    padding: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FC7A1B",
-  },
-  notification: {
-    backgroundColor: "transparent",
-    color: "#F2F2F2",
-    height: 18,
-    aspectRatio: 1,
-    fontSize: 10,
-    lineHeight: 12,
-    fontWeight: "500",
-    textAlign: "center",
-    marginTop: 5,
   },
 });
 

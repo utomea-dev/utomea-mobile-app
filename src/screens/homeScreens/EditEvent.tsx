@@ -434,6 +434,7 @@ const EditEvent = ({ navigation, route }) => {
       />
 
       <ScrollView
+        keyboardShouldPersistTaps="handled"
         style={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >

@@ -371,8 +371,9 @@ const CreateEvent = ({ navigation, route }) => {
       />
 
       <ScrollView
-        style={styles.scrollContainer}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
+        style={styles.scrollContainer}
       >
         {renderDisableOverlay()}
         <AddPhotos

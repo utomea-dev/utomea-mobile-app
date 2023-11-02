@@ -7,16 +7,19 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 
 import { updateUser } from "../../redux/slices/authSlice";
 import GeneralHeader from "../../components/Header/GeneralHeader";
+import axios from "axios";
 
 const entryTime = [30, 60, 90];
 
 const EntryTime = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const updateUserData = useSelector((state) => state.auth.updateUserForm);
@@ -28,16 +31,32 @@ const EntryTime = ({ navigation }) => {
 
   useEffect(() => {
     const fetchUserAutoEntryTime = async () => {
+      setLoading(true);
       try {
-        const userAutoEntryTime = await AsyncStorage.getItem(
-          "utomea_user_auto_entry_time"
+        // Get the user's token from AsyncStorage
+        const details = await AsyncStorage.getItem("utomea_user");
+        const userData = JSON.parse(details);
+        const { token } = userData;
+        console.log("tokeeennnnnnnnnnnn--", token);
+
+        const response = await axios.get(
+          "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        if (
-          userAutoEntryTime &&
-          entryTime.includes(parseInt(userAutoEntryTime))
-        ) {
-          setActive(parseInt(userAutoEntryTime));
+
+        const { auto_entry_time } = response.data.data;
+
+        console.log("auto_entry_time ----", auto_entry_time);
+
+        // Check if auto_entry_time is valid and in entryTime array
+        if (auto_entry_time && entryTime.includes(parseInt(auto_entry_time))) {
+          setActive(parseInt(auto_entry_time));
         }
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching user's auto entry time:", error);
       }
@@ -46,19 +65,15 @@ const EntryTime = ({ navigation }) => {
     fetchUserAutoEntryTime();
   }, []);
   const handleSave = async () => {
-    const entryTime = { ...updateUserData };
-    entryTime.auto_entry_time = active;
-    console.log("Dispatching updateUser action with data: ", entryTime, active);
+    const entryTime = { auto_entry_time: active };
+
     dispatch(updateUser({ body: entryTime }));
 
     try {
-      await AsyncStorage.setItem(
-        "utomea_user_auto_entry_time",
-        active.toString()
-      );
     } catch (error) {
       console.error("Error storing user's auto entry time:", error);
     }
+    Alert.alert(`Auto Entry time Has Succefully changed `);
   };
 
   const handlePress = (entry) => {
@@ -98,15 +113,27 @@ const EntryTime = ({ navigation }) => {
           per your preference.
         </Text>
       </View>
-      <View style={styles.buttonContainer}>{renderTimerButton()}</View>
-      <View style={{ marginTop: 20 }}>
-        <CustomButton
-          title="Save"
-          isLoading={updateUserLoading}
-          disabled={updateUserLoading}
-          onPress={handleSave}
+      {loading ? (
+        <ActivityIndicator
+          style={{
+            marginTop: 20,
+          }}
+          size="large"
+          color="#07AA8C"
         />
-      </View>
+      ) : (
+        <>
+          <View style={styles.buttonContainer}>{renderTimerButton()}</View>
+          <View style={{ marginTop: 20 }}>
+            <CustomButton
+              title="Save"
+              isLoading={updateUserLoading}
+              disabled={updateUserLoading}
+              onPress={handleSave}
+            />
+          </View>
+        </>
+      )}
     </View>
   );
 };
