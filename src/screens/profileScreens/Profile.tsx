@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { Text, TouchableOpacity, View, StyleSheet, Switch } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GeneralHeader from "../../components/Header/GeneralHeader";
-import PlusDark from "../../assets/icons/plus_dark.svg";
-import { useNavigation } from "@react-navigation/native";
 import Options from "./Components/Options";
 import LogoutButton from "./Components/LogoutButton";
 import { useAuth } from "../../hooks/useAuth";
 import Rightback from "../../assets/icons/right-back.png";
+import axios from "axios";
 
 function Profile({ navigation }) {
   const [username, setUserName] = useState("");
+  const [loading, setLoading] = useState(true);
   const userDetails = useAuth();
+
   const handleLogout = () => {
     AsyncStorage.removeItem("utomea_user");
     navigation.navigate("Signin");
@@ -24,21 +31,34 @@ function Profile({ navigation }) {
           const user = await AsyncStorage.getItem("utomea_user");
           if (user) {
             const userData = JSON.parse(user);
-            const { name } = userData.user;
-            console.log("User name:", name);
+            const { token } = userData;
+
+            const apiUrl =
+              "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
+
+            const response = await axios.get(apiUrl, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            const { name } = response.data.data;
             setUserName(name);
           }
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUserDetails();
   }, [userDetails, navigation]);
+
   return (
     <View style={styles.container}>
-      <GeneralHeader title={`Hi, ${username}`} />
+      <GeneralHeader title={`Hi, ${loading ? "Loading..." : username}`} />
       <Options
         title={"App Preferences"}
         onPress={() => {
@@ -49,7 +69,7 @@ function Profile({ navigation }) {
       <Options
         title={"Profile Settings"}
         onPress={() => {
-          navigation.navigate("Profile/appPreference");
+          navigation.navigate("Profile/manageProfile");
         }}
         imageSource={Rightback}
       />
@@ -70,6 +90,7 @@ function Profile({ navigation }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -86,4 +107,5 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
 });
+
 export default Profile;

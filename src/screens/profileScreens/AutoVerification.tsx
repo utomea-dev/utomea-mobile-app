@@ -14,14 +14,15 @@ import axios from "axios";
 function AutoVerification({ navigation }) {
   const [isAutoVerificationEnabled, setIsAutoVerificationEnabled] =
     useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchAutoVerificationSetting = async () => {
       try {
         const details = await AsyncStorage.getItem("utomea_user");
-        const data = JSON.parse(details);
-        const { token } = data;
+        const Data = JSON.parse(details);
+        const { token } = Data;
+
         const apiUrl =
           "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
 
@@ -34,8 +35,12 @@ function AutoVerification({ navigation }) {
         const userData = response.data.data;
 
         setIsAutoVerificationEnabled(userData.auto_verification);
+
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         console.error("Error fetching auto-verification setting:", error);
+        Alert.alert("Failed to set the auto verification now please try later");
       }
     };
 
@@ -65,7 +70,7 @@ function AutoVerification({ navigation }) {
 
       console.log("API response:", response.data);
 
-      Alert.alert("Success", "Auto-verification setting updated successfully.");
+      Alert.alert("Success", "Auto-verification setting updated successfully");
     } catch (error) {
       setIsLoading(false);
       console.error("Error updating auto-verification setting:", error);
