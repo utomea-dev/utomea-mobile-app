@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GeneralHeader from "../../components/Header/GeneralHeader";
-import Edit from "../../assets/icons/Edit.png";
+import EditIcon from "../../assets/icons/EditIcon.png";
 import CustomInput from "../../components/Input/Input";
 import CustomButton from "../../components/Button/Button";
 import { launchImageLibrary } from "react-native-image-picker";
@@ -163,7 +163,6 @@ const EditProfilePage = ({ navigation }) => {
     } catch (error) {
       setIsUploadingImage(false);
       console.error("Error updating user profile:", error);
-      setImageUri("");
     }
   };
 
@@ -234,26 +233,29 @@ const EditProfilePage = ({ navigation }) => {
       ) : userProfile ? (
         <View style={styles.profileContainer}>
           <View style={styles.profileImageContainer}>
-            <TouchableOpacity onPress={showMenu}>
-              {isUploadingImage || isLoadingImage ? (
-                <ActivityIndicator size="large" color="#07AA8C" />
-              ) : imageUri ? (
-                <Image source={{ uri: imageUri }} style={styles.profileImage} />
-              ) : userProfile.profile_pic ? (
-                <Image
-                  source={{ uri: userProfile.profile_pic }}
-                  style={styles.profileImage}
-                />
-              ) : (
-                <View style={styles.initialsContainer}>
-                  <Text style={styles.initials}>
-                    {getInitials(userProfile.email)}
-                  </Text>
-                </View>
-              )}
-              <Image source={Edit} style={styles.editIcon} />
-            </TouchableOpacity>
+            {isUploadingImage || isLoadingImage ? (
+              <ActivityIndicator size="large" color="#07AA8C" />
+            ) : imageUri ? (
+              <Image source={{ uri: imageUri }} style={styles.profileImage} />
+            ) : userProfile.profile_pic ? (
+              <Image
+                source={{ uri: userProfile.profile_pic }}
+                style={styles.profileImage}
+              />
+            ) : (
+              <View style={styles.initialsContainer}>
+                <Text style={styles.initials}>
+                  {getInitials(userProfile.name)}
+                </Text>
+              </View>
+            )}
           </View>
+          {isUploadingImage || isLoadingImage ? null : (
+            <TouchableOpacity onPress={showMenu}>
+              <Image source={EditIcon} style={styles.editIcon} />
+            </TouchableOpacity>
+          )}
+
           {isMenuVisible ? (
             <View>
               <BackDropMenu menu={menu} navigation={navigation} />
@@ -348,8 +350,9 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     marginTop: -8,
-    left: 75,
+    left: 35,
     top: -18,
+    backgroundColor: "black",
   },
 
   closeButton: {

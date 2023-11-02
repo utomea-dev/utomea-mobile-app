@@ -77,7 +77,7 @@ const ManageProfilePage = ({ navigation }) => {
             ) : (
               <View style={styles.initialsContainer}>
                 <Text style={styles.initials}>
-                  {getInitials(userProfile.email)}
+                  {getInitials(userProfile.name)}
                 </Text>
               </View>
             )}
