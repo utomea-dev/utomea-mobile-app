@@ -58,6 +58,7 @@ const EditProfilePage = ({ navigation }) => {
 
         const data = response.data.data;
         setUserProfile(data);
+        console.log("dauu99duoishdoihso------", data);
         setNewName(data.name); // Set initial value of the name field
       } catch (error) {
         console.error("Error fetching user profile:", error);
@@ -93,7 +94,7 @@ const EditProfilePage = ({ navigation }) => {
         formData.append("profile_pic", {
           uri: imageUri,
           type: "image/jpeg",
-          name: "profile.jpg",
+          name: imageUri,
         });
 
         await axios.post(updateImageUrl, formData, {
@@ -147,7 +148,7 @@ const EditProfilePage = ({ navigation }) => {
         formData.append("profile_pic", {
           uri: imageUri,
           type: "image/jpeg",
-          name: "profile.jpg",
+          name: imageUri,
         });
 
         await axios.post(updateImageUrl, formData, {
