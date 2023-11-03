@@ -146,8 +146,8 @@ const eventCreator = async (coords: string, latitude, longitude) => {
                   latitude,
                   longitude,
                   location: address,
-                  begin_timestamp: formatTime(Number(oldTime)).split("T")[0],
-                  end_timestamp: formatTime(startTimeStamp).split("T")[0],
+                  begin_timestamp: formatTime(Number(oldTime)),
+                  end_timestamp: formatTime(startTimeStamp),
                   title: address,
                 };
                 store.dispatch(

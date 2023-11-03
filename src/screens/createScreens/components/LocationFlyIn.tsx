@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View, Input, ActivityIndicator } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import CustomButton from "../../../components/Button/Button";
 import CustomInput from "../../../components/Input/Input";
+// navigator.geolocation = require("@react-native-community/geolocation");
+navigator.geolocation = require("react-native-geolocation-service");
 
+import Geolocation from "@react-native-community/geolocation";
 import Close from "../../../assets/icons/close.svg";
 import Check from "../../../assets/icons/check.svg";
 
@@ -11,7 +14,27 @@ import { MAPS_API_KEY } from "@env";
 
 const GOOGLE_PLACES_API_KEY = MAPS_API_KEY;
 
-const LocationFlyIn = ({ onClose, setLocation, setLatitude, setLongitude }) => {
+const LocationFlyIn = ({
+  onClose,
+  setLocation,
+  setLatitude,
+  setLongitude,
+  location = "",
+}) => {
+  const placesRef = useRef();
+
+  useEffect(() => {
+    placesRef.current?.setAddressText(location);
+  }, []);
+
+  const handlePlaceSelect = (data, details) => {
+    const l = details.geometry.location;
+    setLatitude(l.lat);
+    setLongitude(l.lng);
+    setLocation(details.formatted_address);
+    onClose();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -23,6 +46,7 @@ const LocationFlyIn = ({ onClose, setLocation, setLatitude, setLongitude }) => {
 
       <View style={{ marginVertical: 24 }}>
         <GooglePlacesAutocomplete
+          ref={placesRef}
           styles={styles.locationStyles}
           placeholder="Search for a location"
           placeholderText={{ color: "grey" }}
@@ -39,13 +63,15 @@ const LocationFlyIn = ({ onClose, setLocation, setLatitude, setLongitude }) => {
             key: GOOGLE_PLACES_API_KEY,
             language: "en",
           }}
-          onPress={(data, details) => {
-            const l = details.geometry.location;
-            setLatitude(l.lat);
-            setLongitude(l.lng);
-            setLocation(data.description);
-            onClose();
-          }}
+          listEmptyComponent={() => (
+            <View style={{ flex: 1 }}>
+              <Text style={{ color: "#FFFFFF" }}>No results were found</Text>
+            </View>
+          )}
+          onPress={(data, details) => handlePlaceSelect(data, details)}
+          currentLocation={true}
+          currentLocationLabel="Current location"
+          // predefinedPlaces={currentLocation}
         />
       </View>
     </View>

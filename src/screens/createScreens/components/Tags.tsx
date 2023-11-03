@@ -21,15 +21,22 @@ const Tags = ({
   const [input, setInput] = useState("");
 
   const handleAddTag = (str) => {
-    const capitalised = str
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-    const cleaned = capitalised.trim().replace(/\s+/g, " ");
+    const tagsStr = str.split(",");
+    const tags = tagsStr.map((t) => {
+      const cleaned = t
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
 
+      return cleaned;
+    });
     setInput("");
-    onAdd(cleaned);
+    tags.forEach((t) => {
+      onAdd(t);
+    });
   };
 
   return (

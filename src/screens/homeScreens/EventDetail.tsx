@@ -22,7 +22,11 @@ import Delete from "../../assets/icons/delete.svg";
 import Exclude from "../../assets/icons/exclude.svg";
 
 import GeneralHeader from "../../components/Header/GeneralHeader";
-import { formatDate } from "../../utils/helpers";
+import {
+  calculateDuration,
+  convertToAMPM,
+  formatDate,
+} from "../../utils/helpers";
 import Divider from "../../components/Divider/Divider";
 import EventImage from "../../components/Event/EventImage";
 import {
@@ -101,7 +105,7 @@ const EventDetail = ({ navigation, route }) => {
     }
 
     const body = {
-      identifier: data.title,
+      identifier: data.location,
       latitude: data.latitude,
       longitude: data.longitude,
       radius: 200,
@@ -406,12 +410,24 @@ const EventDetail = ({ navigation, route }) => {
             <Text style={styles.eventDate}>
               {formatDate(data?.end_timestamp.split("T")[0], true)}
             </Text>
+            <Divider dividerStyle={styles.divider} />
+            <Text style={styles.eventDate}>
+              {convertToAMPM(data.end_timestamp)}
+            </Text>
 
             {data?.category !== null && (
               <Divider dividerStyle={styles.divider} />
             )}
 
             <Text style={styles.eventDate}>{data?.category?.name}</Text>
+          </View>
+
+          {/* Duration */}
+          <View style={styles.section}>
+            <Text style={styles.eventDate}>
+              Duration -{" "}
+              {calculateDuration(data.begin_timestamp, data.end_timestamp)}
+            </Text>
           </View>
 
           {/* location and tags */}
@@ -520,6 +536,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 4,
+  },
+  section: {
+    marginVertical: 4,
   },
   tagsContainer: {
     marginVertical: 16,

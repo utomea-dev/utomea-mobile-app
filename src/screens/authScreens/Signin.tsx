@@ -69,7 +69,7 @@ const Signin = ({ navigation }) => {
 
     if (!errorFlag) {
       clearErrors();
-      dispatch(signinUser({ email, password }));
+      dispatch(signinUser({ email: email.toLowerCase(), password }));
     }
   };
 
