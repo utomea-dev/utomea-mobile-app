@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Switch } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Switch,
+  Image,
+} from "react-native";
 
 const RenderToggleOption = ({
   title,
@@ -7,6 +14,7 @@ const RenderToggleOption = ({
   titleColor,
   titleSize,
   titleWeight,
+  iconSource,
 }) => {
   const [isEnabled, setIsEnabled] = useState(false);
 
@@ -18,29 +26,43 @@ const RenderToggleOption = ({
   return (
     <TouchableOpacity style={styles.option} onPress={toggleSwitch}>
       <View style={styles.optionContent}>
+        {iconSource && (
+          <View style={styles.iconContainer}>
+            <Image
+              source={iconSource}
+              style={{
+                width: 20,
+                height: 22,
+                marginLeft: -12,
+                top: 1,
+                resizeMode: "contain",
+              }}
+            />
+          </View>
+        )}
         <Text
           style={[
             styles.optionText,
             {
-              color: titleColor || "#FFFFFF", // Default text color is white
-              fontSize: titleSize || 16, // Default font size is 16
-              fontWeight: titleWeight || "normal", // Default font weight is normal
+              color: titleColor || "#FFFFFF",
+              fontSize: titleSize || 17,
+              fontWeight: titleWeight || "normal",
             },
           ]}
         >
           {title}
         </Text>
-        <Switch
-          style={{
-            padding: 1,
-          }}
-          trackColor={{ false: "#767577", true: "#07AA8C" }}
-          thumbColor={isEnabled ? "#fff" : "#fff"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
-          value={isEnabled}
-        />
       </View>
+      <Switch
+        style={{
+          padding: 1,
+        }}
+        trackColor={{ false: "#767577", true: "#07AA8C" }}
+        thumbColor={isEnabled ? "#fff" : "#fff"}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={toggleSwitch}
+        value={isEnabled}
+      />
     </TouchableOpacity>
   );
 };
@@ -50,15 +72,22 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 0.5,
     borderColor: "#222222",
+    flexDirection: "row", // Set flexDirection to row
+    justifyContent: "space-between", // Align content at both ends
+    alignItems: "center",
+  },
+  iconContainer: {
+    marginLeft: 8,
   },
   optionContent: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    flex: 1,
   },
   optionText: {
-    flex: 1, // Allow the text to take up available space
-    marginRight: 10, // Add some spacing between text and toggle
+    flex: 1,
+    marginLeft: 12,
   },
 });
 

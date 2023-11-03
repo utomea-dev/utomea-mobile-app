@@ -7,7 +7,7 @@ import Clock from "../../assets/icons/Clock.png";
 import Location from "../../assets/icons/Location.png";
 import Checkmark from "../../assets/icons/Checkmark.png";
 import Shield from "../../assets/icons/Shield.png";
-import Notification from "../../assets/icons/Notification.png";
+import AppNotification from "../../assets/icons/AppNotification.png";
 import { Linking, Platform } from "react-native";
 import Rightback from "../../assets/icons/right-back.png";
 
@@ -60,6 +60,7 @@ function AppPreference({ navigation }) {
         imageSource={Rightback}
       />
       <RenderToggleOption
+        iconSource={AppNotification}
         title="App Notifications"
         onToggle={handleAppNotificationsToggle}
       />

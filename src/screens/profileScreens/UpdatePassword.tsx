@@ -27,11 +27,6 @@ const UpdatePassword = ({ navigation }) => {
     setConfirmPasswordError("");
   };
 
-  const isEmailValid = (email) => {
-    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    return emailRegex.test(email);
-  };
-
   const handleUpdatePassword = async () => {
     if (!currentPassword) {
       setCurrentPasswordError("Current Password cannot be empty.");

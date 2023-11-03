@@ -21,6 +21,7 @@ function Profile({ navigation }) {
 
   const handleLogout = () => {
     AsyncStorage.removeItem("utomea_user");
+    AsyncStorage.clear();
     navigation.navigate("Signin");
   };
 
