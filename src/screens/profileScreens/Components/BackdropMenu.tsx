@@ -22,10 +22,11 @@ export default BackDropMenu;
 
 const styles = StyleSheet.create({
   container: {
+    zIndex: 999,
     justifyContent: "center",
     alignItems: "stretch",
-    borderRadius: 18,
-    padding: 8,
+    borderRadius: 10,
+    padding: 7,
     backgroundColor: "#3B3B3B",
   },
   menuItem: {
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     gap: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
   },
 });

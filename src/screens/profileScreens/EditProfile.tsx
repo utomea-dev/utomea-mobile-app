@@ -19,6 +19,7 @@ import { launchImageLibrary } from "react-native-image-picker";
 import Delete from "../../assets/icons/delete.svg";
 import Picture from "../../assets/icons/Picture.svg";
 import BackDropMenu from "./Components/BackdropMenu";
+import { trimAndNormalizeSpaces } from "../../utils/helpers";
 
 const getInitials = (name) => {
   if (!name) return "";
@@ -41,7 +42,9 @@ const EditProfilePage = ({ navigation }) => {
   const [nameErrror, setNameerror] = useState("");
   const [confirmationModalVisible, setConfirmationModalVisible] =
     useState(false);
+  const [newimage, setnewImage] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [isUpdateButtonDisabled, setUpdateButtonDisabled] = useState(true);
 
   const fetchUserProfile = async () => {
     try {
@@ -85,6 +88,19 @@ const EditProfilePage = ({ navigation }) => {
         setNameerror("");
       }
 
+      if (newName.length > 15) {
+        setNameerror("Name cannot be more than 15 characters.");
+        return;
+      }
+      if (newName.length < 3) {
+        setNameerror("Name cannot be less than 3 characters.");
+        return;
+      }
+      if (newName.match(/^\d/)) {
+        setNameerror("Name cannot start with a number.");
+        return;
+      }
+
       if (newName !== userProfile.name && imageUri) {
         setNameLoading(true);
         setIsUploadingImage(true);
@@ -109,8 +125,10 @@ const EditProfilePage = ({ navigation }) => {
         const updateNameUrl =
           "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
 
+        const trimmedName = trimAndNormalizeSpaces(newName);
+        console.log("trimmedName", trimmedName);
         const nameData = {
-          name: newName,
+          name: trimmedName,
         };
 
         await axios.put(updateNameUrl, nameData, {
@@ -127,8 +145,9 @@ const EditProfilePage = ({ navigation }) => {
         const updateNameUrl =
           "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
 
+        const trimmedName = trimAndNormalizeSpaces(newName);
         const data = {
-          name: newName,
+          name: trimmedName,
         };
 
         await axios.put(updateNameUrl, data, {
@@ -185,10 +204,12 @@ const EditProfilePage = ({ navigation }) => {
 
       if (result.didCancel) {
         console.log("Image selection canceled");
+        setnewImage(false);
         hideMenu();
       } else if (result.errorCode) {
         console.log("Error in image picking:", result.errorMessage);
       } else {
+        setnewImage(true);
         setImageUri(result.assets[0].uri);
       }
     } catch (e) {
@@ -251,6 +272,8 @@ const EditProfilePage = ({ navigation }) => {
     },
   ];
 
+  console.log("New Imageeeeeee -----", newimage);
+
   return (
     <View style={styles.container}>
       <GeneralHeader title="Edit Profile" />
@@ -299,7 +322,14 @@ const EditProfilePage = ({ navigation }) => {
               label="Name"
               placeholder="Enter your name"
               value={newName}
-              onChangeText={(text) => setNewName(text)}
+              onChangeText={(text) => {
+                setNewName(text);
+                if (text.trim() === userProfile.name || text.trim() === "") {
+                  setUpdateButtonDisabled(true);
+                } else {
+                  setUpdateButtonDisabled(false);
+                }
+              }}
               inputStyle={{ paddingVertical: 10 }}
             />
           </View>
@@ -321,6 +351,7 @@ const EditProfilePage = ({ navigation }) => {
         />
         <CustomButton
           title="Update Profile"
+          disabled={!newimage && isUpdateButtonDisabled}
           onPress={handleUpdateProfile}
           containerStyle={styles.button}
           isLoading={nameloading}

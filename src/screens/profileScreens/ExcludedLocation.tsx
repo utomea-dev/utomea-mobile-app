@@ -16,6 +16,7 @@ import CustomButton from "../../components/Button/Button";
 import Delete from "../../assets/icons/delete.svg";
 import EyeIcon from "../../assets/icons/EyeIcon.svg";
 import BackDropMenu from "./Components/BackdropMenu";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const ExcludedLocation = ({ navigation }) => {
   const [isMenuVisible, setMenuVisible] = useState(false);
@@ -29,6 +30,7 @@ const ExcludedLocation = ({ navigation }) => {
   const [activeExcludedMenu, setActiveExcludedMenu] = useState(null);
   const [selectedLocationData, setSelectedLocationData] = useState(null);
   const [viewModalVisible, setViewModalVisible] = useState(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,7 +50,9 @@ const ExcludedLocation = ({ navigation }) => {
 
         const data = response.data;
         if (data && data.data) {
-          setExcludedLocations(data.data);
+          const sortedData = data.data.sort((a, b) => b.id - a.id);
+          console.log("datataaaaa---", sortedData);
+          setExcludedLocations(sortedData);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -141,7 +145,7 @@ const ExcludedLocation = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <GeneralHeader title={`Excluded Locations`} />
-      <ScrollView>
+      <ScrollView style={{ marginBottom: 50 }}>
         <View>
           <Text style={styles.paragraph}>
             New Events are not created for any of the listed locations here. To
@@ -172,10 +176,11 @@ const ExcludedLocation = ({ navigation }) => {
                 {activeExcludedMenu === location && isMenuVisible ? (
                   <View
                     style={{
-                      width: 150,
-                      height: 150,
-                      position: "relative",
-                      left: 190,
+                      zIndex: 999,
+                      width: 130,
+                      height: 50,
+                      position: "absolute",
+                      left: 180,
                     }}
                   >
                     <BackDropMenu
