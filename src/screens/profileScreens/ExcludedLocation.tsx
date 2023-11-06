@@ -141,7 +141,7 @@ const ExcludedLocation = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <GeneralHeader title={`Excluded Locations`} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View>
           <Text style={styles.paragraph}>
             New Events are not created for any of the listed locations here. To
