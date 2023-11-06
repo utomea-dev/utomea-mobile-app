@@ -4,8 +4,13 @@ import EventImage from "./EventImage";
 
 import Location from "../../assets/icons/location.svg";
 import Tag from "../../assets/icons/tag.svg";
-import { formatDate } from "../../utils/helpers";
+import {
+  calculateDuration,
+  convertToAMPM,
+  formatDate,
+} from "../../utils/helpers";
 import { useNavigation } from "@react-navigation/native";
+import Divider from "../Divider/Divider";
 
 const EventCard = ({ data, filtered = false }) => {
   const navigation = useNavigation();
@@ -42,12 +47,25 @@ const EventCard = ({ data, filtered = false }) => {
         </Text>
 
         {/* Event date */}
-        <Text style={styles.eventDate}>
-          {formatDate(data.end_timestamp.split("T")[0], true)}
-        </Text>
+        <View style={styles.section}>
+          <Text style={styles.eventDate}>
+            {formatDate(data.end_timestamp.split("T")[0], true)}
+          </Text>
+          <Divider dividerStyle={styles.divider} />
+          <Text style={styles.eventDate}>
+            {convertToAMPM(data.end_timestamp)}
+          </Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.eventDate}>
+            Duration -{" "}
+            {calculateDuration(data.begin_timestamp, data.end_timestamp)}
+          </Text>
+        </View>
 
         {/* Event address */}
-        <View style={[styles.flex, { marginBottom: 8 }]}>
+        <View style={[styles.flex]}>
           <Location />
           <Text
             numberOfLines={2}
@@ -90,6 +108,7 @@ const styles = StyleSheet.create({
   },
   descriptionContainer: {
     flex: 0.6,
+    gap: 6,
   },
   flex: {
     flexDirection: "row",
@@ -99,23 +118,34 @@ const styles = StyleSheet.create({
   },
   eventTitle: {
     fontSize: 16,
-    lineHeight: 20,
+    lineHeight: 18,
     fontWeight: "500",
     color: "#FFFFFF",
   },
+  section: {
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    gap: 6,
+  },
   eventDate: {
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 11,
+    lineHeight: 14,
     fontWeight: "400",
     color: "#F2F2F2",
-    marginTop: 4,
-    marginBottom: 16,
   },
   eventAddress: {
     flex: 1,
-    fontSize: 12,
-    lineHeight: 16,
+    fontSize: 10,
+    lineHeight: 14,
     fontWeight: "400",
     color: "#ADADAD",
+  },
+  divider: {
+    width: 0,
+    borderColor: "#616161",
+    borderBottomColor: "#616161",
+    borderWidth: 1,
+    borderRadius: 10,
   },
 });

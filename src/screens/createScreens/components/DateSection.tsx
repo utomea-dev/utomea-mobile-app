@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Label from "../../../components/Label/Label";
 import CustomButton from "../../../components/Button/Button";
@@ -20,7 +20,7 @@ const DateSection = ({ onPress = () => {}, date }) => {
               gap: 8,
             }}
           >
-            <Text style={{ color: "#FFFFFF", top: 2 }}>{date}</Text>
+            <Text style={styles.fontStyle}>{date}</Text>
             <Edit />
           </View>
         }
@@ -43,5 +43,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "transparent",
+  },
+  fontStyle: {
+    top: Platform.OS === "android" ? 0 : 2,
+    color: "#FFFFFF",
+    fontSize: 12,
+    lineHeight: 16,
   },
 });

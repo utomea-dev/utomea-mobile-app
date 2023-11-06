@@ -191,8 +191,7 @@ const CreateEvent = ({ navigation, route }) => {
     }
 
     setTagError(() => "");
-    const newTags = [...tags, tag].sort();
-    setTags(() => newTags);
+    setTags((ts) => [...ts, tag].sort());
   };
 
   const handleRemoveTags = (tag) => {

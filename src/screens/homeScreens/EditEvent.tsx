@@ -230,8 +230,7 @@ const EditEvent = ({ navigation, route }) => {
     }
 
     setTagError(() => "");
-    const newTags = [...tags, tag].sort();
-    setTags(() => newTags);
+    setTags((ts) => [...ts, tag].sort());
   };
 
   const handleRemoveTags = (tag) => {
@@ -361,6 +360,7 @@ const EditEvent = ({ navigation, route }) => {
         onRequestClose={() => hideFlyIn(setLocationFlyInVisible)}
       >
         <LocationFlyIn
+          location={location}
           setLatitude={setLatitude}
           setLongitude={setLongitude}
           setLocation={setLocation}

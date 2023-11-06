@@ -63,17 +63,14 @@ const EntryTime = ({ navigation }) => {
   }, []);
   const handleSave = async () => {
     const entryTime = { auto_entry_time: active };
-
     dispatch(updateUser({ body: entryTime }));
 
-    setTimeout(() => {
-      Alert.alert("Auto-entry Time has been Successfuly Updated");
-    }, 500);
-
+    Alert.alert("Auto entry time has successfully changed");
     try {
     } catch (error) {
       console.error("Error storing user's auto entry time:", error);
     }
+    setAlertShown(false);
   };
 
   const handlePress = (entry) => {
@@ -121,8 +118,8 @@ const EntryTime = ({ navigation }) => {
           <View style={{ marginTop: 20 }}>
             <CustomButton
               title="Save"
-              isLoading={updateUserLoading}
-              disabled={updateUserLoading}
+              // isLoading={updateUserLoading}
+              // disabled={updateUserLoading}
               onPress={handleSave}
             />
           </View>

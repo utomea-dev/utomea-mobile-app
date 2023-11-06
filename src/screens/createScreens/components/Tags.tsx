@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import React, { useState } from "react";
 import CustomButton from "../../../components/Button/Button";
 import CustomInput from "../../../components/Input/Input";
@@ -15,15 +21,22 @@ const Tags = ({
   const [input, setInput] = useState("");
 
   const handleAddTag = (str) => {
-    const capitalised = str
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-    const cleaned = capitalised.trim().replace(/\s+/g, " ");
+    const tagsStr = str.split(",");
+    const tags = tagsStr.map((t) => {
+      const cleaned = t
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
 
+      return cleaned;
+    });
     setInput("");
-    onAdd(cleaned);
+    tags.forEach((t) => {
+      onAdd(t);
+    });
   };
 
   return (
@@ -71,20 +84,15 @@ const Tags = ({
               >
                 <Text
                   style={{
+                    top: Platform.OS === "android" ? 0 : 2,
                     color: "#ADADAD",
                     fontSize: 12,
                     lineHeight: 16,
-                    top: 2,
                   }}
                 >
                   {tag}
                 </Text>
-                <TouchableOpacity
-                  style={{
-                    top: 2,
-                  }}
-                  onPress={() => onRemove(tag)}
-                >
+                <TouchableOpacity onPress={() => onRemove(tag)}>
                   <CloseSmall />
                 </TouchableOpacity>
               </View>

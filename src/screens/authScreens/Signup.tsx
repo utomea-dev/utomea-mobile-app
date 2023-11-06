@@ -71,7 +71,7 @@ const Signup = ({ navigation }) => {
 
     if (!errorFlag) {
       clearErrors();
-      dispatch(signupUser({ email, password }));
+      dispatch(signupUser({ email: email.toLowerCase(), password }));
     }
   };
 

@@ -110,7 +110,7 @@ const Search = ({ navigation }) => {
     } else if (data && data.length > 0) {
       return (
         <Text style={{ color: "#FFFFFF" }}>
-          Showing {data.length} Events for{" "}
+          Showing {data.length} {`Event${data.length > 1 ? "s" : ""}`} for{" "}
           {searchString ? `'${searchString}'` : "set filters"}
         </Text>
       );
@@ -178,7 +178,7 @@ const Search = ({ navigation }) => {
         <CustomInput
           onFocus={() => setShowFilterIcon(false)}
           onBlur={() => setShowFilterIcon(true)}
-          customPlaceholder="Search for title or location"
+          customPlaceholder="Search for Tags, Title or Location"
           placeholderTextColor="grey"
           containerStyle={{ flex: 1 }}
           placeholderStyle={{ left: 42, width: "80%" }}

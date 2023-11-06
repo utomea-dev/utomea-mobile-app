@@ -55,6 +55,61 @@ export const formatISOToDateString = (dateString: string) => {
   return formattedDateTime;
 };
 
+export const calculateDuration = (start, end) => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  const durationInMilliseconds = endDate - startDate;
+  // Calculate days, hours, and minutes
+  const days = Math.floor(durationInMilliseconds / (1000 * 60 * 60 * 24));
+  const hours = Math.floor(
+    (durationInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
+  const minutes = Math.floor(
+    (durationInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
+  );
+
+  if (days === 0 && hours === 0 && minutes === 0) {
+    return "0 min";
+  }
+
+  // Format the duration
+  let duration = "";
+  if (days > 0) {
+    duration += `${days} day${days > 1 ? "s" : ""}`;
+  }
+  if (hours > 0) {
+    duration += `${duration.length > 0 ? ", " : ""}${hours} hr${
+      hours > 1 ? "s" : ""
+    }`;
+  }
+  if (minutes > 0 && days === 0) {
+    duration += `${duration.length > 0 ? ", " : ""}${minutes} min`;
+  }
+
+  return duration;
+};
+
+export const convertToAMPM = (timestamp) => {
+  const date = new Date(timestamp);
+
+  // Get hours and minutes
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+
+  // Determine AM or PM
+  const ampm = hours >= 12 ? "pm" : "am";
+
+  // Convert hours to 12-hour format
+  const formattedHours = hours % 12 || 12;
+
+  // Format the time in AM/PM
+  const timeInAMPM = `${formattedHours}:${
+    minutes < 10 ? "0" : ""
+  }${minutes} ${ampm}`;
+
+  return timeInAMPM;
+};
+
 export const showNotification = ({ message }) => {
   return null;
   if (Platform.OS === "android") {
