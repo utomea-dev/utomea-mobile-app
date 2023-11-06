@@ -70,7 +70,7 @@ function AppPreference({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 0, // Adjust this value as needed to control the header's position,
+    paddingTop: 0,
   },
   option: {
     flexDirection: "row",

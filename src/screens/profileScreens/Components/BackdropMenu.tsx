@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import Delete from "../../assets/icons/delete.svg";
 
 const BackDropMenu = ({ navigation, menu, onDelete }) => {
   return (

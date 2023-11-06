@@ -21,6 +21,7 @@ const entryTime = [30, 60, 90];
 const EntryTime = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
+  const [alertShown, setAlertShown] = useState(false);
 
   const updateUserData = useSelector((state) => state.auth.updateUserForm);
   const { updateUserSuccess, updateUserLoading } = useSelector(
@@ -30,15 +31,13 @@ const EntryTime = ({ navigation }) => {
   const [active, setActive] = useState(30);
 
   useEffect(() => {
+    console.log("user Entry time data-----", updateUserSuccess);
     const fetchUserAutoEntryTime = async () => {
       setLoading(true);
       try {
-        // Get the user's token from AsyncStorage
         const details = await AsyncStorage.getItem("utomea_user");
         const userData = JSON.parse(details);
         const { token } = userData;
-        console.log("tokeeennnnnnnnnnnn--", token);
-
         const response = await axios.get(
           "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details",
           {
@@ -51,8 +50,6 @@ const EntryTime = ({ navigation }) => {
         const { auto_entry_time } = response.data.data;
 
         console.log("auto_entry_time ----", auto_entry_time);
-
-        // Check if auto_entry_time is valid and in entryTime array
         if (auto_entry_time && entryTime.includes(parseInt(auto_entry_time))) {
           setActive(parseInt(auto_entry_time));
         }
@@ -68,22 +65,17 @@ const EntryTime = ({ navigation }) => {
     const entryTime = { auto_entry_time: active };
     dispatch(updateUser({ body: entryTime }));
 
+    Alert.alert("Auto entry time has successfully changed");
     try {
     } catch (error) {
       console.error("Error storing user's auto entry time:", error);
     }
-    Alert.alert(`Auto Entry time Has Succefully changed `);
+    setAlertShown(false);
   };
 
   const handlePress = (entry) => {
     setActive(entry);
   };
-
-  useEffect(() => {
-    if (updateUserSuccess) {
-      navigation.navigate("MainTabs", { prevScreen: "AutoEntryTime" });
-    }
-  }, [updateUserSuccess]);
 
   const renderTimerButton = () => {
     return entryTime.map((entry) => (
@@ -126,8 +118,8 @@ const EntryTime = ({ navigation }) => {
           <View style={{ marginTop: 20 }}>
             <CustomButton
               title="Save"
-              isLoading={updateUserLoading}
-              disabled={updateUserLoading}
+              // isLoading={updateUserLoading}
+              // disabled={updateUserLoading}
               onPress={handleSave}
             />
           </View>

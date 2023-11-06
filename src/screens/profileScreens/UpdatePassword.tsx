@@ -42,6 +42,11 @@ const UpdatePassword = ({ navigation }) => {
       setNewPasswordError("");
     }
 
+    if (newPassword.length <= 5) {
+      setNewPasswordError("New Password must be atleast 6 characters long.");
+      return;
+    }
+
     if (!confirmPassword) {
       setConfirmPasswordError("Confirm Password cannot be empty.");
       return;
@@ -118,8 +123,8 @@ const UpdatePassword = ({ navigation }) => {
           }}
         >
           <CustomInput
-            label="Current Password"
-            placeholder="Enter your current password"
+            label="Enter Current Password"
+            placeholder="Enter Current Password"
             secureTextEntry
             validationError={currentPasswordError}
             value={currentPassword}
@@ -137,7 +142,7 @@ const UpdatePassword = ({ navigation }) => {
             inputStyle={{ paddingVertical: 10 }}
           />
           <CustomInput
-            label="Confirm Password"
+            label="Confirm New Password"
             placeholder="Confirm your new password"
             secureTextEntry
             validationError={confirmPasswordError}

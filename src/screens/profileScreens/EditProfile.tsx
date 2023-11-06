@@ -39,34 +39,36 @@ const EditProfilePage = ({ navigation }) => {
   const [isLoadingImage, setIsLoadingImage] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [nameErrror, setNameerror] = useState("");
+  const [confirmationModalVisible, setConfirmationModalVisible] =
+    useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
+  const fetchUserProfile = async () => {
+    try {
+      const details = await AsyncStorage.getItem("utomea_user");
+      const userData = JSON.parse(details);
+      const { token } = userData;
+
+      const apiUrl =
+        "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
+
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = response.data.data;
+      setUserProfile(data);
+      console.log("dauu99duoishdoihso------", data);
+      setNewName(data.name);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const details = await AsyncStorage.getItem("utomea_user");
-        const userData = JSON.parse(details);
-        const { token } = userData;
-
-        const apiUrl =
-          "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
-
-        const response = await axios.get(apiUrl, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = response.data.data;
-        setUserProfile(data);
-        console.log("dauu99duoishdoihso------", data);
-        setNewName(data.name); // Set initial value of the name field
-      } catch (error) {
-        console.error("Error fetching user profile:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUserProfile();
   }, []);
 
@@ -198,21 +200,50 @@ const EditProfilePage = ({ navigation }) => {
   const showMenu = () => {
     setMenuVisible((prevVisible) => !prevVisible);
   };
+  const showModal = () => {
+    setConfirmationModalVisible(true);
+  };
 
   const hideMenu = () => {
     setMenuVisible(false);
   };
+  const closeConfirmationModal = () => {
+    setConfirmationModalVisible(false);
+  };
 
-  const handleRemove = async () => {
-    hideMenu();
-    Alert.alert("Available Soon");
+  const handleConfirmDelete = async () => {
+    try {
+      setDeleteLoading(true);
+      const details = await AsyncStorage.getItem("utomea_user");
+      const userData = JSON.parse(details);
+      const { token } = userData;
+
+      const updateImageUrl =
+        "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/delete-profile-pic";
+
+      await axios.delete(updateImageUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setImageUri(null);
+    } catch (error) {
+      console.error("Error removing profile pic:", error);
+    } finally {
+      setDeleteLoading(false);
+      closeConfirmationModal();
+      hideMenu();
+    }
+    fetchUserProfile();
   };
   const menu = [
     {
       name: "Remove",
-      onPress: handleRemove,
+      onPress: showModal,
       icon: () => <Delete width={20} height={20} />,
     },
+
     {
       name: "Upload",
       onPress: selectImage,
@@ -295,6 +326,37 @@ const EditProfilePage = ({ navigation }) => {
           isLoading={nameloading}
         />
       </View>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={confirmationModalVisible}
+        onRequestClose={closeConfirmationModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modal}>
+            <Text style={styles.confirmationTitle}>Are you sure?</Text>
+            <Text style={styles.confirmationText}>
+              You want to Remove your profile Picture?
+            </Text>
+            <View style={styles.modalButtons}>
+              <CustomButton
+                title="Cancel"
+                buttonStyle={{ backgroundColor: "#222222" }}
+                textStyle={{ color: "#FFFFFF" }}
+                onPress={closeConfirmationModal}
+              />
+              <CustomButton
+                title="Yes, Delete"
+                buttonStyle={{ backgroundColor: "#58DAC3" }}
+                textStyle={{ color: "#0E0E0E" }}
+                onPress={handleConfirmDelete}
+                isLoading={deleteLoading}
+                disabled={deleteLoading}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -354,6 +416,43 @@ const styles = StyleSheet.create({
     left: 35,
     top: -18,
     backgroundColor: "black",
+  },
+  modalContainer: {
+    flex: 1,
+    flexDirection: "row",
+    backgroundColor: "rgba(14, 14, 14, 0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modal: {
+    flex: 1,
+    marginHorizontal: 16,
+    paddingVertical: 40,
+    paddingHorizontal: 16,
+    backgroundColor: "#0E0E0E",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "#3B3B3B",
+  },
+  confirmationTitle: {
+    fontSize: 24,
+    lineHeight: 28,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    marginVertical: 8,
+  },
+  confirmationText: {
+    color: "#ADADAD",
+    textAlign: "center",
+    paddingHorizontal: 4,
+  },
+  modalButtons: {
+    flexDirection: "row",
+    marginTop: 20,
+    gap: 50,
+    justifyContent: "space-between",
   },
 
   closeButton: {
