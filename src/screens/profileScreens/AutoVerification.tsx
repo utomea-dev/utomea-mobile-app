@@ -17,7 +17,26 @@ function AutoVerification({ navigation }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAutoVerificationSetting = async () => {
+    async function checkAsyncStorage() {
+      try {
+        const data = await AsyncStorage.getItem("auto_verification_data");
+        console.log("dattataaaaa---", data);
+
+        if (data) {
+          const parsedData = JSON.parse(data);
+          setIsAutoVerificationEnabled(parsedData.auto_verification);
+          setIsLoading(false);
+        } else {
+          fetchDataFromAPI();
+        }
+      } catch (error) {
+        setIsLoading(false);
+        console.error("Error checking AsyncStorage:", error);
+        Alert.alert("Failed to load data. Please try again.");
+      }
+    }
+
+    async function fetchDataFromAPI() {
       try {
         const details = await AsyncStorage.getItem("utomea_user");
         const Data = JSON.parse(details);
@@ -36,15 +55,21 @@ function AutoVerification({ navigation }) {
 
         setIsAutoVerificationEnabled(userData.auto_verification);
 
+        // Store data in AsyncStorage for future use
+        await AsyncStorage.setItem(
+          "auto_verification_data",
+          JSON.stringify(userData)
+        );
+
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
         console.error("Error fetching auto-verification setting:", error);
         Alert.alert("Failed to set the auto verification now please try later");
       }
-    };
+    }
 
-    fetchAutoVerificationSetting();
+    checkAsyncStorage();
   }, []);
 
   const handleToggle = async (isEnabled) => {
@@ -69,6 +94,12 @@ function AutoVerification({ navigation }) {
       setIsLoading(false);
 
       console.log("API response:", response.data);
+
+      // Update the data in AsyncStorage as well
+      await AsyncStorage.setItem(
+        "auto_verification_data",
+        JSON.stringify({ auto_verification: isEnabled })
+      );
 
       Alert.alert("Success", "Auto-verification setting updated successfully");
     } catch (error) {

@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   },
   subtitleText: {
     fontSize: 10.5,
-    color: "#F2F2F2", // Customize subtitle text color
+    color: "#F2F2F2",
     lineHeight: 18,
     fontWeight: "400",
   },
