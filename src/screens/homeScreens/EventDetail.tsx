@@ -408,11 +408,11 @@ const EventDetail = ({ navigation, route }) => {
             {data?.rating > 0 && <Divider dividerStyle={styles.divider} />}
 
             <Text style={styles.eventDate}>
-              {formatDate(data?.end_timestamp.split("T")[0], true)}
+              {formatDate(data?.begin_timestamp.split("T")[0], true)}
             </Text>
             <Divider dividerStyle={styles.divider} />
             <Text style={styles.eventDate}>
-              {convertToAMPM(data.end_timestamp)}
+              {convertToAMPM(data.begin_timestamp)}
             </Text>
 
             {data?.category !== null && (
