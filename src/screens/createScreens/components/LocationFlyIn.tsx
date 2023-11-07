@@ -44,7 +44,7 @@ const LocationFlyIn = ({
         </View>
       </View>
 
-      <View style={{ marginVertical: 24 }}>
+      <View style={{ marginVertical: 24, marginBottom: 120 }}>
         <GooglePlacesAutocomplete
           ref={placesRef}
           styles={styles.locationStyles}
@@ -71,6 +71,8 @@ const LocationFlyIn = ({
           onPress={(data, details) => handlePlaceSelect(data, details)}
           currentLocation={true}
           currentLocationLabel="Current location"
+          keyboardShouldPersistTaps="always"
+          keepResultsAfterBlur={true}
           // predefinedPlaces={currentLocation}
         />
       </View>
@@ -107,6 +109,7 @@ const styles = StyleSheet.create({
     },
   },
   container: {
+    flex: 1,
     position: "absolute",
     paddingHorizontal: 16,
     width: "100%",
