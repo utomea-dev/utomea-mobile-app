@@ -70,7 +70,7 @@ const LocationFlyIn = ({
           )}
           onPress={(data, details) => handlePlaceSelect(data, details)}
           currentLocation={true}
-          currentLocationLabel="Current location"
+          currentLocationLabel={"Use current location"}
           keyboardShouldPersistTaps="always"
           keepResultsAfterBlur={true}
           // predefinedPlaces={currentLocation}
@@ -91,6 +91,20 @@ const styles = StyleSheet.create({
       borderColor: "#3B3B3B",
       borderWidth: 1,
     },
+    loader: {
+      marginVertical: 40,
+    },
+    predefinedPlacesDescription: {
+      position: "absolute",
+      width: "100%",
+      color: "#000000",
+      fontWeight: 500,
+      backgroundColor: "#1CC9C3",
+      borderColor: "#58DAC3",
+      borderWidth: 1,
+      paddingVertical: 12,
+      borderRadius: 4,
+    },
     textInput: {
       height: 44,
       paddingVertical: 0,
@@ -100,7 +114,10 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
     row: {
-      paddingVertical: 10,
+      justifyContent: "center",
+      alignItems: "flex-start",
+      height: 46,
+      marginTop: 1,
       borderRadius: 8,
     },
     description: {
@@ -108,6 +125,7 @@ const styles = StyleSheet.create({
       paddingHorizontal: 14,
     },
   },
+
   container: {
     flex: 1,
     position: "absolute",
