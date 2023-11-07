@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   Modal,
+  Keyboard,
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,6 +21,7 @@ import Delete from "../../assets/icons/delete.svg";
 import Picture from "../../assets/icons/Picture.svg";
 import BackDropMenu from "./Components/BackdropMenu";
 import { trimAndNormalizeSpaces } from "../../utils/helpers";
+import OverlayLoader from "../../components/Loaders/OverlayLoader";
 
 const getInitials = (name) => {
   if (!name) return "";
@@ -45,6 +47,7 @@ const EditProfilePage = ({ navigation }) => {
   const [newimage, setnewImage] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isUpdateButtonDisabled, setUpdateButtonDisabled] = useState(true);
+  const [loaderLoading, setLoaderLoading] = useState(false);
 
   const fetchUserProfile = async () => {
     try {
@@ -88,12 +91,12 @@ const EditProfilePage = ({ navigation }) => {
         setNameerror("");
       }
 
-      if (newName.length > 15) {
-        setNameerror("Name cannot be more than 15 characters.");
+      if (newName.length > 25) {
+        setNameerror("Name cannot be more than 25 characters.");
         return;
       }
-      if (newName.length < 3) {
-        setNameerror("Name cannot be less than 3 characters.");
+      if (newName.length < 4) {
+        setNameerror("Name cannot be less than 4 characters.");
         return;
       }
       if (newName.match(/^\d/)) {
@@ -101,10 +104,8 @@ const EditProfilePage = ({ navigation }) => {
         return;
       }
 
-      if (newName !== userProfile.name && imageUri) {
-        setNameLoading(true);
-        setIsUploadingImage(true);
-
+      if (newName !== userProfile.name && newimage) {
+        setLoaderLoading(true);
         const updateImageUrl =
           "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/upload-profile-pic";
 
@@ -138,8 +139,13 @@ const EditProfilePage = ({ navigation }) => {
         });
         setNameLoading(false);
         setIsUploadingImage(false);
-        Alert.alert("Success", "Name and Image updated successfully!");
+        setnewImage(false);
+        setUpdateButtonDisabled(true);
+        Alert.alert("Success", "Profile Updated Successfully!");
+        Keyboard.dismiss();
+        setLoaderLoading(false);
       } else if (newName !== userProfile.name) {
+        setLoaderLoading(true);
         setNameLoading(true);
         // If only the name changes
         const updateNameUrl =
@@ -156,10 +162,14 @@ const EditProfilePage = ({ navigation }) => {
           },
         });
         setNameLoading(false);
-        Alert.alert("Success", "Name updated successfully!");
-      } else if (imageUri) {
+        setUpdateButtonDisabled(true);
+        setLoaderLoading(true);
+        Alert.alert("Success", "Profile Updated Successfully!");
+        Keyboard.dismiss();
+      } else if (newimage) {
         // If only the photo changes
         setIsUploadingImage(true);
+        setLoaderLoading(true);
         console.log("imageeee------", imageUri);
 
         const updateImageUrl =
@@ -178,14 +188,17 @@ const EditProfilePage = ({ navigation }) => {
             "Content-Type": "multipart/form-data",
           },
         });
-
+        setLoaderLoading(false);
         setIsUploadingImage(false);
-        Alert.alert("Success", "Image updated successfully!");
+        Alert.alert("Success", "Profile updated successfully!");
+        setnewImage(false);
+        Keyboard.dismiss();
       }
     } catch (error) {
       setIsUploadingImage(false);
       console.error("Error updating user profile:", error);
     }
+    setLoaderLoading(false);
   };
 
   const selectImage = async () => {
@@ -276,6 +289,7 @@ const EditProfilePage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {loaderLoading && <OverlayLoader />}
       <GeneralHeader title="Edit Profile" />
       {loading ? (
         <ActivityIndicator
@@ -288,7 +302,7 @@ const EditProfilePage = ({ navigation }) => {
       ) : userProfile ? (
         <View style={styles.profileContainer}>
           <View style={styles.profileImageContainer}>
-            {isUploadingImage || isLoadingImage ? (
+            {isLoadingImage ? (
               <ActivityIndicator size="large" color="#07AA8C" />
             ) : imageUri ? (
               <Image source={{ uri: imageUri }} style={styles.profileImage} />
@@ -354,7 +368,6 @@ const EditProfilePage = ({ navigation }) => {
           disabled={!newimage && isUpdateButtonDisabled}
           onPress={handleUpdateProfile}
           containerStyle={styles.button}
-          isLoading={nameloading}
         />
       </View>
       <Modal
