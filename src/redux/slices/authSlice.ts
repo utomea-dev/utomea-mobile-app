@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import makeRequest from "../../api";
 
 import {
+  socialLoginSignupUrl,
   signupUrl,
   signinUrl,
   updateUserUrl,
@@ -20,6 +21,11 @@ const initialState = {
   },
   user: {},
   email: "",
+
+  socialSuccess: false,
+  socialError: "",
+  socialLoading: false,
+
   signupSuccess: false,
   signupError: "",
   signupLoading: false,
@@ -40,6 +46,27 @@ const initialState = {
   resetPasswordError: "",
   resetPasswordLoading: false,
 };
+
+export const socialLoginSignup = createAsyncThunk(
+  "user/socialLoginSignup",
+  async (data: object, { dispatch }) => {
+    try {
+      const body = data;
+
+      const response = await makeRequest(
+        socialLoginSignupUrl(),
+        "POST",
+        body,
+        {}
+      );
+      await AsyncStorage.setItem("utomea_user", JSON.stringify(response.data));
+      console.log("user resonse -------", response.data);
+      return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+);
 
 export const signupUser = createAsyncThunk(
   "user/signupUser",
@@ -143,6 +170,9 @@ const authSLice = createSlice({
       };
       state.user = {};
       state.email = "";
+      state.socialSuccess = false;
+      state.socialError = "";
+      state.socialLoading = false;
       state.signupSuccess = false;
       state.signupError = "";
       state.signupLoading = false;
@@ -161,6 +191,23 @@ const authSLice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(socialLoginSignup.pending, (state) => {
+      state.socialLoading = true;
+      state.socialSuccess = false;
+      state.socialError = "";
+    });
+    builder.addCase(socialLoginSignup.fulfilled, (state, action) => {
+      state.socialLoading = false;
+      state.socialSuccess = true;
+      state.user = action.payload;
+      state.socialError = "";
+    });
+    builder.addCase(socialLoginSignup.rejected, (state, action) => {
+      state.socialLoading = false;
+      state.socialSuccess = false;
+      state.socialError = action.error.message || "";
+    });
+
     builder.addCase(signupUser.pending, (state) => {
       state.signupLoading = true;
       state.signupSuccess = false;

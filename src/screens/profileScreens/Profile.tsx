@@ -13,15 +13,27 @@ import LogoutButton from "./Components/LogoutButton";
 import { useAuth } from "../../hooks/useAuth";
 import Rightback from "../../assets/icons/right-back.png";
 import axios from "axios";
-
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 function Profile({ navigation }) {
   const [username, setUserName] = useState("");
   const [loading, setLoading] = useState(true);
   const userDetails = useAuth();
 
-  const handleLogout = () => {
-    AsyncStorage.removeItem("utomea_user");
-    AsyncStorage.clear();
+  const handleLogout = async () => {
+    const isGoogleSignedIn = await GoogleSignin.isSignedIn();
+    if (isGoogleSignedIn) {
+      GoogleSignin.signOut();
+    }
+    const isFacebookSignedIn = await AccessToken.getCurrentAccessToken();
+    if (isFacebookSignedIn) {
+      LoginManager.logOut();
+    }
+    await AsyncStorage.removeItem("utomea_user");
+    await AsyncStorage.clear();
     navigation.navigate("Signin");
   };
 
