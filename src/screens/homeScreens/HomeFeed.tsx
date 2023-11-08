@@ -137,7 +137,9 @@ const HomeFeed = ({ navigation }) => {
             <Text style={{ color: "#ADADAD" }}>Unverified Events</Text>
             {!!unverifiedCount && (
               <View style={styles.notificationContainer}>
-                <Text style={styles.notification}>{unverifiedCount}</Text>
+                <Text style={styles.notification}>
+                  {unverifiedCount > 99 ? 99 : unverifiedCount}
+                </Text>
               </View>
             )}
           </TouchableOpacity>

@@ -23,9 +23,9 @@ const UserDetails = ({ navigation }) => {
       return;
     }
 
-    if (trimmedName.length < 3 || trimmedName.length > 30) {
+    if (trimmedName.length < 4 || trimmedName.length > 25) {
       setValidationError(
-        () => "Username should be in range of 3-30 characters long"
+        () => "Username should be in range of 4-25 characters long"
       );
       return;
     }

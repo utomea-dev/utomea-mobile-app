@@ -6,9 +6,8 @@ import CustomInput from "../../../components/Input/Input";
 // navigator.geolocation = require("@react-native-community/geolocation");
 navigator.geolocation = require("react-native-geolocation-service");
 
-import Geolocation from "@react-native-community/geolocation";
 import Close from "../../../assets/icons/close.svg";
-import Check from "../../../assets/icons/check.svg";
+import DetectLocationIcon from "../../../assets/icons/current_location.svg";
 
 import { MAPS_API_KEY } from "@env";
 
@@ -63,14 +62,31 @@ const LocationFlyIn = ({
             key: GOOGLE_PLACES_API_KEY,
             language: "en",
           }}
-          listEmptyComponent={() => (
+          listEmptyComponent={
             <View style={{ flex: 1 }}>
               <Text style={{ color: "#FFFFFF" }}>No results were found</Text>
             </View>
-          )}
+          }
           onPress={(data, details) => handlePlaceSelect(data, details)}
           currentLocation={true}
-          currentLocationLabel={"Use current location"}
+          currentLocationLabel={
+            <View
+              style={{
+                position: "absolute",
+                height: 46,
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 10,
+                width: "100%",
+              }}
+            >
+              <Text style={{ color: "#FFFFFF", marginLeft: 20 }}>
+                Detect my Current Location
+              </Text>
+              <DetectLocationIcon />
+            </View>
+          }
           keyboardShouldPersistTaps="always"
           keepResultsAfterBlur={true}
           // predefinedPlaces={currentLocation}
@@ -92,18 +108,19 @@ const styles = StyleSheet.create({
       borderWidth: 1,
     },
     loader: {
-      marginVertical: 40,
-    },
-    predefinedPlacesDescription: {
       position: "absolute",
       width: "100%",
-      color: "#000000",
-      fontWeight: 500,
-      backgroundColor: "#1CC9C3",
-      borderColor: "#58DAC3",
-      borderWidth: 1,
-      paddingVertical: 12,
-      borderRadius: 4,
+      height: 60,
+      marginVertical: 140,
+    },
+    predefinedPlacesDescription: {
+      //   position: "absolute",
+      width: "100%",
+      //   color: "#FFFFFF",
+      //   fontWeight: 500,
+      //   backgroundColor: "transparent",
+      //   paddingVertical: 12,
+      //   borderRadius: 4,
     },
     textInput: {
       height: 44,

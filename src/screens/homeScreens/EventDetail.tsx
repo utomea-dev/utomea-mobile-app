@@ -292,6 +292,7 @@ const EventDetail = ({ navigation, route }) => {
   const renderPhotos = () => {
     return data.photos?.map((img, i) => (
       <TouchableOpacity
+        key={img.url}
         onLongPress={() => handleLongPress(img)}
         style={[styles.photos, { width: imageWidth }]}
       >
