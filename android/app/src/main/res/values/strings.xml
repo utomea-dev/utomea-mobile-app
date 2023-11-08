@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Utomea</string>
-    <string name="facebook_app_id">347741537794058</string>
-    <string name="fb_login_protocol_scheme">fb347741537794058</string>
-    <string name="facebook_client_token">07839963a49b4723ad974e6b6c967aa8</string>
+    <string name="facebook_app_id">313238364904139</string>
+    <string name="fb_login_protocol_scheme">fb313238364904139</string>
+    <string name="facebook_client_token">2ff4be219edeaf72a5ff27ade2375310</string>
 </resources>

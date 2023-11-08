@@ -25,7 +25,9 @@ const GoogleSocialSignin = () => {
   useEffect(() => {
     GoogleSignin.configure({
       webClientId:
-        "309522091284-bq3m191abpvpqjhvisgh3gd0qsqe4nih.apps.googleusercontent.com",
+        "197300810699-65ejpaosi57t0bg95et8v2gvb5eifsm7.apps.googleusercontent.com",
+      // webClientId:
+      //   "309522091284-bq3m191abpvpqjhvisgh3gd0qsqe4nih.apps.googleusercontent.com",
     });
   }, []);
 
