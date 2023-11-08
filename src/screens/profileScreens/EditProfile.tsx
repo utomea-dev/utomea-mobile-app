@@ -91,13 +91,8 @@ const EditProfilePage = ({ navigation }) => {
         setNameerror("");
       }
 
-<<<<<<< HEAD
-      if (newName.length > 30) {
-        setNameerror("Name cannot be more than 30 characters.");
-=======
       if (newName.length > 25) {
         setNameerror("Name cannot be more than 25 characters.");
->>>>>>> footer
         return;
       }
       if (newName.length < 4) {
