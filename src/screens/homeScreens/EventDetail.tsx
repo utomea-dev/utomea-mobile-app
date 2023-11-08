@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
   BackHandler,
+  Alert,
 } from "react-native";
 import CustomButton from "../../components/Button/Button";
 
@@ -40,6 +41,8 @@ import VerifyWindow from "./components/VerifyWindow";
 import { resetHomeLoaders } from "../../redux/slices/homeSlice";
 import { excludeLocation } from "../../redux/slices/excludeLocationSlice";
 import { checkExcludedLocation } from "../../events/checkExcludedLocations";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const EventDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -65,8 +68,11 @@ const EventDetail = ({ navigation, route }) => {
 
   const [isVerified, setIsVerified] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
+  const [picmodalVisible, setpicmodalVisible] = useState(false);
   const [excludeModalVisible, setExcludeModalVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [SelectedThumbnailImage, setSelectedThumbnailImage] = useState(false);
+  const [changingThumbnail, setChangingThumbnail] = useState(false);
 
   const closeMenu = () => {
     setMenuVisible(false);
@@ -286,12 +292,123 @@ const EventDetail = ({ navigation, route }) => {
   const renderPhotos = () => {
     return data.photos?.map((img, i) => (
       <TouchableOpacity
-        key={img.id}
+        onLongPress={() => handleLongPress(img)}
         style={[styles.photos, { width: imageWidth }]}
       >
         <EventImage imageUrl={img.url} imageStyles={{ borderRadius: 8 }} />
       </TouchableOpacity>
     ));
+  };
+
+  const handleLongPress = (img) => {
+    setSelectedThumbnailImage(img);
+
+    // Show the modal for changing the thumbnail
+    setpicmodalVisible(true);
+  };
+  const handleSetThumbnail = async () => {
+    try {
+      setChangingThumbnail(true);
+      // Get the user token from AsyncStorage
+      const userDetails = await AsyncStorage.getItem("utomea_user");
+      const userData = JSON.parse(userDetails);
+      const { token } = userData;
+
+      if (!SelectedThumbnailImage || !SelectedThumbnailImage.id) {
+        // Handle error, no image selected
+        return;
+      }
+
+      // Make a POST request to set the selected image as the event thumbnail
+      const apiUrl =
+        "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/events/set-hero-image";
+      const requestData = {
+        photoId: SelectedThumbnailImage.id,
+      };
+
+      console.log("idddddddddd-------", SelectedThumbnailImage.id);
+
+      const response = await axios.post(apiUrl, requestData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Check the response and handle success or error
+      if (response.status === 200) {
+        // Thumbnail image set successfully
+        console.log("Thumbnail image set successfully");
+        // Close the thumbnail modal
+        setpicmodalVisible(false);
+        Alert.alert("Thumbnail Updated Successfully");
+        setChangingThumbnail(false);
+      } else {
+        // Handle error, e.g., show an error message
+        console.error("Error setting thumbnail image:", response.data);
+      }
+    } catch (error) {
+      // Handle any exceptions or errors from the API request
+      console.error("Error setting thumbnail image:", error);
+    }
+  };
+
+  const renderThumbanailModal = () => {
+    return (
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={picmodalVisible}
+        onRequestClose={() => setpicmodalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modal}>
+            <Text
+              style={{
+                fontSize: 24,
+                lineHeight: 28,
+                fontWeight: "700",
+                color: "#FFFFFF",
+                marginVertical: 8,
+              }}
+            >
+              Change Thumbnail
+            </Text>
+            <Text
+              style={{
+                color: "#ADADAD",
+                textAlign: "center",
+                paddingHorizontal: 4,
+              }}
+            >
+              Do you want to set this image as the event thumbnail?
+            </Text>
+            <View
+              style={{
+                marginTop: 40,
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+                gap: 12,
+              }}
+            >
+              <CustomButton
+                disabled={changingThumbnail}
+                title="Cancel"
+                buttonStyle={{ backgroundColor: "#222222" }}
+                textStyle={{ color: "#FFFFFF" }}
+                onPress={() => setpicmodalVisible(false)}
+              />
+              <CustomButton
+                disabled={changingThumbnail}
+                isLoading={changingThumbnail}
+                title="Set as Thumbnail"
+                onPress={handleSetThumbnail}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+    );
   };
 
   useEffect(() => {
@@ -360,6 +477,7 @@ const EventDetail = ({ navigation, route }) => {
     <View style={styles.container}>
       {renderModal()}
       {renderExcludeModal()}
+      {renderThumbanailModal()}
 
       {/* Header */}
       <View style={{ zIndex: 999 }}>

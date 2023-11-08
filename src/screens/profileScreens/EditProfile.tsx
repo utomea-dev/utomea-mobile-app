@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
   Modal,
+  Keyboard,
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,6 +21,7 @@ import Delete from "../../assets/icons/delete.svg";
 import Picture from "../../assets/icons/Picture.svg";
 import BackDropMenu from "./Components/BackdropMenu";
 import { trimAndNormalizeSpaces } from "../../utils/helpers";
+import OverlayLoader from "../../components/Loaders/OverlayLoader";
 
 const getInitials = (name) => {
   if (!name) return "";
@@ -33,7 +35,7 @@ const getInitials = (name) => {
 const EditProfilePage = ({ navigation }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [nameloading, setNameLoading] = useState(false);
+  const [nameuploading, setNameuploading] = useState(false);
   const [newName, setNewName] = useState("");
   const [imageUri, setImageUri] = useState(null);
   const [isMenuVisible, setMenuVisible] = useState(false);
@@ -45,6 +47,7 @@ const EditProfilePage = ({ navigation }) => {
   const [newimage, setnewImage] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [isUpdateButtonDisabled, setUpdateButtonDisabled] = useState(true);
+  const [loaderLoading, setLoaderLoading] = useState(false);
 
   const fetchUserProfile = async () => {
     try {
@@ -88,12 +91,17 @@ const EditProfilePage = ({ navigation }) => {
         setNameerror("");
       }
 
+<<<<<<< HEAD
       if (newName.length > 30) {
         setNameerror("Name cannot be more than 30 characters.");
+=======
+      if (newName.length > 25) {
+        setNameerror("Name cannot be more than 25 characters.");
+>>>>>>> footer
         return;
       }
-      if (newName.length < 3) {
-        setNameerror("Name cannot be less than 3 characters.");
+      if (newName.length < 4) {
+        setNameerror("Name cannot be less than 4 characters.");
         return;
       }
       if (newName.match(/^\d/)) {
@@ -101,32 +109,45 @@ const EditProfilePage = ({ navigation }) => {
         return;
       }
 
-      if (newName !== userProfile.name && imageUri) {
-        setNameLoading(true);
-        setIsUploadingImage(true);
+      const isUpdateButtonEnabled = newName !== userProfile.name || newimage;
 
-        const updateImageUrl =
-          "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/upload-profile-pic";
+      if (isUpdateButtonEnabled) {
+        setUpdateButtonDisabled(true);
+        setLoaderLoading(true);
 
-        const formData = new FormData();
-        formData.append("profile_pic", {
-          uri: imageUri,
-          type: "image/jpeg",
-          name: imageUri,
-        });
+        if (newimage) {
+          Keyboard.dismiss();
+          setIsUploadingImage(true);
+          setUpdateButtonDisabled(true);
 
-        await axios.post(updateImageUrl, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+          console.log("imageeee------", imageUri);
 
+          const updateImageUrl =
+            "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/upload-profile-pic";
+
+          const formData = new FormData();
+          formData.append("profile_pic", {
+            uri: imageUri,
+            type: "image/jpeg",
+            name: imageUri,
+          });
+
+          await axios.post(updateImageUrl, formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+          setIsUploadingImage(false);
+          setnewImage(false);
+        }
+        setNameuploading(true);
+        Keyboard.dismiss();
         const updateNameUrl =
           "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
 
         const trimmedName = trimAndNormalizeSpaces(newName);
-        console.log("trimmedName", trimmedName);
         const nameData = {
           name: trimmedName,
         };
@@ -136,56 +157,17 @@ const EditProfilePage = ({ navigation }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setNameLoading(false);
-        setIsUploadingImage(false);
-        Alert.alert("Success", "Name and Image updated successfully!");
-      } else if (newName !== userProfile.name) {
-        setNameLoading(true);
-        // If only the name changes
-        const updateNameUrl =
-          "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
 
-        const trimmedName = trimAndNormalizeSpaces(newName);
-        const data = {
-          name: trimmedName,
-        };
-
-        await axios.put(updateNameUrl, data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setNameLoading(false);
-        Alert.alert("Success", "Name updated successfully!");
-      } else if (imageUri) {
-        // If only the photo changes
-        setIsUploadingImage(true);
-        console.log("imageeee------", imageUri);
-
-        const updateImageUrl =
-          "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/upload-profile-pic";
-
-        const formData = new FormData();
-        formData.append("profile_pic", {
-          uri: imageUri,
-          type: "image/jpeg",
-          name: imageUri,
-        });
-
-        await axios.post(updateImageUrl, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        setIsUploadingImage(false);
-        Alert.alert("Success", "Image updated successfully!");
+        setLoaderLoading(false);
+        setNameuploading(false);
       }
     } catch (error) {
       setIsUploadingImage(false);
       console.error("Error updating user profile:", error);
+      Alert.alert("Something Went Wrong Please Try again after some time");
     }
+    setLoaderLoading(false);
+    navigation.navigate("Profile/editProfile");
   };
 
   const selectImage = async () => {
@@ -276,6 +258,7 @@ const EditProfilePage = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {loaderLoading && <OverlayLoader />}
       <GeneralHeader title="Edit Profile" />
       {loading ? (
         <ActivityIndicator
@@ -288,7 +271,7 @@ const EditProfilePage = ({ navigation }) => {
       ) : userProfile ? (
         <View style={styles.profileContainer}>
           <View style={styles.profileImageContainer}>
-            {isUploadingImage || isLoadingImage ? (
+            {isLoadingImage ? (
               <ActivityIndicator size="large" color="#07AA8C" />
             ) : imageUri ? (
               <Image source={{ uri: imageUri }} style={styles.profileImage} />
@@ -348,13 +331,13 @@ const EditProfilePage = ({ navigation }) => {
           buttonStyle={{ backgroundColor: "#222222" }}
           textStyle={{ color: "#FFFFFF" }}
           containerStyle={styles.button}
+          disabled={isUploadingImage || nameuploading}
         />
         <CustomButton
           title="Update Profile"
-          disabled={!newimage && isUpdateButtonDisabled}
+          disabled={isUploadingImage || (isUpdateButtonDisabled && !newimage)}
           onPress={handleUpdateProfile}
           containerStyle={styles.button}
-          isLoading={nameloading}
         />
       </View>
       <Modal
@@ -375,6 +358,7 @@ const EditProfilePage = ({ navigation }) => {
                 buttonStyle={{ backgroundColor: "#222222" }}
                 textStyle={{ color: "#FFFFFF" }}
                 onPress={closeConfirmationModal}
+                disabled={setUpdateButtonDisabled}
               />
               <CustomButton
                 title="Yes, Delete"
