@@ -35,7 +35,7 @@ const getInitials = (name) => {
 const EditProfilePage = ({ navigation }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [nameloading, setNameLoading] = useState(false);
+  const [nameuploading, setNameuploading] = useState(false);
   const [newName, setNewName] = useState("");
   const [imageUri, setImageUri] = useState(null);
   const [isMenuVisible, setMenuVisible] = useState(false);
@@ -104,30 +104,45 @@ const EditProfilePage = ({ navigation }) => {
         return;
       }
 
-      if (newName !== userProfile.name && newimage) {
+      const isUpdateButtonEnabled = newName !== userProfile.name || newimage;
+
+      if (isUpdateButtonEnabled) {
+        setUpdateButtonDisabled(true);
         setLoaderLoading(true);
-        const updateImageUrl =
-          "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/upload-profile-pic";
 
-        const formData = new FormData();
-        formData.append("profile_pic", {
-          uri: imageUri,
-          type: "image/jpeg",
-          name: imageUri,
-        });
+        if (newimage) {
+          Keyboard.dismiss();
+          setIsUploadingImage(true);
+          setUpdateButtonDisabled(true);
 
-        await axios.post(updateImageUrl, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+          console.log("imageeee------", imageUri);
 
+          const updateImageUrl =
+            "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/upload-profile-pic";
+
+          const formData = new FormData();
+          formData.append("profile_pic", {
+            uri: imageUri,
+            type: "image/jpeg",
+            name: imageUri,
+          });
+
+          await axios.post(updateImageUrl, formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+          setIsUploadingImage(false);
+          setnewImage(false);
+        }
+        setNameuploading(true);
+        Keyboard.dismiss();
         const updateNameUrl =
           "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
 
         const trimmedName = trimAndNormalizeSpaces(newName);
-        console.log("trimmedName", trimmedName);
         const nameData = {
           name: trimmedName,
         };
@@ -137,68 +152,17 @@ const EditProfilePage = ({ navigation }) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setNameLoading(false);
-        setIsUploadingImage(false);
-        setnewImage(false);
-        setUpdateButtonDisabled(true);
-        Alert.alert("Success", "Profile Updated Successfully!");
-        Keyboard.dismiss();
+
         setLoaderLoading(false);
-      } else if (newName !== userProfile.name) {
-        setLoaderLoading(true);
-        setNameLoading(true);
-        // If only the name changes
-        const updateNameUrl =
-          "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/user-details";
-
-        const trimmedName = trimAndNormalizeSpaces(newName);
-        const data = {
-          name: trimmedName,
-        };
-
-        await axios.put(updateNameUrl, data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setNameLoading(false);
-        setUpdateButtonDisabled(true);
-        setLoaderLoading(true);
-        Alert.alert("Success", "Profile Updated Successfully!");
-        Keyboard.dismiss();
-      } else if (newimage) {
-        // If only the photo changes
-        setIsUploadingImage(true);
-        setLoaderLoading(true);
-        console.log("imageeee------", imageUri);
-
-        const updateImageUrl =
-          "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/upload-profile-pic";
-
-        const formData = new FormData();
-        formData.append("profile_pic", {
-          uri: imageUri,
-          type: "image/jpeg",
-          name: imageUri,
-        });
-
-        await axios.post(updateImageUrl, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        setLoaderLoading(false);
-        setIsUploadingImage(false);
-        Alert.alert("Success", "Profile updated successfully!");
-        setnewImage(false);
-        Keyboard.dismiss();
+        setNameuploading(false);
       }
     } catch (error) {
       setIsUploadingImage(false);
       console.error("Error updating user profile:", error);
+      Alert.alert("Something Went Wrong Please Try again after some time");
     }
     setLoaderLoading(false);
+    navigation.navigate("Profile/editProfile");
   };
 
   const selectImage = async () => {
@@ -362,10 +326,11 @@ const EditProfilePage = ({ navigation }) => {
           buttonStyle={{ backgroundColor: "#222222" }}
           textStyle={{ color: "#FFFFFF" }}
           containerStyle={styles.button}
+          disabled={isUploadingImage || nameuploading}
         />
         <CustomButton
           title="Update Profile"
-          disabled={!newimage && isUpdateButtonDisabled}
+          disabled={isUploadingImage || (isUpdateButtonDisabled && !newimage)}
           onPress={handleUpdateProfile}
           containerStyle={styles.button}
         />
@@ -388,6 +353,7 @@ const EditProfilePage = ({ navigation }) => {
                 buttonStyle={{ backgroundColor: "#222222" }}
                 textStyle={{ color: "#FFFFFF" }}
                 onPress={closeConfirmationModal}
+                disabled={setUpdateButtonDisabled}
               />
               <CustomButton
                 title="Yes, Delete"
