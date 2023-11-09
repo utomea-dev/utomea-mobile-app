@@ -26,15 +26,30 @@ function Excluded({
   return (
     <View style={styles.option}>
       <View style={styles.textContainer}>
-        <Text style={[styles.optionText, titleStyle]}>{truncatedTitle}</Text>
+        <Text
+          numberOfLines={1}
+          ellipsizeMode="tail"
+          style={[styles.optionText, titleStyle]}
+        >
+          {truncatedTitle}
+        </Text>
         {subtitle && (
-          <Text style={[styles.subtitleText, subtitleStyle]}>
+          <Text
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            style={[styles.subtitleText, subtitleStyle]}
+          >
             {truncatedSubtitle}
           </Text>
         )}
       </View>
       <TouchableOpacity style={[containerStyle]} onPress={onPress}>
-        <View>
+        <View
+          style={{
+            paddingVertical: 26,
+            paddingLeft: 15,
+          }}
+        >
           <Image
             source={Menu}
             style={{
@@ -53,11 +68,10 @@ const styles = StyleSheet.create({
   option: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 17,
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 1,
     borderBottomColor: "#222222",
     justifyContent: "space-between",
+    gap: 6,
   },
   iconContainer: {
     marginRight: 12,

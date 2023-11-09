@@ -354,7 +354,7 @@ const EditProfilePage = ({ navigation }) => {
                 buttonStyle={{ backgroundColor: "#222222" }}
                 textStyle={{ color: "#FFFFFF" }}
                 onPress={closeConfirmationModal}
-                disabled={setUpdateButtonDisabled}
+                disabled={deleteLoading}
               />
               <CustomButton
                 title="Yes, Delete"

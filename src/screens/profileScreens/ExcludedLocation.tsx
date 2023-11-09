@@ -112,7 +112,11 @@ const ExcludedLocation = ({ navigation }) => {
   };
 
   const showMenu = (location) => {
-    setMenuVisible((prevVisible) => !prevVisible);
+    if (activeExcludedMenu === location) {
+      setMenuVisible((prevVisible) => !prevVisible);
+    } else {
+      setMenuVisible(() => true);
+    }
     setActiveExcludedMenu(location);
     setSelectedLocationData(location);
   };
@@ -181,9 +185,10 @@ const ExcludedLocation = ({ navigation }) => {
                     style={{
                       zIndex: 999,
                       width: 130,
-                      height: 50,
+                      height: "80%",
                       position: "absolute",
-                      left: 180,
+                      top: 2,
+                      right: 35,
                     }}
                   >
                     <BackDropMenu
