@@ -138,7 +138,7 @@ const HomeFeed = ({ navigation }) => {
             {!!unverifiedCount && (
               <View style={styles.notificationContainer}>
                 <Text style={styles.notification}>
-                  {unverifiedCount > 99 ? 99 : unverifiedCount}
+                  {unverifiedCount > 99 ? "99+" : unverifiedCount}
                 </Text>
               </View>
             )}
@@ -278,11 +278,11 @@ const styles = StyleSheet.create({
     color: "#F2F2F2",
     height: 18,
     aspectRatio: 1,
-    fontSize: 10,
+    fontSize: 9,
     lineHeight: 12,
-    fontWeight: "500",
+    fontWeight: "700",
     textAlign: "center",
-    marginTop: 5,
+    marginTop: 6,
   },
 });
 
