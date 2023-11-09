@@ -1,14 +1,15 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
-const BackDropMenu = ({ navigation, menu, onDelete }) => {
+const BackDropMenu = ({ navigation, menu, onDelete, isdisabled }) => {
   return (
     <View style={styles.container}>
       {menu.map((m) => (
         <TouchableOpacity
           key={m.name}
           onPress={() => (m.name === "Delete" ? onDelete() : m.onPress())}
-          style={styles.menuItem}
+          style={[styles.menuItem, m.disabled && styles.disabledItem]}
+          disabled={m.disabled}
         >
           {m?.icon && m.icon()}
           <Text style={{ color: "#ADADAD" }}>{m?.name}</Text>
@@ -28,6 +29,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 7,
     backgroundColor: "#3B3B3B",
+  },
+  disabledItem: {
+    opacity: 0.5,
   },
   menuItem: {
     color: "#FFFFFF",

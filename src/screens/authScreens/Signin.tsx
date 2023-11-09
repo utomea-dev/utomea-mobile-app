@@ -253,17 +253,6 @@ const Signin = ({ navigation }) => {
       </View>
 
       <View style={{ gap: 10, marginBottom: 20 }}>
-        <View style={{ paddingVertical: 32 }}>
-          <Text style={{ color: "#ADADAD", textAlign: "center" }}>
-            Don't have an account?{" "}
-            <Text
-              style={{ color: "#FFFFFF", textDecorationLine: "underline" }}
-              onPress={handleSignupLink}
-            >
-              Sign Up
-            </Text>
-          </Text>
-        </View>
         <GoogleSocialSignin />
 
         <FacebookSocialSignin />
@@ -275,6 +264,17 @@ const Signin = ({ navigation }) => {
           buttonStyle={styles.socialButton}
           textStyle={{ color: "#FFFFFF" }}
         />
+        <View style={{ paddingVertical: 32 }}>
+          <Text style={{ color: "#ADADAD", textAlign: "center" }}>
+            Don't have an account?{" "}
+            <Text
+              style={{ color: "#FFFFFF", textDecorationLine: "underline" }}
+              onPress={handleSignupLink}
+            >
+              Sign Up
+            </Text>
+          </Text>
+        </View>
       </View>
     </ScrollView>
   );

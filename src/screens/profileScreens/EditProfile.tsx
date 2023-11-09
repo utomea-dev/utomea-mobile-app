@@ -240,6 +240,7 @@ const EditProfilePage = ({ navigation }) => {
       name: "Remove",
       onPress: showModal,
       icon: () => <Delete width={20} height={20} />,
+      disabled: !userProfile || (!imageUri && !userProfile.profile_pic),
     },
 
     {

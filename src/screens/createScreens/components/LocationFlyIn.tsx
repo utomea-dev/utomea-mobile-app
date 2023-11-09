@@ -72,13 +72,14 @@ const LocationFlyIn = ({
           currentLocationLabel={
             <View
               style={{
-                position: "absolute",
-                height: 46,
+                flex: 1,
+                // position: "absolute",
+                // height: 46,
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
                 gap: 10,
-                width: "100%",
+                width: "115%",
               }}
             >
               <Text style={{ color: "#FFFFFF", marginLeft: 20 }}>
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
     },
     loader: {
-      position: "absolute",
+      // position: "absolute",
       width: "100%",
       height: 60,
       marginVertical: 140,
@@ -116,6 +117,7 @@ const styles = StyleSheet.create({
     predefinedPlacesDescription: {
       //   position: "absolute",
       width: "100%",
+
       //   color: "#FFFFFF",
       //   fontWeight: 500,
       //   backgroundColor: "transparent",
