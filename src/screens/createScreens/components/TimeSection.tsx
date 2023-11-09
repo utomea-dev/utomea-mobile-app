@@ -3,12 +3,12 @@ import React from "react";
 import Label from "../../../components/Label/Label";
 import CustomButton from "../../../components/Button/Button";
 
-import CalendarIcon from "../../../assets/icons/calendar_small.svg";
+import ClockIcon from "../../../assets/icons/clock.svg";
 
-const DateSection = ({ onPress = () => {}, date }) => {
+const TimeSection = ({ onPress = () => {}, time }) => {
   return (
     <View style={[styles.sectionTitle, { marginVertical: 20 }]}>
-      <Label label={"Date"} labelStyle={{ marginRight: 10 }} />
+      <Label label={"Time"} labelStyle={{ marginRight: 10 }} />
       <CustomButton
         onPress={onPress}
         title={
@@ -20,8 +20,8 @@ const DateSection = ({ onPress = () => {}, date }) => {
               gap: 8,
             }}
           >
-            <Text style={styles.fontStyle}>{date}</Text>
-            <CalendarIcon />
+            <Text style={styles.fontStyle}>{time}</Text>
+            <ClockIcon />
           </View>
         }
         buttonStyle={{
@@ -34,7 +34,7 @@ const DateSection = ({ onPress = () => {}, date }) => {
   );
 };
 
-export default DateSection;
+export default TimeSection;
 
 const styles = StyleSheet.create({
   sectionTitle: {

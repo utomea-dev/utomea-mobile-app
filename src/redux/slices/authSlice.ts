@@ -4,6 +4,8 @@ import makeRequest from "../../api";
 import {
   socialLoginSignupUrl,
   signupUrl,
+  verifyOtpUrl,
+  sendVerificationEmailUrl,
   signinUrl,
   updateUserUrl,
   forgotPasswordUrl,
@@ -29,6 +31,10 @@ const initialState = {
   signupSuccess: false,
   signupError: "",
   signupLoading: false,
+
+  verifySuccess: false,
+  verifyError: "",
+  verifyLoading: false,
 
   signinSuccess: false,
   signinError: "",
@@ -77,6 +83,57 @@ export const signupUser = createAsyncThunk(
       const response = await makeRequest(signupUrl(), "POST", body, {});
       await AsyncStorage.setItem("utomea_user", JSON.stringify(response.data));
 
+      const body2 = { email: data.email };
+      const response2 = await makeRequest(
+        sendVerificationEmailUrl(),
+        "POST",
+        body2,
+        {}
+      );
+      // dispatch(sendVerificationEmail(body2));
+
+      return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+);
+
+export const sendVerificationEmail = createAsyncThunk(
+  "user/sendVerificationEmail",
+  async (data: object, { dispatch }) => {
+    try {
+      const body = { email: data.email };
+      const response = await makeRequest(
+        sendVerificationEmailUrl(),
+        "POST",
+        body,
+        {}
+      );
+      return response.data;
+    } catch (error) {
+      handleError(error);
+    }
+  }
+);
+
+export const verifyOtp = createAsyncThunk(
+  "user/verifyOtp",
+  async (data: object, { dispatch }) => {
+    try {
+      const body = data;
+
+      const response = await makeRequest(verifyOtpUrl(), "POST", body, {});
+      if (response.status === 200) {
+        const storageUser = await AsyncStorage.getItem("utomea_user");
+        const parsed = JSON.parse(storageUser);
+        let cloneUser = { ...parsed };
+        cloneUser = {
+          ...cloneUser,
+          user: { ...cloneUser.user, is_verified: true },
+        };
+        await AsyncStorage.setItem("utomea_user", JSON.stringify(cloneUser));
+      }
       return response.data;
     } catch (error) {
       handleError(error);
@@ -91,7 +148,15 @@ export const signinUser = createAsyncThunk(
       const body = data;
       const response = await makeRequest(signinUrl(), "POST", body, {});
       await AsyncStorage.setItem("utomea_user", JSON.stringify(response.data));
-
+      if (response.data.user.is_verified === false) {
+        const body2 = { email: data.email };
+        const response2 = await makeRequest(
+          sendVerificationEmailUrl(),
+          "POST",
+          body2,
+          {}
+        );
+      }
       return response.data;
     } catch (error) {
       handleError(error);
@@ -176,6 +241,9 @@ const authSLice = createSlice({
       state.signupSuccess = false;
       state.signupError = "";
       state.signupLoading = false;
+      state.verifySuccess = false;
+      state.verifyError = "";
+      state.verifyLoading = false;
       state.signinSuccess = false;
       state.signinError = "";
       state.signinLoading = false;
@@ -223,6 +291,22 @@ const authSLice = createSlice({
       state.signupLoading = false;
       state.signupSuccess = false;
       state.signupError = action.error.message || "";
+    });
+
+    builder.addCase(verifyOtp.pending, (state) => {
+      state.verifyLoading = true;
+      state.verifySuccess = false;
+      state.verifyError = "";
+    });
+    builder.addCase(verifyOtp.fulfilled, (state, action) => {
+      state.verifyLoading = false;
+      state.verifySuccess = true;
+      state.verifyError = "";
+    });
+    builder.addCase(verifyOtp.rejected, (state, action) => {
+      state.verifyLoading = false;
+      state.verifySuccess = false;
+      state.verifyError = action.error.message || "";
     });
 
     builder.addCase(signinUser.pending, (state) => {

@@ -110,6 +110,81 @@ export const convertToAMPM = (timestamp) => {
   return timeInAMPM;
 };
 
+export const isTimeValid = (time1, time2) => {
+  const parseTime = (time) => {
+    const [hours, minutes, ampm] = time.split("-");
+
+    let totalMinutes = parseInt(hours, 10) * 60 + parseInt(minutes, 10);
+    if (ampm.toLowerCase() === "pm") {
+      totalMinutes += 12 * 60;
+    }
+
+    return totalMinutes;
+  };
+
+  const minutes1 = parseTime(time1);
+  const minutes2 = parseTime(time2);
+
+  return minutes1 >= minutes2;
+};
+
+export const convertTimeToISOString = (time) => {
+  const [hours, minutes, ampm] = time.split("-");
+
+  let isoHours = parseInt(hours, 10);
+  const isoMinutes = parseInt(minutes, 10);
+
+  if (ampm.toLowerCase() === "pm" && isoHours !== 12) {
+    isoHours += 12;
+  } else if (ampm.toLowerCase() === "am" && isoHours === 12) {
+    isoHours = 0;
+  }
+
+  const isoTime = `${isoHours.toString().padStart(2, "0")}:${isoMinutes
+    .toString()
+    .padStart(2, "0")}:00.000Z`;
+
+  return isoTime;
+};
+
+export const convertISOStringToTime = (isoTime) => {
+  const date = new Date(isoTime);
+
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+
+  const ampm = hours >= 12 ? "pm" : "am";
+
+  const formattedHours = hours % 12 || 12;
+
+  const time = `${formattedHours}-${minutes
+    .toString()
+    .padStart(2, "0")}-${ampm}`;
+
+  return time;
+};
+
+export const convertISOStringToTime2 = (isoTime) => {
+  const date = new Date(isoTime);
+
+  // Get hours, minutes, and seconds from the Date object
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+
+  // Determine whether it's AM or PM
+  const ampm = hours >= 12 ? "pm" : "am";
+
+  // Convert hours to 12-hour format
+  const formattedHours = hours % 12 || 12; // Use modulo and fallback to 12 if 0
+
+  // Format the time as "hh:mm am/pm"
+  const time = `${formattedHours}:${minutes
+    .toString()
+    .padStart(2, "0")} ${ampm}`;
+
+  return time;
+};
+
 export const showNotification = ({ message }) => {
   return null;
   if (Platform.OS === "android") {

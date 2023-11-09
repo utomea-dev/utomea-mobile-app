@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   View,
   Alert,
@@ -8,6 +9,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   BackHandler,
+  ScrollView,
 } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
@@ -28,6 +30,7 @@ const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const {
+    // user,
     signinSuccess,
     signinError,
     socialError,
@@ -96,9 +99,13 @@ const Signin = ({ navigation }) => {
 
   const checkAuth = async () => {
     try {
-      const user = await useAuth();
-      if (user) {
-        if (user.privacy_policy_accepted) {
+      const storageUser = await useAuth();
+      if (storageUser) {
+        if (!storageUser.is_verified) {
+          navigation.dispatch(
+            StackActions.replace("VerifyEmail", { params: "comingFromSignin" })
+          );
+        } else if (storageUser.privacy_policy_accepted) {
           navigation.dispatch(
             StackActions.replace("MainTabs", { params: "comingFromSignin" })
           );
@@ -150,16 +157,36 @@ const Signin = ({ navigation }) => {
   }, [signinError, socialError]);
 
   useEffect(() => {
+    clear();
     if (signinSuccess) {
-      clear();
-      navigation.dispatch(
-        StackActions.replace("MainTabs", { params: "comingFromSignin" })
-      );
+      AsyncStorage.getItem("utomea_user").then((str) => {
+        if (str !== "Unknown") {
+          const user = JSON.parse(str).user;
+          if (!user?.is_verified) {
+            navigation.navigate("VerifyEmail");
+            return;
+          } else if (!user?.privacy_policy_accepted) {
+            navigation.dispatch(
+              StackActions.replace("UserDetails", {
+                params: "comingFromSignin",
+              })
+            );
+          } else {
+            navigation.dispatch(
+              StackActions.replace("MainTabs", { params: "comingFromSignin" })
+            );
+          }
+        }
+      });
     }
   }, [signinSuccess]);
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+    >
       {socialLoading && <OverlayLoader />}
       <View style={styles.logoContainer}>
         <Logo />
@@ -249,7 +276,7 @@ const Signin = ({ navigation }) => {
           textStyle={{ color: "#FFFFFF" }}
         />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

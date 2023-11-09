@@ -68,7 +68,7 @@ const GoogleSocialSignin = () => {
   }, [socialError]);
 
   useEffect(() => {
-    if (user.user?.name) {
+    if (user?.user?.name) {
       navigation.dispatch(
         StackActions.replace("MainTabs", { params: "comingFromSocialSignin" })
       );

@@ -97,7 +97,7 @@ const FacebookSocialSignin = () => {
   }, [socialError]);
 
   useEffect(() => {
-    if (user.user?.name) {
+    if (user?.user?.name) {
       navigation.dispatch(
         StackActions.replace("MainTabs", { params: "comingFromSocialSignin" })
       );
@@ -113,7 +113,7 @@ const FacebookSocialSignin = () => {
       <CustomButton
         Icon={Facebook}
         disabled={socialLoading}
-        title="Sign Up with Facebook"
+        title="Log In with Facebook"
         onPress={signInWithFacebook}
         buttonStyle={styles.socialButton}
         textStyle={{ color: "#FFFFFF" }}

@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { View, Alert, Text, StyleSheet, BackHandler } from "react-native";
+import {
+  View,
+  Alert,
+  Text,
+  StyleSheet,
+  BackHandler,
+  ScrollView,
+} from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
 import { StackActions } from "@react-navigation/native";
@@ -10,12 +17,14 @@ import FacebookSocialSignin from "./components/FacebookSocialSignin";
 import OverlayLoader from "../../components/Loaders/OverlayLoader";
 
 import Logo from "../../assets/images/logo.svg";
+import CheckIcon from "../../assets/icons/check_cyan.svg";
 import GoogleIcon from "../../assets/icons/google.svg";
 import Facebook from "../../assets/icons/facebook.svg";
 import Apple from "../../assets/icons/apple.svg";
 
 import { reset, signupUser } from "../../redux/slices/authSlice";
 import { useAuth } from "../../hooks/useAuth";
+import Label from "../../components/Label/Label";
 
 const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -30,6 +39,8 @@ const Signup = ({ navigation }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordsMatch, setPasswordsMatch] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [validationError, setValidationError] = useState("");
@@ -37,6 +48,8 @@ const Signup = ({ navigation }) => {
   const clear = () => {
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
+    setPasswordsMatch("");
     setEmailError("");
     setPasswordError("");
     setValidationError("");
@@ -61,6 +74,7 @@ const Signup = ({ navigation }) => {
   };
 
   const handleSignup = async () => {
+    // navigation.dispatch(StackActions.replace("VerifyEmail"));
     clearErrors();
     let errorFlag = false;
 
@@ -74,6 +88,15 @@ const Signup = ({ navigation }) => {
         () => "Please choose a password of atleast 6 characters"
       );
       errorFlag = true;
+    }
+
+    if (password !== confirmPassword) {
+      setPasswordError(() => "Passwords do not match");
+      setPasswordsMatch(() => "");
+
+      errorFlag = true;
+    } else {
+      setPasswordsMatch(() => "Passwords match");
     }
 
     if (!errorFlag) {
@@ -95,7 +118,9 @@ const Signup = ({ navigation }) => {
     try {
       const user = await useAuth();
       if (user) {
-        if (user.privacy_policy_accepted) {
+        if (!user.is_verified) {
+          navigation.navigate("VerifyEmail");
+        } else if (user.privacy_policy_accepted) {
           navigation.dispatch(StackActions.replace("MainTabs"));
         } else {
           navigation.dispatch(StackActions.replace("UserDetails"));
@@ -147,12 +172,16 @@ const Signup = ({ navigation }) => {
   useEffect(() => {
     if (signupSuccess) {
       clear();
-      navigation.dispatch(StackActions.replace("UserDetails"));
+      navigation.navigate("VerifyEmail");
     }
   }, [signupSuccess]);
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      style={styles.container}
+    >
       {socialLoading && <OverlayLoader />}
       <View style={styles.logoContainer}>
         <Logo />
@@ -169,7 +198,7 @@ const Signup = ({ navigation }) => {
         containerStyle={{ marginBottom: 16 }}
       />
       <CustomInput
-        label="Choose a password"
+        label="Choose a Password"
         editable={!signupLoading}
         placeholder="Enter your password"
         placeholderTextColor="grey"
@@ -179,6 +208,25 @@ const Signup = ({ navigation }) => {
         onChangeText={(text) => setPassword(text)}
         containerStyle={{ marginBottom: 16 }}
       />
+
+      <CustomInput
+        label="Confirm Password"
+        editable={!signupLoading}
+        placeholder="Re-enter your password"
+        placeholderTextColor="grey"
+        validationError={passwordError}
+        secureTextEntry={true}
+        value={confirmPassword}
+        onChangeText={(text) => setConfirmPassword(text)}
+        containerStyle={{ marginBottom: 16 }}
+      />
+
+      {passwordsMatch && (
+        <View style={styles.passwordsMatch}>
+          <CheckIcon />
+          <Label label={passwordsMatch} labelStyle={{ color: "#58DAC3" }} />
+        </View>
+      )}
 
       <CustomButton
         isLoading={signupLoading}
@@ -221,7 +269,7 @@ const Signup = ({ navigation }) => {
           </Text>
         </Text>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -247,6 +295,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#FC7A1B",
     textAlign: "left",
+  },
+  passwordsMatch: {
+    flexDirection: "row",
+    gap: 6,
+    marginBottom: 16,
   },
   or: {
     fontSize: 10,

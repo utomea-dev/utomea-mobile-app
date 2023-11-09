@@ -17,6 +17,7 @@ import CustomButton from "../../components/Button/Button";
 import KebabMenu from "../../assets/icons/kebab_menu.svg";
 import Star from "../../assets/icons/star.svg";
 import LocationIcon from "../../assets/icons/location.svg";
+import DurationIcon from "../../assets/icons/clock_grey.svg";
 import TagIcon from "../../assets/icons/tag.svg";
 import Edit from "../../assets/icons/edit_gray.svg";
 import Delete from "../../assets/icons/delete.svg";
@@ -25,6 +26,7 @@ import Exclude from "../../assets/icons/exclude.svg";
 import GeneralHeader from "../../components/Header/GeneralHeader";
 import {
   calculateDuration,
+  convertISOStringToTime2,
   convertToAMPM,
   formatDate,
 } from "../../utils/helpers";
@@ -531,7 +533,7 @@ const EventDetail = ({ navigation, route }) => {
             </Text>
             <Divider dividerStyle={styles.divider} />
             <Text style={styles.eventDate}>
-              {convertToAMPM(data.begin_timestamp)}
+              {convertISOStringToTime2(data.begin_timestamp)}
             </Text>
 
             {data?.category !== null && (
@@ -541,16 +543,16 @@ const EventDetail = ({ navigation, route }) => {
             <Text style={styles.eventDate}>{data?.category?.name}</Text>
           </View>
 
-          {/* Duration */}
-          <View style={styles.section}>
-            <Text style={styles.eventDate}>
-              Duration -{" "}
-              {calculateDuration(data.begin_timestamp, data.end_timestamp)}
-            </Text>
-          </View>
-
           {/* location and tags */}
           <View style={styles.tagsContainer}>
+            {/* Duration */}
+            <View style={styles.flex}>
+              <DurationIcon />
+              <Text style={styles.textStyle}>
+                Duration -{" "}
+                {calculateDuration(data.begin_timestamp, data.end_timestamp)}
+              </Text>
+            </View>
             {/* Location */}
             <View style={[styles.flex]}>
               <LocationIcon />

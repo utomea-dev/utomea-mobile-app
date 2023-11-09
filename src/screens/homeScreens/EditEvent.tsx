@@ -31,11 +31,19 @@ import { EVENT_TYPES, MONTHS } from "../../constants/constants";
 import {
   resetHome,
   setEndDate,
+  setEndTime,
   setStartDate,
+  setStartTime,
 } from "../../redux/slices/homeSlice";
 import { StackActions, useFocusEffect } from "@react-navigation/native";
 import { editEvent } from "../../redux/slices/eventDetailSlice";
 import OverlayLoader from "../../components/Loaders/OverlayLoader";
+import {
+  convertISOStringToTime,
+  convertTimeToISOString,
+} from "../../utils/helpers";
+import TimeFlyIn from "../createScreens/components/TimeFlyIn";
+import TimeSection from "../createScreens/components/TimeSection";
 
 const categories = [
   {
@@ -87,7 +95,8 @@ const categories = [
 const EditEvent = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
-  const { startDateString, endDateString } = useSelector((state) => state.home);
+  const { startDateString, endDateString, startTimeString, endTimeString } =
+    useSelector((state) => state.home);
   const {
     eventDetail: data,
     editEventLoading,
@@ -111,9 +120,8 @@ const EditEvent = ({ navigation, route }) => {
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
   const [rating, setRating] = useState(0);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
   const [dateFlyInVisible, setDateFlyInVisible] = useState(false);
+  const [timeFlyInVisible, setTimeFlyInVisible] = useState(false);
   const [locationFlyInVisible, setLocationFlyInVisible] = useState(false);
 
   // error states
@@ -134,8 +142,8 @@ const EditEvent = ({ navigation, route }) => {
       setDescription(() => data.description);
       setTags(() => data.tags || []);
       setRating(() => data.rating || 0);
-      setStartTime(() => data.begin_timestamp.split("T")[1]);
-      setEndTime(() => data.end_timestamp.split("T")[1]);
+      // setStartTime(() => data.begin_timestamp.split("T")[1]);
+      // setEndTime(() => data.end_timestamp.split("T")[1]);
       dispatch(
         setStartDate({
           key: "year",
@@ -170,6 +178,44 @@ const EditEvent = ({ navigation, route }) => {
         setEndDate({
           key: "date",
           value: data.end_timestamp.split("T")[0].split("-")[2],
+        })
+      );
+
+      // setting time in store
+      dispatch(
+        setStartTime({
+          key: "hours",
+          value: convertISOStringToTime(data.begin_timestamp).split("-")[0],
+        })
+      );
+      dispatch(
+        setStartTime({
+          key: "minutes",
+          value: convertISOStringToTime(data.begin_timestamp).split("-")[1],
+        })
+      );
+      dispatch(
+        setStartTime({
+          key: "ampm",
+          value: convertISOStringToTime(data.begin_timestamp).split("-")[2],
+        })
+      );
+      dispatch(
+        setEndTime({
+          key: "hours",
+          value: convertISOStringToTime(data.end_timestamp).split("-")[0],
+        })
+      );
+      dispatch(
+        setEndTime({
+          key: "minutes",
+          value: convertISOStringToTime(data.end_timestamp).split("-")[1],
+        })
+      );
+      dispatch(
+        setEndTime({
+          key: "ampm",
+          value: convertISOStringToTime(data.end_timestamp).split("-")[2],
         })
       );
     }
@@ -207,6 +253,10 @@ const EditEvent = ({ navigation, route }) => {
 
   const handleDatePress = () => {
     showFlyIn(setDateFlyInVisible);
+  };
+
+  const handleTimePress = () => {
+    showFlyIn(setTimeFlyInVisible);
   };
 
   const handleLocationPress = () => {
@@ -271,8 +321,12 @@ const EditEvent = ({ navigation, route }) => {
     const body = {
       latitude,
       longitude,
-      begin_timestamp: `${startDateString}T${startTime}`,
-      end_timestamp: `${endDateString}T${endTime}`,
+      begin_timestamp: `${startDateString}T${convertTimeToISOString(
+        startTimeString
+      )}`,
+      end_timestamp: `${endDateString}T${convertTimeToISOString(
+        endTimeString
+      )}`,
       title: title.trim().replace(/\s+/g, " "),
       description,
       location,
@@ -335,6 +389,48 @@ const EditEvent = ({ navigation, route }) => {
     );
   };
 
+  const timeOnClose = () => {
+    hideFlyIn(setTimeFlyInVisible);
+    const startTimeSplit = startTimeString.split("-");
+    const endTimeSplit = endTimeString.split("-");
+    dispatch(
+      setStartTime({
+        key: "hours",
+        value: startTimeSplit[0],
+      })
+    );
+    dispatch(
+      setStartTime({
+        key: "minutes",
+        value: startTimeSplit[1],
+      })
+    );
+    dispatch(
+      setStartTime({
+        key: "ampm",
+        value: startTimeSplit[2],
+      })
+    );
+    dispatch(
+      setEndTime({
+        key: "hours",
+        value: endTimeSplit[0],
+      })
+    );
+    dispatch(
+      setEndTime({
+        key: "minutes",
+        value: endTimeSplit[1],
+      })
+    );
+    dispatch(
+      setEndTime({
+        key: "ampm",
+        value: endTimeSplit[2],
+      })
+    );
+  };
+
   const renderDateFlyIn = () => {
     return (
       <Modal
@@ -346,6 +442,22 @@ const EditEvent = ({ navigation, route }) => {
         <DateFlyIn
           onClose={dateOnClose}
           closeOnly={() => hideFlyIn(setDateFlyInVisible)}
+        />
+      </Modal>
+    );
+  };
+
+  const renderTimeFlyIn = () => {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={timeFlyInVisible}
+        onRequestClose={() => hideFlyIn(setTimeFlyInVisible)}
+      >
+        <TimeFlyIn
+          onClose={timeOnClose}
+          closeOnly={() => hideFlyIn(setTimeFlyInVisible)}
         />
       </Modal>
     );
@@ -419,6 +531,7 @@ const EditEvent = ({ navigation, route }) => {
       {renderloaderOverlay()}
       {renderLocationFlyIn()}
       {renderDateFlyIn()}
+      {renderTimeFlyIn()}
 
       <GeneralHeader
         title="Edit Event"
@@ -457,6 +570,13 @@ const EditEvent = ({ navigation, route }) => {
           date={`${MONTHS[endDateString?.split("-")[1]]?.long} ${
             endDateString?.split("-")[2]
           }, ${endDateString?.split("-")[0]}`}
+        />
+        <Divider />
+        <TimeSection
+          onPress={handleTimePress}
+          time={`${endTimeString.split("-")[0]}:${
+            endTimeString.split("-")[1]
+          } ${endTimeString.split("-")[2]}`}
         />
         <Divider />
         <LocationSection

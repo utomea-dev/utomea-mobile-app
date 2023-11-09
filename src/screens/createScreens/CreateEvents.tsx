@@ -33,10 +33,15 @@ import {
   resetHome,
   setDateString,
   setEndDate,
+  setEndTime,
   setStartDate,
+  setStartTime,
 } from "../../redux/slices/homeSlice";
 import { StackActions, useFocusEffect } from "@react-navigation/native";
 import OverlayLoader from "../../components/Loaders/OverlayLoader";
+import TimeSection from "./components/TimeSection";
+import TimeFlyIn from "./components/TimeFlyIn";
+import { convertTimeToISOString } from "../../utils/helpers";
 
 const categories = [
   {
@@ -97,6 +102,8 @@ const CreateEvent = ({ navigation, route }) => {
     uploadImageError,
     startDateString,
     endDateString,
+    startTimeString,
+    endTimeString,
   } = useSelector((state) => state.home);
   const { startDate, endDate } = useSelector((state) => state.home);
   const { year: startYear, month: startMonth, date: startDay } = startDate;
@@ -113,6 +120,7 @@ const CreateEvent = ({ navigation, route }) => {
   const [tags, setTags] = useState([]);
   const [rating, setRating] = useState(0);
   const [dateFlyInVisible, setDateFlyInVisible] = useState(false);
+  const [timeFlyInVisible, setTimeFlyInVisible] = useState(false);
   const [locationFlyInVisible, setLocationFlyInVisible] = useState(false);
 
   // error states
@@ -167,6 +175,10 @@ const CreateEvent = ({ navigation, route }) => {
 
   const handleDatePress = () => {
     showFlyIn(setDateFlyInVisible);
+  };
+
+  const handleTimePress = () => {
+    showFlyIn(setTimeFlyInVisible);
   };
 
   const handleLocationPress = () => {
@@ -234,8 +246,12 @@ const CreateEvent = ({ navigation, route }) => {
       event_type: EVENT_TYPES.MANUAL,
       latitude,
       longitude,
-      begin_timestamp: startDateString,
-      end_timestamp: endDateString,
+      begin_timestamp: `${startDateString}T${convertTimeToISOString(
+        startTimeString
+      )}`,
+      end_timestamp: `${endDateString}T${convertTimeToISOString(
+        endTimeString
+      )}`,
       title: title.trim().replace(/\s+/g, " "),
       description,
       location,
@@ -289,6 +305,48 @@ const CreateEvent = ({ navigation, route }) => {
     );
   };
 
+  const timeOnClose = () => {
+    hideFlyIn(setTimeFlyInVisible);
+    const startTimeSplit = startTimeString.split("-");
+    const endTimeSplit = endTimeString.split("-");
+    dispatch(
+      setStartTime({
+        key: "hours",
+        value: startTimeSplit[0],
+      })
+    );
+    dispatch(
+      setStartTime({
+        key: "minutes",
+        value: startTimeSplit[1],
+      })
+    );
+    dispatch(
+      setStartTime({
+        key: "ampm",
+        value: startTimeSplit[2],
+      })
+    );
+    dispatch(
+      setEndTime({
+        key: "hours",
+        value: endTimeSplit[0],
+      })
+    );
+    dispatch(
+      setEndTime({
+        key: "minutes",
+        value: endTimeSplit[1],
+      })
+    );
+    dispatch(
+      setEndTime({
+        key: "ampm",
+        value: endTimeSplit[2],
+      })
+    );
+  };
+
   const renderDateFlyIn = () => {
     return (
       <Modal
@@ -300,6 +358,22 @@ const CreateEvent = ({ navigation, route }) => {
         <DateFlyIn
           onClose={dateOnClose}
           closeOnly={() => hideFlyIn(setDateFlyInVisible)}
+        />
+      </Modal>
+    );
+  };
+
+  const renderTimeFlyIn = () => {
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={timeFlyInVisible}
+        onRequestClose={() => hideFlyIn(setTimeFlyInVisible)}
+      >
+        <TimeFlyIn
+          onClose={timeOnClose}
+          closeOnly={() => hideFlyIn(setTimeFlyInVisible)}
         />
       </Modal>
     );
@@ -354,6 +428,7 @@ const CreateEvent = ({ navigation, route }) => {
       {(createEventLoading || uploadImageLoading) && <OverlayLoader />}
       {renderLocationFlyIn()}
       {renderDateFlyIn()}
+      {renderTimeFlyIn()}
       <GeneralHeader
         title="Create an Event"
         CTA={() => (
@@ -393,6 +468,13 @@ const CreateEvent = ({ navigation, route }) => {
           date={`${MONTHS[endDateString?.split("-")[1]]?.long} ${
             endDateString.split("-")[2]
           }, ${endDateString.split("-")[0]}`}
+        />
+        <Divider />
+        <TimeSection
+          onPress={handleTimePress}
+          time={`${endTimeString.split("-")[0]}:${
+            endTimeString.split("-")[1]
+          } ${endTimeString.split("-")[2]}`}
         />
         <Divider />
         <LocationSection
