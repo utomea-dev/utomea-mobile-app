@@ -20,13 +20,20 @@ import Apple from "../../assets/icons/apple.svg";
 
 import { reset, signinUser } from "../../redux/slices/authSlice";
 import { useAuth } from "../../hooks/useAuth";
+import GoogleSocialSignin from "./components/GoogleSocialSignin";
+import FacebookSocialSignin from "./components/FacebookSocialSignin";
+import OverlayLoader from "../../components/Loaders/OverlayLoader";
 
 const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { signinSuccess, signinError, signinLoading } = useSelector(
-    (state) => state.auth
-  );
+  const {
+    signinSuccess,
+    signinError,
+    socialError,
+    socialLoading,
+    signinLoading,
+  } = useSelector((state) => state.auth);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -135,8 +142,12 @@ const Signin = ({ navigation }) => {
   }, [navigation]);
 
   useEffect(() => {
-    setValidationError(signinError);
-  }, [signinError]);
+    if (signinError) {
+      setValidationError(signinError);
+    } else if (socialError) {
+      setValidationError(socialError);
+    }
+  }, [signinError, socialError]);
 
   useEffect(() => {
     if (signinSuccess) {
@@ -149,6 +160,7 @@ const Signin = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {socialLoading && <OverlayLoader />}
       <View style={styles.logoContainer}>
         <Logo />
       </View>
@@ -225,20 +237,10 @@ const Signin = ({ navigation }) => {
             </Text>
           </Text>
         </View>
-        <CustomButton
-          Icon={GoogleIcon}
-          title="Log In with Google"
-          onPress={handleSocialSignin}
-          buttonStyle={styles.socialButton}
-          textStyle={{ color: "#FFFFFF" }}
-        />
-        <CustomButton
-          Icon={Facebook}
-          title="Sign Up with Facebook"
-          onPress={handleSocialSignin}
-          buttonStyle={styles.socialButton}
-          textStyle={{ color: "#FFFFFF" }}
-        />
+        <GoogleSocialSignin />
+
+        <FacebookSocialSignin />
+
         <CustomButton
           Icon={Apple}
           title="Sign Up with Apple"

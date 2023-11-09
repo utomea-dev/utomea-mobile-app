@@ -11,6 +11,7 @@ const host = "171dzpmu9g.execute-api.us-east-2.amazonaws.com";
 const baseUrl = `https://${host}`;
 
 // ========================= Auth urls ============================
+export const socialLoginSignupUrl = () => `${baseUrl}/auth/social-login`;
 export const signupUrl = () => `${baseUrl}/user/signup`;
 export const signinUrl = () => `${baseUrl}/user/signin`;
 export const updateUserUrl = () => `${baseUrl}/user/user-details`;

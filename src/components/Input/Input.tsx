@@ -19,6 +19,7 @@ const CustomInput = ({
   containerStyle = {},
   value = "",
   multiline = false,
+  disabled = false, // New 'disabled' prop
   ...rest
 }) => {
   const inputRef = useRef(null);
@@ -33,10 +34,14 @@ const CustomInput = ({
             onChangeText={onChangeText}
             style={[
               styles.input,
-              { borderColor: validationError?.length ? "#FC7A1B" : "#3B3B3B" },
+              {
+                borderColor: validationError?.length ? "#FC7A1B" : "#3B3B3B",
+                backgroundColor: disabled ? "#333333" : "#222222",
+              },
               inputStyle,
             ]}
             value={value}
+            editable={!disabled}
             {...rest}
           />
           {!value && customPlaceholder && (
@@ -62,7 +67,6 @@ const styles = StyleSheet.create({
   inputContainer: {},
   input: {
     height: 45,
-    backgroundColor: "#222222",
     paddingVertical: 12,
     paddingHorizontal: 14,
     borderColor: "#3B3B3B",

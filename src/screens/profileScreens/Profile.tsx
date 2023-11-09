@@ -13,15 +13,27 @@ import LogoutButton from "./Components/LogoutButton";
 import { useAuth } from "../../hooks/useAuth";
 import Rightback from "../../assets/icons/right-back.png";
 import axios from "axios";
-
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import { LoginManager, AccessToken } from "react-native-fbsdk-next";
 function Profile({ navigation }) {
   const [username, setUserName] = useState("");
   const [loading, setLoading] = useState(true);
   const userDetails = useAuth();
 
-  const handleLogout = () => {
-    AsyncStorage.removeItem("utomea_user");
-    AsyncStorage.clear();
+  const handleLogout = async () => {
+    const isGoogleSignedIn = await GoogleSignin.isSignedIn();
+    if (isGoogleSignedIn) {
+      GoogleSignin.signOut();
+    }
+    const isFacebookSignedIn = await AccessToken.getCurrentAccessToken();
+    if (isFacebookSignedIn) {
+      LoginManager.logOut();
+    }
+    await AsyncStorage.removeItem("utomea_user");
+    await AsyncStorage.clear();
     navigation.navigate("Signin");
   };
 
@@ -58,37 +70,45 @@ function Profile({ navigation }) {
   }, [userDetails, navigation]);
 
   return (
-    <View style={styles.container}>
-      <GeneralHeader title={`Hi, ${loading ? "Loading..." : username}`} />
-      <Options
-        title={"App Preferences"}
-        onPress={() => {
-          navigation.navigate("Profile/appPreference");
-        }}
-        imageSource={Rightback}
-      />
-      <Options
-        title={"Profile Settings"}
-        onPress={() => {
-          navigation.navigate("Profile/manageProfile");
-        }}
-        imageSource={Rightback}
-      />
-      <View style={styles.bottom}>
-        <View style={styles.logoutButtonContainer}>
-          <LogoutButton
-            title="Log out"
-            onPress={handleLogout}
-            buttonStyle={{
-              paddingVertical: 12,
-              backgroundColor: "#222222",
-              color: "white",
-            }}
-            textStyle={{ fontSize: 16, lineHeight: 24, color: "white" }}
-          />
+    <>
+      {loading ? (
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <ActivityIndicator color="#58DAC3" size="large" />
         </View>
-      </View>
-    </View>
+      ) : (
+        <View style={styles.container}>
+          <GeneralHeader title={`Hi, ${loading ? "Loading..." : username}`} />
+          <Options
+            title={"App Preferences"}
+            onPress={() => {
+              navigation.navigate("Profile/appPreference");
+            }}
+            imageSource={Rightback}
+          />
+          <Options
+            title={"Profile Settings"}
+            onPress={() => {
+              navigation.navigate("Profile/manageProfile");
+            }}
+            imageSource={Rightback}
+          />
+          <View style={styles.bottom}>
+            <View style={styles.logoutButtonContainer}>
+              <LogoutButton
+                title="Log out"
+                onPress={handleLogout}
+                buttonStyle={{
+                  paddingVertical: 12,
+                  backgroundColor: "#222222",
+                  color: "white",
+                }}
+                textStyle={{ fontSize: 16, lineHeight: 24, color: "white" }}
+              />
+            </View>
+          </View>
+        </View>
+      )}
+    </>
   );
 }
 

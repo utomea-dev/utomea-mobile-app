@@ -2,6 +2,7 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
+#import <RNGoogleSignin/RNGoogleSignin.h>
 
 @implementation AppDelegate
 
@@ -13,6 +14,7 @@
   self.initialProps = @{};
   [NSThread sleepForTimeInterval:2.0];
 
+ 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
@@ -38,9 +40,12 @@
 - (BOOL)application:(UIApplication *)application
    openURL:(NSURL *)url
    options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+
 {
-  return [RCTLinkingManager application:application openURL:url options:options];
+  return [RNGoogleSignin application:application openURL:url options:options] ;
 }
+
+
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity
  restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler

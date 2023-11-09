@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   BackHandler,
   Alert,
+  Image,
 } from "react-native";
 import CustomButton from "../../components/Button/Button";
 
@@ -21,6 +22,7 @@ import TagIcon from "../../assets/icons/tag.svg";
 import Edit from "../../assets/icons/edit_gray.svg";
 import Delete from "../../assets/icons/delete.svg";
 import Exclude from "../../assets/icons/exclude.svg";
+import EyeIcon from "../../assets/icons/EyeIcon.svg";
 
 import GeneralHeader from "../../components/Header/GeneralHeader";
 import {
@@ -291,12 +293,14 @@ const EventDetail = ({ navigation, route }) => {
 
   const renderPhotos = () => {
     return data.photos?.map((img, i) => (
-      <TouchableOpacity
-        onLongPress={() => handleLongPress(img)}
-        style={[styles.photos, { width: imageWidth }]}
-      >
-        <EventImage imageUrl={img.url} imageStyles={{ borderRadius: 8 }} />
-      </TouchableOpacity>
+      <>
+        <TouchableOpacity
+          onLongPress={() => handleLongPress(img)}
+          style={[styles.photos, { width: imageWidth }]}
+        >
+          <EventImage imageUrl={img.url} imageStyles={{ borderRadius: 8 }} />
+        </TouchableOpacity>
+      </>
     ));
   };
 
@@ -526,11 +530,11 @@ const EventDetail = ({ navigation, route }) => {
             {data?.rating > 0 && <Divider dividerStyle={styles.divider} />}
 
             <Text style={styles.eventDate}>
-              {formatDate(data?.end_timestamp.split("T")[0], true)}
+              {formatDate(data?.begin_timestamp.split("T")[0], true)}
             </Text>
             <Divider dividerStyle={styles.divider} />
             <Text style={styles.eventDate}>
-              {convertToAMPM(data.end_timestamp)}
+              {convertToAMPM(data.begin_timestamp)}
             </Text>
 
             {data?.category !== null && (
@@ -579,7 +583,14 @@ const EventDetail = ({ navigation, route }) => {
 
         {/* Event photos if any */}
         {data?.photos?.length > 0 ? (
-          <View style={styles.photosContainer}>{renderPhotos()}</View>
+          <View style={styles.photosContainer}>
+            <EyeIcon />
+
+            <Text style={styles.textStyle}>
+              Tap and hold photo to set it as the event thumbnail
+            </Text>
+            {renderPhotos()}
+          </View>
         ) : (
           <Text style={styles.textStyle}>This Event has no photos to show</Text>
         )}
@@ -600,6 +611,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(14, 14, 14, 0.9)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 15,
+    width: 15,
+    resizeMode: "contain",
   },
   modal: {
     flex: 1,
@@ -689,7 +707,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     flexWrap: "wrap",
-    marginBottom: 75,
+    marginBottom: 65,
     gap: 8,
   },
   backDrop: {

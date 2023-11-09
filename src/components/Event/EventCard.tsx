@@ -49,11 +49,11 @@ const EventCard = ({ data, filtered = false }) => {
         {/* Event date */}
         <View style={styles.section}>
           <Text style={styles.eventDate}>
-            {formatDate(data.end_timestamp.split("T")[0], true)}
+            {formatDate(data.begin_timestamp.split("T")[0], true)}
           </Text>
           <Divider dividerStyle={styles.divider} />
           <Text style={styles.eventDate}>
-            {convertToAMPM(data.end_timestamp)}
+            {convertToAMPM(data.begin_timestamp)}
           </Text>
         </View>
 

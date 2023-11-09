@@ -91,8 +91,8 @@ const EditProfilePage = ({ navigation }) => {
         setNameerror("");
       }
 
-      if (newName.length > 25) {
-        setNameerror("Name cannot be more than 25 characters.");
+      if (newName.length > 30) {
+        setNameerror("Name cannot be more than 30 characters.");
         return;
       }
       if (newName.length < 4) {
@@ -300,6 +300,7 @@ const EditProfilePage = ({ navigation }) => {
               label="Name"
               placeholder="Enter your name"
               value={newName}
+              disabled={isUploadingImage || nameuploading}
               onChangeText={(text) => {
                 setNewName(text);
                 if (text.trim() === userProfile.name || text.trim() === "") {

@@ -5,6 +5,9 @@ import { View, Alert, Text, StyleSheet, BackHandler } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
 import { StackActions } from "@react-navigation/native";
+import GoogleSocialSignin from "./components/GoogleSocialSignin";
+import FacebookSocialSignin from "./components/FacebookSocialSignin";
+import OverlayLoader from "../../components/Loaders/OverlayLoader";
 
 import Logo from "../../assets/images/logo.svg";
 import GoogleIcon from "../../assets/icons/google.svg";
@@ -17,9 +20,13 @@ import { useAuth } from "../../hooks/useAuth";
 const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
 
-  const { signupSuccess, signupError, signupLoading } = useSelector(
-    (state) => state.auth
-  );
+  const {
+    signupSuccess,
+    signupError,
+    socialError,
+    socialLoading,
+    signupLoading,
+  } = useSelector((state) => state.auth);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -130,8 +137,12 @@ const Signup = ({ navigation }) => {
   );
 
   useEffect(() => {
-    setValidationError(signupError);
-  }, [signupError]);
+    if (signupError) {
+      setValidationError(signupError);
+    } else if (socialError) {
+      setValidationError(socialError);
+    }
+  }, [signupError, socialError]);
 
   useEffect(() => {
     if (signupSuccess) {
@@ -142,6 +153,7 @@ const Signup = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {socialLoading && <OverlayLoader />}
       <View style={styles.logoContainer}>
         <Logo />
       </View>
@@ -187,20 +199,8 @@ const Signup = ({ navigation }) => {
       </View>
 
       <View style={{ gap: 10, marginBottom: 20 }}>
-        <CustomButton
-          Icon={GoogleIcon}
-          title="Sign Up with Google"
-          onPress={handleSocialSignup}
-          buttonStyle={styles.socialButton}
-          textStyle={{ color: "#FFFFFF" }}
-        />
-        <CustomButton
-          Icon={Facebook}
-          title="Sign Up with Facebook"
-          onPress={handleSocialSignup}
-          buttonStyle={styles.socialButton}
-          textStyle={{ color: "#FFFFFF" }}
-        />
+        <GoogleSocialSignin />
+        <FacebookSocialSignin />
         <CustomButton
           Icon={Apple}
           title="Sign Up with Apple"
