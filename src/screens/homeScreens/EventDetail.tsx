@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   BackHandler,
   Alert,
+  Image,
 } from "react-native";
 import CustomButton from "../../components/Button/Button";
 
@@ -22,6 +23,7 @@ import TagIcon from "../../assets/icons/tag.svg";
 import Edit from "../../assets/icons/edit_gray.svg";
 import Delete from "../../assets/icons/delete.svg";
 import Exclude from "../../assets/icons/exclude.svg";
+import InfoIcon from "../../assets/icons/info.svg";
 
 import GeneralHeader from "../../components/Header/GeneralHeader";
 import {
@@ -582,7 +584,14 @@ const EventDetail = ({ navigation, route }) => {
 
         {/* Event photos if any */}
         {data?.photos?.length > 0 ? (
-          <View style={styles.photosContainer}>{renderPhotos()}</View>
+          <View style={styles.photosContainer}>
+            <InfoIcon />
+
+            <Text style={[styles.textStyle, { marginBottom: 4 }]}>
+              Tap and hold photo to set it as the event thumbnail
+            </Text>
+            {renderPhotos()}
+          </View>
         ) : (
           <Text style={styles.textStyle}>This Event has no photos to show</Text>
         )}
@@ -603,6 +612,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(14, 14, 14, 0.9)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 15,
+    width: 15,
+    resizeMode: "contain",
   },
   modal: {
     flex: 1,
@@ -692,7 +708,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     flexWrap: "wrap",
-    marginBottom: 75,
+    marginBottom: 65,
     gap: 8,
   },
   backDrop: {

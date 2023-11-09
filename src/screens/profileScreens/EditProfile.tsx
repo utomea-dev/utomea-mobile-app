@@ -300,6 +300,7 @@ const EditProfilePage = ({ navigation }) => {
               label="Name"
               placeholder="Enter your name"
               value={newName}
+              disabled={isUploadingImage || nameuploading}
               onChangeText={(text) => {
                 setNewName(text);
                 if (text.trim() === userProfile.name || text.trim() === "") {

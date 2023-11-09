@@ -70,37 +70,45 @@ function Profile({ navigation }) {
   }, [userDetails, navigation]);
 
   return (
-    <View style={styles.container}>
-      <GeneralHeader title={`Hi, ${loading ? "Loading..." : username}`} />
-      <Options
-        title={"App Preferences"}
-        onPress={() => {
-          navigation.navigate("Profile/appPreference");
-        }}
-        imageSource={Rightback}
-      />
-      <Options
-        title={"Profile Settings"}
-        onPress={() => {
-          navigation.navigate("Profile/manageProfile");
-        }}
-        imageSource={Rightback}
-      />
-      <View style={styles.bottom}>
-        <View style={styles.logoutButtonContainer}>
-          <LogoutButton
-            title="Log out"
-            onPress={handleLogout}
-            buttonStyle={{
-              paddingVertical: 12,
-              backgroundColor: "#222222",
-              color: "white",
-            }}
-            textStyle={{ fontSize: 16, lineHeight: 24, color: "white" }}
-          />
+    <>
+      {loading ? (
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <ActivityIndicator color="#58DAC3" size="large" />
         </View>
-      </View>
-    </View>
+      ) : (
+        <View style={styles.container}>
+          <GeneralHeader title={`Hi, ${loading ? "Loading..." : username}`} />
+          <Options
+            title={"App Preferences"}
+            onPress={() => {
+              navigation.navigate("Profile/appPreference");
+            }}
+            imageSource={Rightback}
+          />
+          <Options
+            title={"Profile Settings"}
+            onPress={() => {
+              navigation.navigate("Profile/manageProfile");
+            }}
+            imageSource={Rightback}
+          />
+          <View style={styles.bottom}>
+            <View style={styles.logoutButtonContainer}>
+              <LogoutButton
+                title="Log out"
+                onPress={handleLogout}
+                buttonStyle={{
+                  paddingVertical: 12,
+                  backgroundColor: "#222222",
+                  color: "white",
+                }}
+                textStyle={{ fontSize: 16, lineHeight: 24, color: "white" }}
+              />
+            </View>
+          </View>
+        </View>
+      )}
+    </>
   );
 }
 

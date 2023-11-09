@@ -17,7 +17,6 @@ import {
   updateUserForm,
 } from "../../../redux/slices/authSlice";
 
-// Settings.setAppID("347741537794058");
 Settings.setAppID("313238364904139");
 Settings.initializeSDK();
 

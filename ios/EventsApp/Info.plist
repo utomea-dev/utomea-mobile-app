@@ -26,6 +26,8 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>FacebookClientToken</key>
+	<string>2ff4be219edeaf72a5ff27ade2375310</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -36,6 +38,28 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>utomeaapp</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>org.qed42.UtomeaAPP</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.197300810699-t5cnclhimpnd7quk2tii282nb9vbkgha</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>FacebookClientToken</key>
+			<string>2ff4be219edeaf72a5ff27ade2375310</string>
+			<key>CFBundleURLName</key>
+			<string>utomea-dev-client-id</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb313238364904139</string>
 			</array>
 		</dict>
 	</array>

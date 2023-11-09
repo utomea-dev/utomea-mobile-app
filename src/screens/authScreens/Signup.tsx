@@ -90,7 +90,10 @@ const Signup = ({ navigation }) => {
       errorFlag = true;
     }
 
-    if (password !== confirmPassword) {
+    if (
+      password !== confirmPassword ||
+      (password === "" && confirmPassword === "")
+    ) {
       setPasswordError(() => "Passwords do not match");
       setPasswordsMatch(() => "");
 

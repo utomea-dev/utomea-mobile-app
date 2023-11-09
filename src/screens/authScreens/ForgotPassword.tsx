@@ -6,16 +6,15 @@ import CustomInput from "../../components/Input/Input";
 import Logo from "../../assets/images/logo.svg";
 import { StackActions } from "@react-navigation/native";
 
-import { forgotPassword, reset } from "../../redux/slices/authSlice";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ForgotPassword = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [validationError, setValidationError] = useState("");
-
-  const { forgotPasswordLoading, forgotPasswordSuccess, forgotPasswordError } =
-    useSelector((state) => state.auth);
+  const [otpLoading, setOtpLoading] = useState(false);
 
   const clear = () => {
     setEmail("");
@@ -29,7 +28,7 @@ const ForgotPassword = ({ navigation }) => {
 
   const handleResetPassword = async () => {
     if (!email) {
-      setValidationError(() => "Email cannot be empty");
+      setValidationError("Email cannot be empty");
       return;
     }
 
@@ -39,18 +38,34 @@ const ForgotPassword = ({ navigation }) => {
     }
 
     setValidationError("");
-    dispatch(forgotPassword({ email }));
-  };
 
-  useEffect(() => {
-    setValidationError(forgotPasswordError);
-  }, [forgotPasswordError]);
+    try {
+      setOtpLoading(true);
+      const response = await axios.post(
+        "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/auth/forgot-password",
+        {
+          email: email,
+        }
+      );
 
-  useEffect(() => {
-    if (forgotPasswordSuccess) {
-      navigation.dispatch(StackActions.replace("CheckEmail"));
+      if (response.status === 200) {
+        setOtpLoading(false);
+        AsyncStorage.setItem("EMAIL_FOR_OTP", email);
+        navigation.dispatch(StackActions.replace("CheckEmail"));
+      } else if (response.status === 404) {
+        // Handle the case where the email does not exist
+        setValidationError("Email ID does not exist");
+        setOtpLoading(false);
+      } else {
+        console.error("Password reset request failed.");
+      }
+    } catch (error) {
+      console.error("Error sending password reset request:", error);
+      setValidationError("Email id does not Exist");
+      setOtpLoading(false);
+    } finally {
     }
-  }, [forgotPasswordSuccess]);
+  };
 
   return (
     <View style={styles.container}>
@@ -60,7 +75,7 @@ const ForgotPassword = ({ navigation }) => {
         </View>
         <Text style={styles.title}>Forgot Password?</Text>
         <Text style={styles.paragraph}>
-          No worries, we'll send you reset instructions.
+          No worries, we'll send you the OTP for Resetting Password.
         </Text>
         <CustomInput
           label="Email"
@@ -71,21 +86,21 @@ const ForgotPassword = ({ navigation }) => {
           onChangeText={(text: string) => setEmail(text)}
           inputStyle={{ paddingVertical: 10 }}
           containerStyle={{ marginTop: 32 }}
+          disabled={otpLoading}
         />
         <View style={styles.flex}>
           <CustomButton
-            disabled={forgotPasswordLoading}
-            isLoading={forgotPasswordLoading}
+            disabled={otpLoading}
+            isLoading={otpLoading}
             title="Reset Password"
             onPress={handleResetPassword}
             containerStyle={{ marginTop: 32, marginBottom: 24 }}
           />
           <TouchableOpacity
-            disabled={forgotPasswordLoading}
+            disabled={otpLoading}
             onPress={() => {
               navigation.goBack();
               clear();
-              dispatch(reset());
             }}
           >
             <Text style={{ color: "#FFFFFF", textAlign: "center" }}>
@@ -112,7 +127,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
   },
   logoContainer: {
-    marginBottom: 48,
+    marginBottom: 40,
     flexDirection: "row",
     justifyContent: "center",
   },
