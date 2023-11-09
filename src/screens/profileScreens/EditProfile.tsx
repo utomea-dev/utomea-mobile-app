@@ -240,6 +240,7 @@ const EditProfilePage = ({ navigation }) => {
       name: "Remove",
       onPress: showModal,
       icon: () => <Delete width={20} height={20} />,
+      disabled: !userProfile || (!imageUri && !userProfile.profile_pic),
     },
 
     {
@@ -354,7 +355,7 @@ const EditProfilePage = ({ navigation }) => {
                 buttonStyle={{ backgroundColor: "#222222" }}
                 textStyle={{ color: "#FFFFFF" }}
                 onPress={closeConfirmationModal}
-                disabled={setUpdateButtonDisabled}
+                // disabled={setUpdateButtonDisabled}
               />
               <CustomButton
                 title="Yes, Delete"
