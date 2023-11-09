@@ -20,6 +20,13 @@ const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth() + 1;
 const currentDate = new Date().getDate();
 
+const now = new Date();
+const hours = now.getHours();
+const minutes = now.getMinutes();
+const ampm = hours >= 12 ? "pm" : "am";
+const formattedHours = hours % 12 || 12;
+const formattedMinutes = String(minutes).padStart(2, "0");
+
 const initialState = {
   events: null,
   eventsLoading: false,
@@ -30,10 +37,22 @@ const initialState = {
   isNewUser: false,
   startDateString: "",
   endDateString: "",
+  startTimeString: `${formattedHours}-${formattedMinutes}-${ampm}`,
+  endTimeString: `${formattedHours}-${formattedMinutes}-${ampm}`,
   date: "",
   verified: "",
   limit: 10,
   skip: 0,
+  startTime: {
+    hours: formattedHours,
+    minutes: formattedMinutes,
+    ampm: ampm,
+  },
+  endTime: {
+    hours: formattedHours,
+    minutes: formattedMinutes,
+    ampm: ampm,
+  },
   startDate: {
     year: currentYear.toString(),
     month:
@@ -200,6 +219,18 @@ const homeSlice = createSlice({
     resetDate: (state) => {
       state.startDateString = "";
       state.endDateString = "";
+      state.startTimeString = `${formattedHours}-${formattedMinutes}-${ampm}`;
+      state.endTimeString = `${formattedHours}-${formattedMinutes}-${ampm}`;
+      state.startTime = {
+        hours: formattedHours,
+        minutes: formattedMinutes,
+        ampm,
+      };
+      state.endTime = {
+        hours: formattedHours,
+        minutes: formattedMinutes,
+        ampm,
+      };
       state.startDate = {
         year: currentYear.toString(),
         month:
@@ -222,6 +253,12 @@ const homeSlice = createSlice({
             ? "0" + currentDate.toString()
             : currentDate.toString(),
       };
+    },
+    setStartTime: (state, action) => {
+      state.startTime[action.payload.key] = action.payload.value;
+    },
+    setEndTime: (state, action) => {
+      state.endTime[action.payload.key] = action.payload.value;
     },
     setStartDate: (state, action) => {
       const { year, month, date } = state.startDate;
@@ -262,6 +299,9 @@ const homeSlice = createSlice({
           ).toString();
         }
       }
+    },
+    setTimeString: (state, action) => {
+      state[action.payload.key] = action.payload.value;
     },
     setDateString: (state, action) => {
       state[action.payload.key] = action.payload.value;
@@ -358,8 +398,11 @@ export const {
   resetHome,
   resetHomeLoaders,
   setHomeFilter,
-  setEndDate,
   setStartDate,
+  setEndDate,
+  setStartTime,
+  setEndTime,
   resetDate,
   setDateString,
+  setTimeString,
 } = homeSlice.actions;

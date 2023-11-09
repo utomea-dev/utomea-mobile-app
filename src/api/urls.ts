@@ -13,6 +13,9 @@ const baseUrl = `https://${host}`;
 // ========================= Auth urls ============================
 export const socialLoginSignupUrl = () => `${baseUrl}/auth/social-login`;
 export const signupUrl = () => `${baseUrl}/user/signup`;
+export const sendVerificationEmailUrl = () =>
+  `${baseUrl}/user/send-verification-email`;
+export const verifyOtpUrl = () => `${baseUrl}/user/verify-otp`;
 export const signinUrl = () => `${baseUrl}/user/signin`;
 export const updateUserUrl = () => `${baseUrl}/user/user-details`;
 export const forgotPasswordUrl = () => `${baseUrl}/auth/forgot-password`;

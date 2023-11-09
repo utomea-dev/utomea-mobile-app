@@ -7,6 +7,7 @@ import ForgotPassword from "../../screens/authScreens/ForgotPassword";
 import CheckEmail from "../../screens/authScreens/CheckEmail";
 import NewPassword from "../../screens/authScreens/NewPassword";
 import BottomTabs from "../../screens/BottomTabs";
+import VerifyEmail from "../../screens/authScreens/VerifyEmail";
 
 export const authRoutes = [
   {
@@ -17,6 +18,11 @@ export const authRoutes = [
   {
     name: "Signup",
     component: Signup,
+    options: { headerShown: false },
+  },
+  {
+    name: "VerifyEmail",
+    component: VerifyEmail,
     options: { headerShown: false },
   },
   {

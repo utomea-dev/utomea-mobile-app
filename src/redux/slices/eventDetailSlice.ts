@@ -9,7 +9,8 @@ import {
 } from "../../api/urls";
 
 import { handleError } from "../errorHandler";
-import { setDateString, uploadImage } from "./homeSlice";
+import { setDateString, setTimeString, uploadImage } from "./homeSlice";
+import { convertISOStringToTime } from "../../utils/helpers";
 
 const initialState = {
   eventDetail: null,
@@ -49,6 +50,18 @@ export const getEventDetails = createAsyncThunk(
         setDateString({
           key: "endDateString",
           value: eventDetails?.end_timestamp.split("T")[0],
+        })
+      );
+      dispatch(
+        setTimeString({
+          key: "startTimeString",
+          value: convertISOStringToTime(eventDetails?.begin_timestamp),
+        })
+      );
+      dispatch(
+        setTimeString({
+          key: "endTimeString",
+          value: convertISOStringToTime(eventDetails?.end_timestamp),
         })
       );
       return eventDetails;

@@ -3,9 +3,11 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import EventImage from "./EventImage";
 
 import Location from "../../assets/icons/location.svg";
+import Duration from "../../assets/icons/clock_grey.svg";
 import Tag from "../../assets/icons/tag.svg";
 import {
   calculateDuration,
+  convertISOStringToTime2,
   convertToAMPM,
   formatDate,
 } from "../../utils/helpers";
@@ -53,12 +55,13 @@ const EventCard = ({ data, filtered = false }) => {
           </Text>
           <Divider dividerStyle={styles.divider} />
           <Text style={styles.eventDate}>
-            {convertToAMPM(data.begin_timestamp)}
+            {convertISOStringToTime2(data.begin_timestamp)}
           </Text>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.eventDate}>
+        <View style={styles.flex}>
+          <Duration />
+          <Text style={styles.eventAddress}>
             Duration -{" "}
             {calculateDuration(data.begin_timestamp, data.end_timestamp)}
           </Text>
