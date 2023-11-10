@@ -58,7 +58,7 @@ const CheckEmail = ({ navigation }) => {
       );
 
       if (response.status === 200) {
-        Alert.alert(`We have sent the OTP again to ${emailForOTP}`);
+        Alert.alert(`OTP Sent. Please check your email address`);
         setLoading(false);
       } else {
         console.error("Password reset request failed.");
@@ -100,7 +100,7 @@ const CheckEmail = ({ navigation }) => {
       const response = await axios.post(
         "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/user/verify-forgot-otp",
         {
-          email: emailForOTP,
+          email: emailForOTP.toLowerCase(),
           otp: otp,
         }
       );
@@ -125,7 +125,7 @@ const CheckEmail = ({ navigation }) => {
       }
       console.error(error);
     } finally {
-      setLoadingOTP(false); // Stop loading
+      setLoadingOTP(false);
     }
   };
 
@@ -145,7 +145,8 @@ const CheckEmail = ({ navigation }) => {
             </View>
             <Text style={styles.title}>Check your email</Text>
             <Text style={styles.paragraph}>
-              We have sent the OTP for Resetting Password to {email}
+              We have sent the OTP for Resetting Password to{" "}
+              {email.toLowerCase()}
             </Text>
 
             <CustomInput

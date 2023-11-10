@@ -44,16 +44,17 @@ const ForgotPassword = ({ navigation }) => {
       const response = await axios.post(
         "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/auth/forgot-password",
         {
-          email: email,
+          email: email.toLowerCase(),
         }
       );
 
+      console.log("emailllll-------", email.toLowerCase());
+
       if (response.status === 200) {
         setOtpLoading(false);
-        AsyncStorage.setItem("EMAIL_FOR_OTP", email);
+        AsyncStorage.setItem("EMAIL_FOR_OTP", email.toLowerCase());
         navigation.dispatch(StackActions.replace("CheckEmail"));
       } else if (response.status === 404) {
-        // Handle the case where the email does not exist
         setValidationError("Email ID does not exist");
         setOtpLoading(false);
       } else {

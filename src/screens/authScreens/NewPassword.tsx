@@ -59,7 +59,7 @@ const NewPassword = ({ navigation }) => {
         "https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/auth/reset-password";
 
       const response = await axios.post(apiUrl, {
-        email: emailForOTP,
+        email: emailForOTP.toLowerCase(),
         otp,
         password: password,
         confirm_password: confirmPassword,
