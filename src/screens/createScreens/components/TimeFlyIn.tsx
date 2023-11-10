@@ -11,6 +11,7 @@ import {
 } from "../../../redux/slices/homeSlice";
 import Label from "../../../components/Label/Label";
 import {
+  checkPastDate,
   isDateRangeValid,
   isFutureTime,
   isTimeValid,
@@ -19,6 +20,17 @@ import TimePicker from "../../../components/Header/TimePicker";
 
 const TimeFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
   const dispatch = useDispatch();
+
+  const {
+    year: startYear,
+    month: startMonth,
+    date: startDay,
+  } = useSelector((state) => state.home.startDate);
+  const {
+    year: endYear,
+    month: endMonth,
+    date: endDay,
+  } = useSelector((state) => state.home.endDate);
 
   const {
     hours: startHour,
@@ -37,7 +49,23 @@ const TimeFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
   const [dateRangeError, setDateRangeError] = useState("");
 
   const handleContinue = () => {
-    if (startDateString === endDateString) {
+    const currentDate = new Date().toISOString().split("T")[0];
+    const startDate = `${startYear}-${startMonth}-${startDay}`;
+    const endDate = `${endYear}-${endMonth}-${endDay}`;
+    const isDateValid = isDateRangeValid(startDate, endDate);
+    const isNotFutureDate = isDateRangeValid(endDate, currentDate);
+    const isPastDate = checkPastDate(endDate);
+    if (startDateString === endDateString && isPastDate) {
+      if (
+        !isTimeValid(
+          `${endHour}-${endMinute}-${endAmpm}`,
+          `${startHour}-${startMinute}-${startAmpm}`
+        )
+      ) {
+        setDateRangeError("Please choose a valid time range");
+        return;
+      }
+    } else if (startDateString === endDateString) {
       if (
         !isTimeValid(
           `${endHour}-${endMinute}-${endAmpm}`,
@@ -48,12 +76,6 @@ const TimeFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
         return;
       }
 
-      const futureTime = isFutureTime(`${endHour}-${endMinute}-${endAmpm}`);
-      if (futureTime) {
-        setDateRangeError("Cannot choose a future time");
-        return;
-      }
-    } else {
       const futureTime = isFutureTime(`${endHour}-${endMinute}-${endAmpm}`);
       if (futureTime) {
         setDateRangeError("Cannot choose a future time");

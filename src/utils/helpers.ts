@@ -32,6 +32,18 @@ export const isDateRangeValid = (startDate, endDate) => {
   return true;
 };
 
+export const checkPastDate = (startDate) => {
+  const currentDate = new Date().toISOString().split("T")[0];
+
+  const jsDate1 = new Date(startDate);
+  const jsDate2 = new Date(currentDate);
+
+  if (jsDate1 < jsDate2) {
+    return true;
+  }
+  return false;
+};
+
 export const deepCloneArray = (arr) => {
   if (Array.isArray(arr)) {
     return arr.map((item) => deepCloneArray(item));
