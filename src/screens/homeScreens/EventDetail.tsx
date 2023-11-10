@@ -558,14 +558,18 @@ const EventDetail = ({ navigation, route }) => {
             {/* Location */}
             <View style={[styles.flex]}>
               <LocationIcon />
-              <Text style={styles.textStyle}>{data?.location}</Text>
+              <Text style={[styles.textStyle, { flex: 1 }]}>
+                {data?.location}
+              </Text>
             </View>
 
             {/* Event tags */}
             {data?.tags?.length > 0 ? (
               <View style={styles.flex}>
                 <TagIcon />
-                <Text style={styles.textStyle}>{data?.tags?.join(", ")}</Text>
+                <Text style={[styles.textStyle, { flex: 1 }]}>
+                  {data?.tags?.join(", ")}
+                </Text>
               </View>
             ) : null}
           </View>

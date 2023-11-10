@@ -10,7 +10,11 @@ import {
   setTimeString,
 } from "../../../redux/slices/homeSlice";
 import Label from "../../../components/Label/Label";
-import { isDateRangeValid, isTimeValid } from "../../../utils/helpers";
+import {
+  isDateRangeValid,
+  isFutureTime,
+  isTimeValid,
+} from "../../../utils/helpers";
 import TimePicker from "../../../components/Header/TimePicker";
 
 const TimeFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
@@ -43,10 +47,18 @@ const TimeFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
         setDateRangeError("Please choose a valid time range");
         return;
       }
-    }
-    if (!true) {
-      setDateRangeError("Please choose a valid date range");
-      return;
+
+      const futureTime = isFutureTime(`${endHour}-${endMinute}-${endAmpm}`);
+      if (futureTime) {
+        setDateRangeError("Cannot choose a future time");
+        return;
+      }
+    } else {
+      const futureTime = isFutureTime(`${endHour}-${endMinute}-${endAmpm}`);
+      if (futureTime) {
+        setDateRangeError("Cannot choose a future time");
+        return;
+      }
     }
 
     dispatch(

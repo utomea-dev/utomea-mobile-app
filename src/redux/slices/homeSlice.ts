@@ -217,19 +217,26 @@ const homeSlice = createSlice({
       state.uploadImageError = "";
     },
     resetDate: (state) => {
+      const now2 = new Date();
+      const hours2 = now2.getHours();
+      const minutes2 = now2.getMinutes();
+      const ampm2 = hours2 >= 12 ? "pm" : "am";
+      const formattedHours2 = hours2 % 12 || 12;
+      const formattedMinutes2 = String(minutes2).padStart(2, "0");
+
       state.startDateString = "";
       state.endDateString = "";
-      state.startTimeString = `${formattedHours}-${formattedMinutes}-${ampm}`;
-      state.endTimeString = `${formattedHours}-${formattedMinutes}-${ampm}`;
+      state.startTimeString = `${formattedHours2}-${formattedMinutes2}-${ampm2}`;
+      state.endTimeString = `${formattedHours2}-${formattedMinutes2}-${ampm2}`;
       state.startTime = {
-        hours: formattedHours,
-        minutes: formattedMinutes,
-        ampm,
+        hours: formattedHours2,
+        minutes: formattedMinutes2,
+        ampm: ampm2,
       };
       state.endTime = {
-        hours: formattedHours,
-        minutes: formattedMinutes,
-        ampm,
+        hours: formattedHours2,
+        minutes: formattedMinutes2,
+        ampm: ampm2,
       };
       state.startDate = {
         year: currentYear.toString(),

@@ -81,7 +81,6 @@ export const signupUser = createAsyncThunk(
       const body = data;
 
       const response = await makeRequest(signupUrl(), "POST", body, {});
-      await AsyncStorage.setItem("utomea_user", JSON.stringify(response.data));
 
       const body2 = { email: data.email };
       const response2 = await makeRequest(
@@ -90,6 +89,12 @@ export const signupUser = createAsyncThunk(
         body2,
         {}
       );
+      if (response2.status === 200) {
+        await AsyncStorage.setItem(
+          "utomea_user",
+          JSON.stringify(response.data)
+        );
+      }
       // dispatch(sendVerificationEmail(body2));
 
       return response.data;

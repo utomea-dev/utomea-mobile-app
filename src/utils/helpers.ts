@@ -55,38 +55,70 @@ export const formatISOToDateString = (dateString: string) => {
   return formattedDateTime;
 };
 
-export const calculateDuration = (start, end) => {
-  const startDate = new Date(start);
-  const endDate = new Date(end);
-  const durationInMilliseconds = endDate - startDate;
-  // Calculate days, hours, and minutes
-  const days = Math.floor(durationInMilliseconds / (1000 * 60 * 60 * 24));
-  const hours = Math.floor(
-    (durationInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-  );
-  const minutes = Math.floor(
-    (durationInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
-  );
+export const isFutureTime = (inputTime) => {
+  // Split the input time into hours, minutes, and AM/PM
+  const [inputHours, inputMinutes, period] = inputTime.split("-");
 
-  if (days === 0 && hours === 0 && minutes === 0) {
-    return "0 min";
+  // Convert hours to 24-hour format
+  let hours = parseInt(inputHours, 10);
+  if (period.toLowerCase() === "pm" && hours !== 12) {
+    hours += 12;
+  } else if (period.toLowerCase() === "am" && hours === 12) {
+    hours = 0;
   }
+
+  // Create a Date object for the current time
+  const currentTime = new Date();
+  const currentHours = currentTime.getHours();
+  const currentMinutes = currentTime.getMinutes();
+
+  // Compare the times
+  if (
+    hours > currentHours ||
+    (hours === currentHours && parseInt(inputMinutes, 10) > currentMinutes)
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+export const calculateDuration = (startDateString, endDateString) => {
+  const startDate = new Date(startDateString);
+  const endDate = new Date(endDateString);
+
+  // Calculate the duration in milliseconds
+  const durationMillis = endDate - startDate;
+
+  // Convert milliseconds to seconds
+  const durationSeconds = durationMillis / 1000;
+
+  // Convert seconds to hours, minutes, and seconds
+  const hours = Math.floor(durationSeconds / 3600);
+  const minutes = Math.floor((durationSeconds % 3600) / 60);
 
   // Format the duration
-  let duration = "";
-  if (days > 0) {
-    duration += `${days} day${days > 1 ? "s" : ""}`;
-  }
-  if (hours > 0) {
-    duration += `${duration.length > 0 ? ", " : ""}${hours} hr${
-      hours > 1 ? "s" : ""
+  let formattedDuration = "";
+
+  if (hours >= 24) {
+    const days = Math.floor(hours / 24);
+    const remainingHours = hours % 24;
+    formattedDuration = `${days} day${
+      days > 1 ? "s" : ""
+    }, ${remainingHours} hr${remainingHours > 1 ? "s" : ""} ${minutes} min${
+      minutes > 1 ? "s" : ""
     }`;
-  }
-  if (minutes > 0 && days === 0) {
-    duration += `${duration.length > 0 ? ", " : ""}${minutes} min`;
+  } else if (hours >= 1) {
+    formattedDuration = `${hours} hr${hours > 1 ? "s" : ""} ${minutes} min${
+      minutes > 1 ? "s" : ""
+    }`;
+  } else if (minutes >= 1) {
+    formattedDuration = `${minutes} min${minutes > 1 ? "s" : ""}`;
+  } else {
+    formattedDuration = "Less than 1 min";
   }
 
-  return duration;
+  return formattedDuration;
 };
 
 export const convertToAMPM = (timestamp) => {

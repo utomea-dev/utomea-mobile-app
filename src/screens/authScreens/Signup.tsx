@@ -90,10 +90,12 @@ const Signup = ({ navigation }) => {
       errorFlag = true;
     }
 
-    if (
-      password !== confirmPassword ||
-      (password === "" && confirmPassword === "")
-    ) {
+    if (password === "" && confirmPassword === "") {
+      setPasswordError(() => "Password fields cannot be empty");
+      errorFlag = true;
+    }
+
+    if (password !== confirmPassword) {
       setPasswordError(() => "Passwords do not match");
       setPasswordsMatch(() => "");
 
@@ -167,6 +169,7 @@ const Signup = ({ navigation }) => {
   useEffect(() => {
     if (signupError) {
       setValidationError(signupError);
+      setPasswordsMatch(() => "");
     } else if (socialError) {
       setValidationError(socialError);
     }
