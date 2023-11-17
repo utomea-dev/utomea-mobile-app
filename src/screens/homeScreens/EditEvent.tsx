@@ -281,7 +281,6 @@ const EditEvent = ({ navigation, route }) => {
 
       return cleaned;
     });
-    setTagInput("");
     // tags.forEach((t) => {
     //   handleAddTags(t);
     // });
