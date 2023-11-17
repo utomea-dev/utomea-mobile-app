@@ -26,7 +26,6 @@ const getInitials = (name) => {
 const ManageProfilePage = ({ navigation }) => {
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -106,7 +105,7 @@ const ManageProfilePage = ({ navigation }) => {
           No User Profile Found
         </Text>
       )}
-      {!loading && (
+      {!loading && userProfile !== null && userProfile.account_type === 0 && (
         <View style={{ marginTop: 20 }}>
           <Options
             title={"Manage Password"}

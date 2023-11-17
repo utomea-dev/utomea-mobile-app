@@ -29,7 +29,11 @@ const DateFlyIn = ({ onClose = () => {}, closeOnly = () => {} }) => {
   const [dateRangeError, setDateRangeError] = useState("");
 
   const handleContinue = () => {
-    const currentDate = new Date().toISOString().split("T")[0];
+    const currentDate = new Date()
+      .toLocaleDateString()
+      .split("/")
+      .reverse()
+      .join("-");
     const startDate = `${startYear}-${startMonth}-${startDay}`;
     const endDate = `${endYear}-${endMonth}-${endDay}`;
     const isDateValid = isDateRangeValid(startDate, endDate);

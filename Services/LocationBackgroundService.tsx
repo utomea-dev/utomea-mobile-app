@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Geolocation from "@react-native-community/geolocation";
 import React, { useState, useEffect } from "react";
-import { View, AppState } from "react-native";
+import { View, AppState, Platform, PermissionsAndroid } from "react-native";
+import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
 
 import BackgroundGeolocation, {
   Location,
@@ -23,51 +24,38 @@ const BackgroundLocationService = () => {
   const [enabled, setEnabled] = React.useState(false);
   const [location, setLocation] = React.useState<Location>();
 
-  // const stopTask = async () => {
-  //   await AsyncStorage.setItem('appStatus', 'stopped');
-  //   await AsyncStorage.removeItem('eventsForSync');
-  //   await AsyncStorage.removeItem('uploadingSlot');
-  //   await AsyncStorage.removeItem('currentAddress');
-  //   await BackgroundGeolocation.stop();
-  // };
+  const getMediaPermissions = async () => {
+    if (Platform.OS === "android") {
+      const permission =
+        Platform.Version >= 33
+          ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+          : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
 
-  // const addGeofence = () => {
-  //   const {longitude, latitude} = location.coords;
-  //   BackgroundGeolocation.addGeofence({
-  //     identifier: 'Home',
-  //     radius: 200,
-  //     latitude,
-  //     longitude,
-  //     notifyOnEntry: true,
-  //     notifyOnExit: true,
-  //   })
-  //     .then(success => {
-  //       console.log('[addGeofence] success: ', success);
-  //     })
-  //     .catch(error => {
-  //       console.log('[addGeofence] FAILURE: ', error);
-  //     });
-  // };
-
-  // const startImageUploading = async () => {
-  //   const eventsForSync = await AsyncStorage.getItem("eventsForSync");
-  //   const uploadingSlot = await AsyncStorage.getItem("uploadingSlot");
-  //   console.log(
-  //     "EVENTS IN STORAGE & SLOT+==========",
-  //     eventsForSync,
-  //     uploadingSlot
-  //   );
-  //   if (
-  //     eventsForSync !== null &&
-  //     AppState.currentState === "active" &&
-  //     uploadingSlot !== "occupied"
-  //   ) {
-  //     showNotification({ message: "uploading images to server" });
-  //     console.log("DISPATCHING UPLOADING==========", eventsForSync);
-  //     store.dispatch(uploadEventPhotos(JSON.parse(eventsForSync)));
-  //     await AsyncStorage.setItem("uploadingSlot", "occupied");
-  //   }
-  // };
+      const hasPermission = await PermissionsAndroid.check(permission);
+      console.log("HAS persmissino----", hasPermission);
+      if (!hasPermission) {
+        await PermissionsAndroid.request(permission);
+      }
+    } else if (Platform.OS === "ios") {
+      try {
+        const status = await check(PERMISSIONS.IOS.PHOTO_LIBRARY);
+        console.log(status);
+        if (status !== RESULTS.GRANTED) {
+          try {
+            const status = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+            if (status !== RESULTS.GRANTED) {
+              console.log("Permission Denied");
+              return;
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
 
   const initBackgroundGeolocation = async () => {
     // Get an authorization token from transistorsoft demo server.
@@ -145,13 +133,12 @@ const BackgroundLocationService = () => {
 
   React.useEffect(() => {
     initBackgroundGeolocation();
-
+    getMediaPermissions();
     // Register BackgroundGeolocation event-listeners.
     const getAppStatus = async () => {
       const runningStatus: null | string = await AsyncStorage.getItem(
         "appStatus"
       );
-      console.log("running-----", runningStatus);
       return runningStatus;
     };
 

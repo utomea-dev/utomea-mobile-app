@@ -13,12 +13,14 @@ import RightArrow from "../../../assets/icons/right_arrow.svg";
 import CloseSmall from "../../../assets/icons/close_small.svg";
 
 const Tags = ({
+  tagInput = "",
+  setTagInput = (e) => {},
   tags = [],
   onRemove = (e) => {},
   onAdd = (e) => {},
   validationError = "",
 }) => {
-  const [input, setInput] = useState("");
+  // const [input, setInput] = useState("");
 
   const handleAddTag = (str) => {
     const tagsStr = str.split(",");
@@ -33,7 +35,7 @@ const Tags = ({
 
       return cleaned;
     });
-    setInput("");
+    setTagInput("");
     tags.forEach((t) => {
       onAdd(t);
     });
@@ -50,19 +52,19 @@ const Tags = ({
       >
         <CustomInput
           label="Tags"
-          value={input}
+          value={tagInput}
           numberOfLines={1}
-          onChangeText={(text) => setInput(text)}
+          onChangeText={(text) => setTagInput(text)}
           validationError={validationError}
           customPlaceholder="Type a custom tag to describe this event"
           placeholderTextColor="grey"
           containerStyle={{ flex: 1 }}
           returnKeyType="done"
-          onSubmitEditing={() => handleAddTag(input)}
+          onSubmitEditing={() => handleAddTag(tagInput)}
         />
         <TouchableOpacity
           style={{ marginBottom: validationError ? 0 : 2 }}
-          onPress={() => handleAddTag(input)}
+          onPress={() => handleAddTag(tagInput)}
         >
           <RightArrow />
         </TouchableOpacity>
