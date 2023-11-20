@@ -59,11 +59,11 @@ function AppPreference({ navigation }) {
         iconSource={Checkmark}
         imageSource={Rightback}
       />
-      <RenderToggleOption
+      {/* <RenderToggleOption
         iconSource={AppNotification}
         title="App Notifications"
         onToggle={handleAppNotificationsToggle}
-      />
+      /> */}
     </View>
   );
 }

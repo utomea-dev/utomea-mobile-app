@@ -96,6 +96,7 @@ const NewPassword = ({ navigation }) => {
           <CustomInput
             label="Enter New Password"
             placeholder="Enter New Password"
+            placeholderTextColor="grey"
             secureTextEntry
             validationError={passwordError}
             value={password}
@@ -106,6 +107,7 @@ const NewPassword = ({ navigation }) => {
           <CustomInput
             label="Confirm New Password"
             placeholder="Confirm New Password"
+            placeholderTextColor="grey"
             secureTextEntry
             validationError={confirmPasswordError}
             value={confirmPassword}

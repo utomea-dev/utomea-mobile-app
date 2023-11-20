@@ -125,6 +125,7 @@ const UpdatePassword = ({ navigation }) => {
           <CustomInput
             label="Enter Current Password"
             placeholder="Enter Current Password"
+            placeholderTextColor="grey"
             secureTextEntry
             validationError={currentPasswordError}
             value={currentPassword}
@@ -134,6 +135,7 @@ const UpdatePassword = ({ navigation }) => {
           <CustomInput
             label="New Password"
             placeholder="Enter your new password"
+            placeholderTextColor="grey"
             secureTextEntry
             validationError={newPasswordError}
             value={newPassword}
@@ -144,6 +146,7 @@ const UpdatePassword = ({ navigation }) => {
           <CustomInput
             label="Confirm New Password"
             placeholder="Confirm your new password"
+            placeholderTextColor="grey"
             secureTextEntry
             validationError={confirmPasswordError}
             value={confirmPassword}

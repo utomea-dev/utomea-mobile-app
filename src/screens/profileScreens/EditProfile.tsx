@@ -300,6 +300,7 @@ const EditProfilePage = ({ navigation }) => {
               validationError={nameErrror}
               label="Name"
               placeholder="Enter your name"
+              placeholderTextColor="grey"
               value={newName}
               disabled={isUploadingImage || nameuploading}
               onChangeText={(text) => {

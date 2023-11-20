@@ -31,6 +31,7 @@ import {
   resetEventDetailsLoaders,
 } from "../../redux/slices/eventDetailSlice";
 import { MONTHS } from "../../constants/constants";
+import { resetExcludeLoaders } from "../../redux/slices/excludeLocationSlice";
 
 const HomeFeed = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -98,6 +99,7 @@ const HomeFeed = ({ navigation }) => {
   useEffect(() => {
     dispatch(getEvents());
     dispatch(resetEventDetailsLoaders());
+    dispatch(resetExcludeLoaders());
   }, []);
 
   useFocusEffect(

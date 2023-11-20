@@ -16,6 +16,7 @@ import {
 import CustomButton from "../../components/Button/Button";
 
 import KebabMenu from "../../assets/icons/kebab_menu.svg";
+import CheckDark from "../../assets/icons/check_dark.svg";
 import Star from "../../assets/icons/star.svg";
 import LocationIcon from "../../assets/icons/location.svg";
 import DurationIcon from "../../assets/icons/clock_grey.svg";
@@ -43,7 +44,10 @@ import {
 import BackDropMenu from "../../components/BackDropMenu/BackDropMenu";
 import VerifyWindow from "./components/VerifyWindow";
 import { resetHomeLoaders } from "../../redux/slices/homeSlice";
-import { excludeLocation } from "../../redux/slices/excludeLocationSlice";
+import {
+  excludeLocation,
+  resetExcludeLoaders,
+} from "../../redux/slices/excludeLocationSlice";
 import { checkExcludedLocation } from "../../events/checkExcludedLocations";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -209,14 +213,6 @@ const EventDetail = ({ navigation, route }) => {
     );
   };
 
-  // const test = async (lat, long) => {
-  //   checkExcludedLocation(lat, long);
-  // };
-  // useEffect(() => {
-  //   if (!data) return;
-  //   test(data.latitude, data.longitude);
-  // }, [data]);
-
   const renderExcludeModal = () => {
     return (
       <Modal
@@ -227,50 +223,136 @@ const EventDetail = ({ navigation, route }) => {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modal}>
-            <Text
-              style={{
-                fontSize: 24,
-                lineHeight: 28,
-                fontWeight: "700",
-                color: "#FFFFFF",
-                marginVertical: 8,
-              }}
-            >
-              Are you sure?
-            </Text>
-            <Text
-              style={{
-                color: "#ADADAD",
-                textAlign: "center",
-                paddingHorizontal: 4,
-              }}
-            >
-              If you choose to ‘Exclude Location’ for this event, future events
-              will not be created at this location.
-            </Text>
-            <View
-              style={{
-                marginTop: 40,
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-                gap: 12,
-              }}
-            >
-              <CustomButton
-                disabled={excludeLocationLoading}
-                title="Cancel"
-                buttonStyle={{ backgroundColor: "#222222" }}
-                textStyle={{ color: "#FFFFFF" }}
-                onPress={() => setExcludeModalVisible(false)}
-              />
-              <CustomButton
-                disabled={excludeLocationLoading}
-                isLoading={excludeLocationLoading}
-                title="Yes, Exclude Location"
-                onPress={handleConfirmExclude}
-              />
-            </View>
+            {/* text contents */}
+            {!excludeLocationSuccess && !excludeLocationError && (
+              <View style={styles.modalText}>
+                <Text
+                  style={{
+                    fontSize: 24,
+                    lineHeight: 28,
+                    fontWeight: "700",
+                    color: "#FFFFFF",
+                    marginVertical: 8,
+                  }}
+                >
+                  Are you sure?
+                </Text>
+                <Text
+                  style={{
+                    color: "#ADADAD",
+                    textAlign: "center",
+                    paddingHorizontal: 4,
+                  }}
+                >
+                  If you choose to ‘Exclude Location’ for this event, future
+                  events will not be created at this location.
+                </Text>
+              </View>
+            )}
+            {excludeLocationSuccess && (
+              <View style={styles.modalText}>
+                <View style={styles.check}>
+                  <CheckDark />
+                </View>
+                <Text
+                  style={{
+                    fontSize: 24,
+                    lineHeight: 28,
+                    fontWeight: "700",
+                    color: "#FFFFFF",
+                    marginVertical: 8,
+                  }}
+                >
+                  Success!
+                </Text>
+                <Text
+                  style={{
+                    color: "#ADADAD",
+                    textAlign: "center",
+                    paddingHorizontal: 4,
+                  }}
+                >
+                  Location excluded successfully. No automatic events will be
+                  created on this location in future.
+                </Text>
+              </View>
+            )}
+
+            {excludeLocationError && (
+              <View style={styles.modalText}>
+                <Text
+                  style={{
+                    fontSize: 24,
+                    lineHeight: 28,
+                    fontWeight: "700",
+                    color: "#FFFFFF",
+                    marginVertical: 8,
+                  }}
+                >
+                  Denied!
+                </Text>
+                <Text
+                  style={{
+                    color: "#ADADAD",
+                    textAlign: "center",
+                    paddingHorizontal: 4,
+                  }}
+                >
+                  This location is already in exclusion list.
+                </Text>
+              </View>
+            )}
+
+            {/* CTAs */}
+            {!excludeLocationSuccess && !excludeLocationError ? (
+              <View
+                style={{
+                  marginTop: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  gap: 12,
+                }}
+              >
+                <CustomButton
+                  disabled={excludeLocationLoading}
+                  title="Cancel"
+                  buttonStyle={{ backgroundColor: "#222222" }}
+                  textStyle={{ color: "#FFFFFF" }}
+                  onPress={() => setExcludeModalVisible(false)}
+                />
+                <CustomButton
+                  disabled={excludeLocationLoading}
+                  isLoading={excludeLocationLoading}
+                  title="Yes, Exclude Location"
+                  onPress={handleConfirmExclude}
+                />
+              </View>
+            ) : (
+              <View
+                style={{
+                  marginTop: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  gap: 12,
+                }}
+              >
+                <CustomButton
+                  disabled={excludeLocationLoading}
+                  title="OK"
+                  buttonStyle={{
+                    backgroundColor: "#222222",
+                    paddingHorizontal: 24,
+                  }}
+                  textStyle={{ color: "#FFFFFF" }}
+                  onPress={() => {
+                    dispatch(resetExcludeLoaders());
+                    setExcludeModalVisible(false);
+                  }}
+                />
+              </View>
+            )}
           </View>
         </View>
       </Modal>
@@ -452,12 +534,6 @@ const EventDetail = ({ navigation, route }) => {
     }
   }, [deleteEventSuccess]);
 
-  useEffect(() => {
-    if (excludeLocationSuccess) {
-      setExcludeModalVisible(false);
-    }
-  }, [excludeLocationSuccess]);
-
   if (eventDetailLoading || data === null) {
     return (
       <View
@@ -635,6 +711,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#3B3B3B",
+  },
+  modalText: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   menu: {
     zIndex: 99,
