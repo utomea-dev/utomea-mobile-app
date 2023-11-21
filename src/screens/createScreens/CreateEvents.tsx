@@ -118,6 +118,7 @@ const CreateEvent = ({ navigation, route }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState("");
   const [rating, setRating] = useState(0);
   const [dateFlyInVisible, setDateFlyInVisible] = useState(false);
   const [timeFlyInVisible, setTimeFlyInVisible] = useState(false);
@@ -190,6 +191,26 @@ const CreateEvent = ({ navigation, route }) => {
     setSelectedCategory(() => categ);
   };
 
+  const handleTagInput = (str) => {
+    const tagsStr = str.split(",");
+    const tags = tagsStr.map((t) => {
+      const cleaned = t
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+
+      return cleaned;
+    });
+    setTagInput("");
+    // tags.forEach((t) => {
+    //   handleAddTags(t);
+    // });
+    return tags;
+  };
+
   const handleAddTags = (tag: String) => {
     if (tag.length < 3 || tag.length > 20) {
       setTagError(() => "Tag should be 3 - 20 characters long");
@@ -239,7 +260,11 @@ const CreateEvent = ({ navigation, route }) => {
       setPhotosError(() => "Please remove some pics, max 50 allowed");
       errorFlag = true;
     }
-
+    let tagsToSave = [];
+    if (tagInput) {
+      tagsToSave = handleTagInput(tagInput);
+    }
+    console.log("tags-------", tagsToSave, tags);
     if (errorFlag) return;
 
     const body = {
@@ -255,12 +280,13 @@ const CreateEvent = ({ navigation, route }) => {
       title: title.trim().replace(/\s+/g, " "),
       description,
       location,
-      tags,
+      tags: [...tagsToSave, ...tags],
+      // tags: tags.length === 0 ? tagsToSave : tags,
       category: selectedCategory,
       rating,
     };
-    clearErrors();
     dispatch(createEvent({ body, photos }));
+    clearErrors();
   };
 
   const dateOnClose = () => {
@@ -495,6 +521,8 @@ const CreateEvent = ({ navigation, route }) => {
         />
         <Divider />
         <Tags
+          tagInput={tagInput}
+          setTagInput={setTagInput}
           tags={tags}
           onAdd={handleAddTags}
           validationError={tagError}
