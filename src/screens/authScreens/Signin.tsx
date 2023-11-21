@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   BackHandler,
   ScrollView,
+  Platform,
 } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
@@ -25,6 +26,7 @@ import { useAuth } from "../../hooks/useAuth";
 import GoogleSocialSignin from "./components/GoogleSocialSignin";
 import FacebookSocialSignin from "./components/FacebookSocialSignin";
 import OverlayLoader from "../../components/Loaders/OverlayLoader";
+import AppleSocialSignin from "./components/AppleSocialLogin";
 
 const Signin = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -257,13 +259,16 @@ const Signin = ({ navigation }) => {
 
         <FacebookSocialSignin />
 
-        <CustomButton
+        {Platform.OS === "ios" && <AppleSocialSignin />}
+
+        {/* <CustomButton
           Icon={Apple}
           title="Sign Up with Apple"
           onPress={handleSocialSignin}
           buttonStyle={styles.socialButton}
           textStyle={{ color: "#FFFFFF" }}
-        />
+        /> */}
+
         <View style={{ paddingVertical: 32 }}>
           <Text style={{ color: "#ADADAD", textAlign: "center" }}>
             Don't have an account?{" "}

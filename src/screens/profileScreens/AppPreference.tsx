@@ -22,6 +22,7 @@ function AppPreference({ navigation }) {
     if (Platform.OS === "ios") {
       Linking.openSettings(); // Open the app's settings
     } else {
+      Linking.openSettings();
     }
   };
   return (
@@ -59,10 +60,11 @@ function AppPreference({ navigation }) {
         iconSource={Checkmark}
         imageSource={Rightback}
       />
-      <RenderToggleOption
+      <Options
+        title={"Phone Access Settings"}
+        onPress={handleAppNotificationsToggle}
         iconSource={AppNotification}
-        title="App Notifications"
-        onToggle={handleAppNotificationsToggle}
+        imageSource={Rightback}
       />
     </View>
   );

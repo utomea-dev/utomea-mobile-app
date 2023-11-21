@@ -11,6 +11,8 @@
 		<string>applinks:utomeaapp.com</string>
 	</array>
 	<key>keychain-access-groups</key>
-	<array/>
+	<array>
+		<string>$(AppIdentifierPrefix)org.qed42.UtomeaAPP</string>
+	</array>
 </dict>
 </plist>

@@ -37,6 +37,7 @@ import {
 } from "../../redux/slices/searchSlice";
 import FilterChips from "./components/FilterChips";
 import Suggestions from "./components/Suggestions";
+import { resetExcludeLoaders } from "../../redux/slices/excludeLocationSlice";
 
 const Search = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -116,6 +117,10 @@ const Search = ({ navigation }) => {
       );
     }
   };
+
+  useEffect(() => {
+    dispatch(resetExcludeLoaders());
+  }, []);
 
   useEffect(() => {
     debounce(() => {

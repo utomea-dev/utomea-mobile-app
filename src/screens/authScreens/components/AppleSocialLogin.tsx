@@ -9,7 +9,9 @@ import {
   updateUserForm,
 } from "../../../redux/slices/authSlice";
 import { appleAuth } from "@invertase/react-native-apple-authentication";
-import jwtDecode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+import { decode } from "base-64";
+global.atob = decode;
 
 const AppleSocialSignin = () => {
   const dispatch = useDispatch();
@@ -22,7 +24,7 @@ const AppleSocialSignin = () => {
     try {
       const appleAuthRequestResponse = await appleAuth.performRequest({
         requestedOperation: appleAuth.Operation.LOGIN,
-        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+        requestedScopes: [appleAuth.Scope.FULL_NAME, appleAuth.Scope.EMAIL],
       });
 
       console.log("appleAuthRequestResponse:", appleAuthRequestResponse);
@@ -33,9 +35,11 @@ const AppleSocialSignin = () => {
 
       // Decode the JWT token to extract information
       const decodedToken = jwtDecode(appleAuthRequestResponse.identityToken);
-      const email = decodedToken?.email ?? "";
+      console.log("decodedToken:", decodedToken);
 
-      console.log("Errorrrrrrrr", email);
+      let email = decodedToken?.email;
+
+      console.log("email:", email);
 
       const fullName = appleAuthRequestResponse.fullName ?? "";
 
