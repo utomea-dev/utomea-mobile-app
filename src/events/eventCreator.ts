@@ -11,6 +11,7 @@ import { showNotification } from "../utils/helpers";
 import { EVENT_TYPES } from "../constants/constants";
 import { checkExcludedLocation } from "./checkExcludedLocations";
 import { useAuth } from "../hooks/useAuth";
+import { getDistance } from "geolib";
 
 Geocoder.init(MAPS_API_KEY);
 
@@ -65,11 +66,26 @@ const eventCreator = async (coords: string, latitude, longitude) => {
     oldTime = await AsyncStorage.getItem("eventStartTime");
     oldAddress = await AsyncStorage.getItem("currentAddress");
     if (oldAddress !== currentAddress) {
+      const oldLat = oldAddress?.split("/")[0];
+      const oldLong = oldAddress?.split("/")[1];
+      const currentLat = currentAddress?.split("/")[0];
+      const currentLong = currentAddress?.split("/")[1];
+      const distance = getDistance(
+        { latitude: Number(oldLat), longitude: Number(oldLong) },
+        {
+          latitude: Number(currentLat),
+          longitude: Number(currentLong),
+        }
+      );
       showNotification({
-        message: `old: ${oldAddress} - new: ${currentAddress}`,
+        // message: `old: ${oldAddress} - new: ${currentAddress}`,
+        message: `distance: ${distance}`,
       });
 
+      if (distance < 100) return;
+
       const userDetails = await useAuth();
+      // const eventTimer = 30000;
       const eventTimer = userDetails?.auto_entry_time * 60000;
       console.log("TIMER----", eventTimer);
       await AsyncStorage.setItem("currentAddress", coords);
