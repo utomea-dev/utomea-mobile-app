@@ -8,6 +8,7 @@ import {
   StyleSheet,
   BackHandler,
   ScrollView,
+  Platform,
 } from "react-native";
 import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
@@ -25,6 +26,7 @@ import Apple from "../../assets/icons/apple.svg";
 import { reset, signupUser } from "../../redux/slices/authSlice";
 import { useAuth } from "../../hooks/useAuth";
 import Label from "../../components/Label/Label";
+import AppleSocialSignin from "./components/AppleSocialLogin";
 
 const Signup = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -255,13 +257,7 @@ const Signup = ({ navigation }) => {
       <View style={{ gap: 10, marginBottom: 20 }}>
         <GoogleSocialSignin />
         <FacebookSocialSignin />
-        <CustomButton
-          Icon={Apple}
-          title="Sign Up with Apple"
-          onPress={handleSocialSignup}
-          buttonStyle={styles.socialButton}
-          textStyle={{ color: "#FFFFFF" }}
-        />
+        {Platform.OS === "ios" && <AppleSocialSignin />}
       </View>
 
       <View style={{ paddingVertical: 32 }}>
