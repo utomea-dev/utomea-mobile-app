@@ -23,6 +23,7 @@ const LocationFlyIn = ({
   const placesRef = useRef();
 
   useEffect(() => {
+    placesRef.current?.focus();
     placesRef.current?.setAddressText(location);
   }, []);
 
@@ -153,6 +154,8 @@ const styles = StyleSheet.create({
     height: "70%",
     paddingBottom: 40,
     backgroundColor: "rgba(14, 14, 14, 0.95)",
+    borderWidth: 0.7,
+    borderColor: "#333333",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     bottom: 0,
