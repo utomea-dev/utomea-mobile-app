@@ -3,6 +3,8 @@ import makeRequest from "../../api";
 import {
   createEventUrl,
   getEventsUrl,
+  getPreSignedUrlsUrl,
+  seedUrl,
   updateEventUrl,
   uploadEventPhotosUrl,
 } from "../../api/urls";
@@ -14,7 +16,12 @@ import {
   showNotification,
 } from "../../utils/helpers";
 import { handleError } from "../errorHandler";
-import { mergeAll } from "../helpers";
+import {
+  convertBase64,
+  convertImageToBinary,
+  mergeAll,
+  removeSpaces,
+} from "../helpers";
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth() + 1;
@@ -33,6 +40,8 @@ const initialState = {
   eventsError: "",
   eventsLoadingInner: false,
   unverifiedCount: 0,
+  totalImages: 0,
+  uploadedImages: 0,
   totalCount: 1,
   isNewUser: false,
   startDateString: "",
@@ -133,29 +142,64 @@ export const uploadImage = createAsyncThunk(
     try {
       const images = data.photos;
       const { id } = data;
-      const requests = images.map(async (image, index) => {
-        const formData = new FormData();
-        formData.append("files", {
-          uri: image.uri,
-          type: "image/jpeg",
-          name: image.fileName,
+      const fileNames = images.map(
+        (img) => `${Date.now()}-${removeSpaces(img.fileName)}`
+      );
+      const presignedUrlsBody = { files: fileNames };
+      dispatch(setTotalImages(images.length));
+      const preSignedResponse = await makeRequest(
+        getPreSignedUrlsUrl(),
+        "POST",
+        presignedUrlsBody,
+        {}
+      );
+      let allResponse = [];
+      if (preSignedResponse.status === 200) {
+        const presignedUrls = preSignedResponse.data.data;
+        const requests = images.map(async (image, index) => {
+          return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                  // success
+                  dispatch(setUploadedImages());
+                  console.log("Success XHR");
+                  resolve();
+                } else {
+                  // failure
+                  console.log("FAile XHR");
+                  reject();
+                }
+              }
+            };
+            const fileType = "image/jpeg";
+            xhr.open("PUT", presignedUrls[index]);
+            xhr.setRequestHeader("Content-Type", fileType);
+            xhr.send({ uri: image.uri, type: fileType, name: image.fileName });
+          });
         });
 
-        const response = await axios.post(
-          `https://171dzpmu9g.execute-api.us-east-2.amazonaws.com/events/upload/${id}`,
-          formData,
-          {
-            timeout: 30000,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-      });
-      const response = await Promise.allSettled(requests);
-      console.log("IMAGE SUCCESS OR NOT-----", response);
-      dispatch(getEvents());
-      return { message: "Image upload successful" };
+        allResponse = await Promise.allSettled(requests);
+        if (allResponse.length) {
+          const seedFiles = fileNames.filter(
+            (file, i) => allResponse[i].status === "fulfilled"
+          );
+          const seedBody = { files: seedFiles, eventId: id };
+          const seedResponse = await makeRequest(
+            seedUrl(),
+            "POST",
+            seedBody,
+            {}
+          );
+        }
+      }
+
+      if (allResponse.length) {
+        dispatch(resetProgress());
+        dispatch(getEvents());
+        return { message: "Image upload successful" };
+      }
     } catch (error) {
       handleError(error);
     }
@@ -196,6 +240,8 @@ const homeSlice = createSlice({
       state.date = "";
       state.verified = "";
       state.limit = 50;
+      state.totalImages = 0;
+      state.uploadedImages = 0;
       state.infiniteLoading = false;
       state.createEventSuccess = false;
       state.createEventLoading = false;
@@ -260,6 +306,16 @@ const homeSlice = createSlice({
             ? "0" + currentDate.toString()
             : currentDate.toString(),
       };
+    },
+    resetProgress: (state) => {
+      state.totalImages = 0;
+      state.uploadedImages = 0;
+    },
+    setTotalImages: (state, action) => {
+      state.totalImages = action.payload;
+    },
+    setUploadedImages: (state) => {
+      state.uploadedImages = state.uploadedImages + 1;
     },
     setStartTime: (state, action) => {
       state.startTime[action.payload.key] = action.payload.value;
@@ -400,7 +456,6 @@ const homeSlice = createSlice({
   },
 });
 
-export default homeSlice.reducer;
 export const {
   resetHome,
   resetHomeLoaders,
@@ -412,4 +467,9 @@ export const {
   resetDate,
   setDateString,
   setTimeString,
+  setTotalImages,
+  setUploadedImages,
+  resetProgress,
 } = homeSlice.actions;
+
+export default homeSlice.reducer;

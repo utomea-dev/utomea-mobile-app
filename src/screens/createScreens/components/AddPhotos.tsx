@@ -94,7 +94,7 @@ const AddPhotos = ({
           </View>
         )}
         <EventImage
-          size={300}
+          size={200}
           imageUrl={img.uri || img.url}
           imageStyles={{ borderRadius: 8 }}
         />

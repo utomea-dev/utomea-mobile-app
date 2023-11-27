@@ -5,6 +5,7 @@ import GeneralHeader from "../../components/Header/GeneralHeader";
 import Label from "../../components/Label/Label";
 import DatePicker from "../../components/Header/DatePicker";
 import {
+  resetDate,
   resetHome,
   setDateString,
   setEndDate,
@@ -69,6 +70,7 @@ const DateRange = ({ navigation }) => {
   useFocusEffect(
     React.useCallback(() => {
       dispatch(resetHome());
+      dispatch(resetDate());
     }, [dispatch])
   );
 
