@@ -79,7 +79,7 @@ const BackgroundLocationService = () => {
       transistorAuthorizationToken: token,
       // Geolocation
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 100,
+      distanceFilter: 200,
       disableElasticity: true,
       stopTimeout: 1,
       // Permissions
