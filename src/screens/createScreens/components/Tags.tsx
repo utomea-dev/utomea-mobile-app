@@ -94,7 +94,12 @@ const Tags = ({
                 >
                   {tag}
                 </Text>
-                <TouchableOpacity onPress={() => onRemove(tag)}>
+                <TouchableOpacity
+                  style={{
+                    top: Platform.OS === "android" ? 0 : 2,
+                  }}
+                  onPress={() => onRemove(tag)}
+                >
                   <CloseSmall />
                 </TouchableOpacity>
               </View>

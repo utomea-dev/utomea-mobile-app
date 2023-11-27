@@ -2,10 +2,7 @@ import { getDistance } from "geolib";
 import makeRequest from "../api";
 import { getExcludedLocationsUrl } from "../api/urls";
 
-export const checkExcludedLocation = async (
-  lat = 23.0982786,
-  long = 79.9896402
-) => {
+export const checkExcludedLocation = async (lat = 0, long = 0) => {
   const response = await makeRequest(getExcludedLocationsUrl(), "GET", {}, {});
   const excludedLocations = response.data.data;
 

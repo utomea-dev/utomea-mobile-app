@@ -8,18 +8,26 @@ const EventImage = ({
   isVerified = false,
   imageUrl = "",
   imageStyles = {},
+  size = 700,
 }) => {
-  const [blur, setBlur] = useState(20);
   const placeholderUrl =
     "https://utomea-events.s3.us-east-2.amazonaws.com/thumbnail.png";
+  const splitter = "cloudfront.net";
+  let newUrl = "";
+  if (imageUrl) {
+    const urlParts = imageUrl?.split(splitter);
+    newUrl = imageUrl?.includes(splitter)
+      ? urlParts.join(`${splitter}/fit-in/${size}x${size}`)
+      : imageUrl;
+    console.log("rendering-imagessss-----", newUrl);
+  }
+
   return (
     <View style={styles.container}>
       {isVerified && <Verified style={styles.icon} />}
       <Image
-        blurRadius={blur}
-        onLoadEnd={() => setBlur(0)}
         style={[styles.image, imageStyles]}
-        source={{ uri: imageUrl ? imageUrl : placeholderUrl }}
+        source={{ uri: imageUrl ? newUrl : placeholderUrl }}
       />
     </View>
   );

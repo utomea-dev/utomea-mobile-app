@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from "react-native";
 import React from "react";
 import Label from "../../../components/Label/Label";
@@ -94,6 +95,7 @@ const AddPhotos = ({
           </View>
         )}
         <EventImage
+          size={300}
           imageUrl={img.uri || img.url}
           imageStyles={{ borderRadius: 8 }}
         />
@@ -111,6 +113,7 @@ const AddPhotos = ({
             title={
               <View
                 style={{
+                  top: Platform.OS === "android" ? 0 : 4,
                   flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",

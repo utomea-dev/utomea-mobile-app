@@ -38,8 +38,9 @@ const AppleSocialSignin = () => {
       console.log("decodedToken:", decodedToken);
 
       let email = decodedToken?.email;
+      let name = decodedToken?.name;
 
-      console.log("email:", email);
+      console.log("email:", email, name);
 
       const fullName = appleAuthRequestResponse.fullName ?? "";
 

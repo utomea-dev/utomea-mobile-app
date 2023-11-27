@@ -17,11 +17,12 @@ import { showNotification } from "../src/utils/helpers";
 
 import EventTimer from "../src/components/EventTimer";
 import TestCrash from "../src/components/TestCrash";
+import { useAuth } from "../src/hooks/useAuth";
 // Geocoder.init(MAPS_API_KEY);
 
 const BackgroundLocationService = () => {
-  const [appState, setAppState] = React.useState("");
-  const [enabled, setEnabled] = React.useState(false);
+  // const [appState, setAppState] = React.useState("");
+  // const [enabled, setEnabled] = React.useState(false);
   const [location, setLocation] = React.useState<Location>();
 
   const getMediaPermissions = async () => {
@@ -58,11 +59,12 @@ const BackgroundLocationService = () => {
   };
 
   const initBackgroundGeolocation = async () => {
+    const user = await useAuth();
     // Get an authorization token from transistorsoft demo server.
     const token =
       await BackgroundGeolocation.findOrCreateTransistorAuthorizationToken(
-        "org",
-        "events-app-user",
+        "utomea",
+        user.email,
         "https://tracker.transistorsoft.com"
       );
 
@@ -77,7 +79,7 @@ const BackgroundLocationService = () => {
       transistorAuthorizationToken: token,
       // Geolocation
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 200,
+      distanceFilter: 100,
       disableElasticity: true,
       stopTimeout: 1,
       // Permissions
@@ -98,25 +100,25 @@ const BackgroundLocationService = () => {
       startOnBoot: true,
       enableHeadless: true,
     });
-    console.log("state----", state);
+    // console.log("state----", state);
     showNotification({ message: `ready: ${state.trackingMode}` });
-    setEnabled(state.enabled);
+    // setEnabled(state.enabled);
   };
 
   const _handleAppStateChange = (appStatus) => {
-    setAppState(appStatus);
+    // setAppState(appStatus);
     console.log("app state changed =====------", appStatus);
   };
 
-  const [eventsForSync, setEventsForSync] = useState(null);
-  const [uploadingSlot, setUploadingSlot] = useState(null);
-  const getStorageValues = async () => {
-    const events = await AsyncStorage.getItem("eventsForSync");
-    const slot = await AsyncStorage.getItem("uploadingSlot");
-    setEventsForSync(events);
-    setUploadingSlot(slot);
-  };
-  getStorageValues();
+  // const [eventsForSync, setEventsForSync] = useState(null);
+  // const [uploadingSlot, setUploadingSlot] = useState(null);
+  // const getStorageValues = async () => {
+  //   const events = await AsyncStorage.getItem("eventsForSync");
+  //   const slot = await AsyncStorage.getItem("uploadingSlot");
+  //   setEventsForSync(events);
+  //   setUploadingSlot(slot);
+  // };
+  // getStorageValues();
 
   // image uplaod effect
   // useEffect(() => {
@@ -162,10 +164,17 @@ const BackgroundLocationService = () => {
     const onLocation: Subscription = BackgroundGeolocation.onLocation(
       (l) => {
         console.log("[onLocation]", l);
-        setLocation(l);
-        showNotification({
-          message: "Location change",
-        });
+        showNotification({ message: "L changed" });
+        if (l && l.coords) {
+          console.log("location update--=-=-=-", location);
+          const { longitude, latitude } = l.coords;
+          const address = `${latitude}/${longitude}`;
+          createEvent(address, latitude, longitude);
+        }
+        // setLocation(l);
+        // showNotification({
+        //   message: "Location change",
+        // });
       },
       (error) => {
         showNotification({
@@ -175,30 +184,30 @@ const BackgroundLocationService = () => {
       }
     );
 
-    const onMotionChange: Subscription = BackgroundGeolocation.onMotionChange(
-      (event) => {
-        console.log("[onMotionChange]", event);
-        showNotification({
-          message: "Motion change",
-        });
-      }
-    );
+    // const onMotionChange: Subscription = BackgroundGeolocation.onMotionChange(
+    //   (event) => {
+    //     console.log("[onMotionChange]", event);
+    //     showNotification({
+    //       message: "Motion change",
+    //     });
+    //   }
+    // );
 
-    const onActivityChange: Subscription =
-      BackgroundGeolocation.onActivityChange((event) => {
-        console.log("[onActivityChange]", event);
-        showNotification({
-          message: "Activity change",
-        });
-      });
+    // const onActivityChange: Subscription =
+    //   BackgroundGeolocation.onActivityChange((event) => {
+    //     console.log("[onActivityChange]", event);
+    //     showNotification({
+    //       message: "Activity change",
+    //     });
+    //   });
 
-    const onProviderChange: Subscription =
-      BackgroundGeolocation.onProviderChange((event) => {
-        console.log("[onProviderChange]", event);
-        showNotification({
-          message: "Provider change",
-        });
-      });
+    // const onProviderChange: Subscription =
+    //   BackgroundGeolocation.onProviderChange((event) => {
+    //     console.log("[onProviderChange]", event);
+    //     showNotification({
+    //       message: "Provider change",
+    //     });
+    //   });
 
     AppState.addEventListener("change", _handleAppStateChange);
 
@@ -206,21 +215,21 @@ const BackgroundLocationService = () => {
       // When view is destroyed (or refreshed with dev live-reload),
       // Remove BackgroundGeolocation event-listeners.
       onLocation.remove();
-      onMotionChange.remove();
-      onActivityChange.remove();
-      onProviderChange.remove();
+      // onMotionChange.remove();
+      // onActivityChange.remove();
+      // onProviderChange.remove();
     };
   }, []);
 
-  useEffect(() => {
-    showNotification({ message: "Location changed in effect" });
-    if (location && location.coords) {
-      console.log("location update--=-=-=-", location);
-      const { longitude, latitude } = location.coords;
-      const address = `${latitude}/${longitude}`;
-      createEvent(address, latitude, longitude);
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   showNotification({ message: "Location changed in effect" });
+  //   if (location && location.coords) {
+  //     console.log("location update--=-=-=-", location);
+  //     const { longitude, latitude } = location.coords;
+  //     const address = `${latitude}/${longitude}`;
+  //     createEvent(address, latitude, longitude);
+  //   }
+  // }, [location]);
 
   const init = async () => {
     let oldTime = await AsyncStorage.getItem("eventStartTime");

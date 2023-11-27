@@ -382,7 +382,11 @@ const EventDetail = ({ navigation, route }) => {
         onLongPress={() => handleLongPress(img)}
         style={[styles.photos, { width: imageWidth }]}
       >
-        <EventImage imageUrl={img.url} imageStyles={{ borderRadius: 8 }} />
+        <EventImage
+          imageUrl={img.url}
+          size={350}
+          imageStyles={{ borderRadius: 8 }}
+        />
       </TouchableOpacity>
     ));
   };
@@ -522,6 +526,7 @@ const EventDetail = ({ navigation, route }) => {
     }
   }, [data]);
 
+  // console.log("event detail-----", data);
   useEffect(() => {
     dispatch(getEventDetails({ id: eventId }));
     dispatch(resetHomeLoaders());
@@ -664,14 +669,16 @@ const EventDetail = ({ navigation, route }) => {
 
         {/* Event photos if any */}
         {data?.photos?.length > 0 ? (
-          <View style={styles.photosContainer}>
-            <InfoIcon />
+          <>
+            <View style={{ flexDirection: "row", gap: 6 }}>
+              <InfoIcon />
 
-            <Text style={[styles.textStyle, { marginBottom: 4 }]}>
-              Tap and hold photo to set it as the event thumbnail
-            </Text>
-            {renderPhotos()}
-          </View>
+              <Text style={[styles.textStyle, { marginBottom: 4 }]}>
+                Tap and hold photo to set it as the event thumbnail
+              </Text>
+            </View>
+            <View style={styles.photosContainer}>{renderPhotos()}</View>
+          </>
         ) : (
           <Text style={styles.textStyle}>This Event has no photos to show</Text>
         )}
