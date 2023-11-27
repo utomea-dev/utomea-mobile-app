@@ -26,6 +26,8 @@ export const resetPasswordUrl = (token: string) =>
 export const getEventsUrl = ({ limit, skip, verified, date }) =>
   `${baseUrl}/events?limit=${limit}&skip=${skip}&verified=${verified}&date=${date}`;
 export const createEventUrl = () => `${baseUrl}/events`;
+export const getPreSignedUrlsUrl = () => `${baseUrl}/events/presigned-url`;
+export const seedUrl = () => `${baseUrl}/events/seed-url`;
 export const editEventUrl = (id: number) => `${baseUrl}/events/${id}`;
 export const getEventDetailsUrl = (id: number) => `${baseUrl}/events/${id}`;
 export const deleteEventUrl = (id: number) => `${baseUrl}/events/${id}`;

@@ -171,21 +171,37 @@ export const convertToAMPM = (timestamp) => {
 };
 
 export const isTimeValid = (time1, time2) => {
-  const parseTime = (time) => {
-    const [hours, minutes, ampm] = time.split("-");
+  // const parseTime = (time) => {
+  //   const [hours, minutes, ampm] = time.split("-");
 
-    let totalMinutes = parseInt(hours, 10) * 60 + parseInt(minutes, 10);
-    if (ampm.toLowerCase() === "pm") {
-      totalMinutes += 12 * 60;
+  //   let totalMinutes = parseInt(hours, 10) * 60 + parseInt(minutes, 10);
+  //   if (ampm.toLowerCase() === "pm") {
+  //     totalMinutes += 12 * 60;
+  //   }
+
+  //   return totalMinutes;
+  // };
+
+  // const minutes1 = parseTime(time1);
+  // const minutes2 = parseTime(time2);
+
+  // return minutes1 >= minutes2;
+  const format24 = (time) => {
+    const [hh, mm, period] = time.split("-");
+    let hours = parseInt(hh);
+    if (period === "pm" && hours !== 12) {
+      hours += 12;
+    } else if (period === "am" && hours === 12) {
+      hours = 0;
     }
-
-    return totalMinutes;
+    return hours * 60 + parseInt(mm);
   };
 
-  const minutes1 = parseTime(time1);
-  const minutes2 = parseTime(time2);
+  const time1InMinutes = format24(time1);
+  const time2InMinutes = format24(time2);
 
-  return minutes1 >= minutes2;
+  // Compare the times and return the result
+  return time1InMinutes >= time2InMinutes;
 };
 
 export const convertTimeToISOString = (time) => {

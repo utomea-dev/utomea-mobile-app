@@ -5,9 +5,10 @@ import CustomButton from "../../components/Button/Button";
 import CustomInput from "../../components/Input/Input";
 import { trimAndNormalizeSpaces } from "../../utils/helpers";
 
-import { updateUserForm } from "../../redux/slices/authSlice";
+import { reset, updateUserForm } from "../../redux/slices/authSlice";
 
 import Logo from "../../assets/images/logo.svg";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UserDetails = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -75,12 +76,42 @@ const UserDetails = ({ navigation }) => {
           onChangeText={(text) => setName(text)}
         />
       </View>
-      <CustomButton title="Save" onPress={handleSave} />
+      <View style={styles.footer}>
+        <CustomButton
+          title="Cancel"
+          onPress={() => {
+            navigation.navigate("Signin");
+            AsyncStorage.clear();
+            dispatch(reset());
+          }}
+          buttonStyle={{ backgroundColor: "#222222" }}
+          textStyle={{ color: "#FFFFFF" }}
+        />
+        <CustomButton title="Save" onPress={handleSave} />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  flex: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    // gap: 12,
+  },
+  footer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
+    backgroundColor: "rgba(14, 14, 14, 0.9)",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 20,
+    paddingHorizontal: 5,
+  },
   container: {
     height: "100%",
     width: "100%",
