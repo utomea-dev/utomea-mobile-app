@@ -494,6 +494,8 @@ PODS:
     - React
   - RNCPushNotificationIOS (1.11.0):
     - React-Core
+  - RNFS (2.20.0):
+    - React-Core
   - RNGestureHandler (2.12.0):
     - React-Core
   - RNGoogleSignin (10.1.0):
@@ -590,6 +592,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - RNPermissions (from `../node_modules/react-native-permissions`)
@@ -730,6 +733,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/masked-view"
   RNCPushNotificationIOS:
     :path: "../node_modules/@react-native-community/push-notification-ios"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
@@ -821,6 +826,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 4b98ac3c64efa4e35c1197cb0c5ca5e9f5d4c666
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
+  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: dec4645026e7401a0899f2846d864403478ff6a5
   RNGoogleSignin: a6a612cce56a45ab701c5c5c6e36f5390522d100
   RNPermissions: f1b49dd05fa9b83993cd05a9ee115247944d8f1a
@@ -831,6 +837,6 @@ SPEC CHECKSUMS:
   Yoga: d56980c8914db0b51692f55533409e844b66133c
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 0a1bdf54e59804d64397ae422457098d167c5c0e
+PODFILE CHECKSUM: 960b7a70e7203a19b280ce4ed1762eb98c91c809
 
 COCOAPODS: 1.12.1

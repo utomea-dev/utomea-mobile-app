@@ -175,7 +175,7 @@ const HomeFeed = ({ navigation }) => {
             `${item[0].id.toString()}-${Math.ceil(Math.random() * 1000000)}`
           }
           renderItem={({ item, index }) => {
-            const endDate = item[0].end_timestamp.split("T")[0];
+            const endDate = item[0].begin_timestamp.split("T")[0];
             return (
               <Events
                 cards={item}
@@ -186,7 +186,7 @@ const HomeFeed = ({ navigation }) => {
                   events &&
                   events.length > 0 &&
                   date &&
-                  date !== events[0][0]?.end_timestamp.split("T")[0]
+                  date !== events[0][0]?.begin_timestamp.split("T")[0]
                 }
                 isLast={events?.length === index + 1}
               />

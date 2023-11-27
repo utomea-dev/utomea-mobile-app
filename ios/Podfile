@@ -19,6 +19,7 @@ flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : Flip
   pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways/Permission-LocationAlways.podspec"
   pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse/Permission-LocationWhenInUse.podspec"
   pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
 
 
 linkage = ENV['USE_FRAMEWORKS']
