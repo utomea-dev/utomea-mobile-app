@@ -185,8 +185,18 @@ const eventCreator = async (coords: string, latitude, longitude) => {
               message: "Failed to fetch device images",
             });
             console.log(err);
+          })
+          .finally(async () => {
+            await AsyncStorage.setItem(
+              "utomea_event_inProgress",
+              JSON.stringify(false)
+            );
           });
       }
+      await AsyncStorage.setItem(
+        "utomea_event_inProgress",
+        JSON.stringify(false)
+      );
     }
   };
 
