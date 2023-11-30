@@ -42,6 +42,7 @@ import OverlayLoader from "../../components/Loaders/OverlayLoader";
 import TimeSection from "./components/TimeSection";
 import TimeFlyIn from "./components/TimeFlyIn";
 import { convertTimeToISOString } from "../../utils/helpers";
+import ProgressLoader from "../../components/Loaders/ProgressLoader";
 
 const categories = [
   {
@@ -450,7 +451,7 @@ const CreateEvent = ({ navigation, route }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       enabled
     >
-      {(createEventLoading || uploadImageLoading) && <OverlayLoader />}
+      {(createEventLoading || uploadImageLoading) && <ProgressLoader />}
       {renderLocationFlyIn()}
       {renderDateFlyIn()}
       {renderTimeFlyIn()}

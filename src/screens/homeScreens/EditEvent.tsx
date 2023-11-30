@@ -44,6 +44,7 @@ import {
 } from "../../utils/helpers";
 import TimeFlyIn from "../createScreens/components/TimeFlyIn";
 import TimeSection from "../createScreens/components/TimeSection";
+import ProgressLoader from "../../components/Loaders/ProgressLoader";
 
 const categories = [
   {
@@ -510,7 +511,7 @@ const EditEvent = ({ navigation, route }) => {
   };
 
   const renderloaderOverlay = () => {
-    return (editEventLoading || uploadImageLoading) && <OverlayLoader />;
+    return (editEventLoading || uploadImageLoading) && <ProgressLoader />;
   };
 
   const renderDisableOverlay = () => {

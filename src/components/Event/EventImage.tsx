@@ -8,7 +8,7 @@ const EventImage = ({
   isVerified = false,
   imageUrl = "",
   imageStyles = {},
-  size = 700,
+  size = 600,
 }) => {
   const placeholderUrl =
     "https://utomea-events.s3.us-east-2.amazonaws.com/thumbnail.png";
