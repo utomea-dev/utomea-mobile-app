@@ -84,7 +84,7 @@ const eventCreator = async (coords: string, latitude, longitude) => {
 
       if (distance < 100) return;
 
-      const userDetails = await useAuth();
+      // const userDetails = await useAuth();
       // const eventTimer = 30000;
       const eventTimer = userDetails?.auto_entry_time * 60000;
       console.log("TIMER----", eventTimer);
@@ -100,9 +100,6 @@ const eventCreator = async (coords: string, latitude, longitude) => {
 
       // run this logic if the time elapsed at the same location more than 30 minutes
       if (startTimeStamp - Number(oldTime) > eventTimer) {
-        // if location is in exclusion list, it wont trigger event creation and will return from here
-        if (await checkExcludedLocation(latitude, longitude)) return;
-
         showNotification({ message: "Creating Event" });
         if (Platform.OS === "android" && !(await hasAndroidPermission())) {
           return;
@@ -151,12 +148,25 @@ const eventCreator = async (coords: string, latitude, longitude) => {
 
             let address = oldAddress;
             Geocoder.from(oldAddress?.split("/")[0], oldAddress?.split("/")[1])
-              .then((response) => {
+              .then(async (response) => {
                 address = response.results[0].formatted_address;
                 console.log(
                   "creating new event 000000000000000000000000000000---",
                   address
                 );
+
+                // if location is in exclusion list, it wont trigger event creation and will return from here
+                if (
+                  await checkExcludedLocation(
+                    Number(oldAddress?.split("/")[0]),
+                    Number(oldAddress?.split("/")[1]),
+                    address
+                  )
+                ) {
+                  console.log("Location Excluded....", address);
+                  return;
+                }
+
                 const body = {
                   event_type: EVENT_TYPES.AUTOMATIC,
                   latitude,
