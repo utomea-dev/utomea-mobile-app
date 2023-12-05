@@ -60,7 +60,7 @@ const LocationFlyIn = ({
           listUnderlayColor="#07AA8C"
           enablePoweredByContainer={false}
           query={{
-            key: GOOGLE_PLACES_API_KEY,
+            key: "AIzaSyB8iCzJlmSC8Ku6pStVH1l-qVjZi65H96k",
             language: "en",
           }}
           listEmptyComponent={

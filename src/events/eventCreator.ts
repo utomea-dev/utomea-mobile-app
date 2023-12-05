@@ -13,7 +13,7 @@ import { checkExcludedLocation } from "./checkExcludedLocations";
 import { useAuth } from "../hooks/useAuth";
 import { getDistance } from "geolib";
 
-Geocoder.init(MAPS_API_KEY);
+Geocoder.init("AIzaSyB8iCzJlmSC8Ku6pStVH1l-qVjZi65H96k");
 
 const eventCreator = async (coords: string, latitude, longitude) => {
   console.log("EVENT CREATION STARTS ??????????????????????????");
@@ -185,8 +185,18 @@ const eventCreator = async (coords: string, latitude, longitude) => {
               message: "Failed to fetch device images",
             });
             console.log(err);
+          })
+          .finally(async () => {
+            await AsyncStorage.setItem(
+              "utomea_event_inProgress",
+              JSON.stringify(false)
+            );
           });
       }
+      await AsyncStorage.setItem(
+        "utomea_event_inProgress",
+        JSON.stringify(false)
+      );
     }
   };
 

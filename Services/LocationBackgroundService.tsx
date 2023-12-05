@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Geolocation from "@react-native-community/geolocation";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { View, AppState, Platform, PermissionsAndroid } from "react-native";
 import { check, request, PERMISSIONS, RESULTS } from "react-native-permissions";
 
@@ -110,29 +110,6 @@ const BackgroundLocationService = () => {
     console.log("app state changed =====------", appStatus);
   };
 
-  // const [eventsForSync, setEventsForSync] = useState(null);
-  // const [uploadingSlot, setUploadingSlot] = useState(null);
-  // const getStorageValues = async () => {
-  //   const events = await AsyncStorage.getItem("eventsForSync");
-  //   const slot = await AsyncStorage.getItem("uploadingSlot");
-  //   setEventsForSync(events);
-  //   setUploadingSlot(slot);
-  // };
-  // getStorageValues();
-
-  // image uplaod effect
-  // useEffect(() => {
-  //   console.log(
-  //     "INSIDE USEFFECT RUNNING---------",
-  //     eventsForSync,
-  //     appState,
-  //     uploadingSlot
-  //   );
-  //   if (appState === "active") {
-  //     // startImageUploading();
-  //   }
-  // }, [eventsForSync, uploadingSlot, appState]);
-
   React.useEffect(() => {
     initBackgroundGeolocation();
     getMediaPermissions();
@@ -162,14 +139,34 @@ const BackgroundLocationService = () => {
       });
 
     const onLocation: Subscription = BackgroundGeolocation.onLocation(
-      (l) => {
+      async (l) => {
         console.log("[onLocation]", l);
+        const eventInProgress = await AsyncStorage.getItem(
+          "utomea_event_inProgress"
+        );
+        const parsedProgress = await JSON.parse(eventInProgress);
         showNotification({ message: "L changed" });
-        if (l && l.coords) {
+        // console.log(
+        //   "event progress status ----++++=====",
+        //   parsedProgress,
+        //   parsedProgress === true,
+        //   parsedProgress === false
+        // );
+
+        if (parsedProgress !== true && l && l.coords) {
           console.log("location update--=-=-=-", location);
           const { longitude, latitude } = l.coords;
           const address = `${latitude}/${longitude}`;
-          createEvent(address, latitude, longitude);
+          await AsyncStorage.setItem(
+            "utomea_event_inProgress",
+            JSON.stringify(true)
+          );
+          await createEvent(address, latitude, longitude);
+        } else {
+          await AsyncStorage.setItem(
+            "utomea_event_inProgress",
+            JSON.stringify(false)
+          );
         }
         // setLocation(l);
         // showNotification({
