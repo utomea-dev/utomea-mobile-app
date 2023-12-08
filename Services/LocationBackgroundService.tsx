@@ -79,7 +79,7 @@ const BackgroundLocationService = () => {
       transistorAuthorizationToken: token,
       // Geolocation
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 200,
+      distanceFilter: 130,
       disableElasticity: true,
       stopTimeout: 1,
       // Permissions
@@ -153,7 +153,7 @@ const BackgroundLocationService = () => {
         //   parsedProgress === false
         // );
 
-        if (parsedProgress !== true && l && l.coords) {
+        if (l && l.coords) {
           console.log("location update--=-=-=-", location);
           const { longitude, latitude } = l.coords;
           const address = `${latitude}/${longitude}`;

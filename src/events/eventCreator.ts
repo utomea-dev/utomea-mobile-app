@@ -85,8 +85,8 @@ const eventCreator = async (coords: string, latitude, longitude) => {
       if (distance < 100) return;
 
       // const userDetails = await useAuth();
-      const eventTimer = 300000;
-      // const eventTimer = userDetails?.auto_entry_time * 60000;
+      // const eventTimer = 300000;
+      const eventTimer = userDetails?.auto_entry_time * 60000;
       console.log("TIMER----", eventTimer);
       await AsyncStorage.setItem("currentAddress", coords);
       await AsyncStorage.setItem(
