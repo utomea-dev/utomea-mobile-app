@@ -79,7 +79,7 @@ const BackgroundLocationService = () => {
       transistorAuthorizationToken: token,
       // Geolocation
       desiredAccuracy: BackgroundGeolocation.DESIRED_ACCURACY_HIGH,
-      distanceFilter: 200,
+      distanceFilter: 100,
       disableElasticity: true,
       stopTimeout: 1,
       // Permissions
@@ -141,11 +141,11 @@ const BackgroundLocationService = () => {
     const onLocation: Subscription = BackgroundGeolocation.onLocation(
       async (l) => {
         console.log("[onLocation]", l);
-        const eventInProgress = await AsyncStorage.getItem(
-          "utomea_event_inProgress"
-        );
-        const parsedProgress = await JSON.parse(eventInProgress);
-        showNotification({ message: "L changed" });
+        // const eventInProgress = await AsyncStorage.getItem(
+        //   "utomea_event_inProgress"
+        // );
+        // const parsedProgress = await JSON.parse(eventInProgress);
+        // showNotification({ message: "L changed" });
         // console.log(
         //   "event progress status ----++++=====",
         //   parsedProgress,
