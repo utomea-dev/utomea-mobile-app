@@ -385,7 +385,7 @@ const EventDetail = ({ navigation, route }) => {
         <EventImage
           imageUrl={img.url}
           size={350}
-          size={200}
+          size={350}
           imageStyles={{ borderRadius: 8 }}
         />
       </TouchableOpacity>

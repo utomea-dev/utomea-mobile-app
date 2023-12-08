@@ -2,7 +2,11 @@ import { getDistance } from "geolib";
 import makeRequest from "../api";
 import { getExcludedLocationsUrl } from "../api/urls";
 
-export const checkExcludedLocation = async (lat = 0, long = 0) => {
+export const checkExcludedLocation = async (
+  lat = 0,
+  long = 0,
+  address = ""
+) => {
   const response = await makeRequest(getExcludedLocationsUrl(), "GET", {}, {});
   const excludedLocations = response.data.data;
 
@@ -15,8 +19,9 @@ export const checkExcludedLocation = async (lat = 0, long = 0) => {
         longitude: Number(location.longitude),
       }
     );
-    console.log("distances----", distance);
-    if (distance < 200) flag = true;
+    // console.log("distances----", distance, location.identifier, address);
+    if (location.identifier === address) flag = true;
+    // if (distance < 200 || location.identifier === address) flag = true;
   });
 
   return flag;
