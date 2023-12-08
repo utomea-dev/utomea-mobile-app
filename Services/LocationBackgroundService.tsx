@@ -153,7 +153,7 @@ const BackgroundLocationService = () => {
         //   parsedProgress === false
         // );
 
-        if (parsedProgress !== true && l && l.coords) {
+        if (l && l.coords) {
           console.log("location update--=-=-=-", location);
           const { longitude, latitude } = l.coords;
           const address = `${latitude}/${longitude}`;
