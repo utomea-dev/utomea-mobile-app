@@ -20,8 +20,8 @@ export const checkExcludedLocation = async (
       }
     );
     // console.log("distances----", distance, location.identifier, address);
-    if (location.identifier === address) flag = true;
-    // if (distance < 200 || location.identifier === address) flag = true;
+    // if (location.identifier === address) flag = true;
+    if (distance < 200) flag = true;
   });
 
   return flag;

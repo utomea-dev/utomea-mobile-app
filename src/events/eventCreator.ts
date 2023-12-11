@@ -100,6 +100,17 @@ const eventCreator = async (coords: string, latitude, longitude) => {
 
       // run this logic if the time elapsed at the same location more than 30 minutes
       if (startTimeStamp - Number(oldTime) > eventTimer) {
+        // CHECK FOR EXCLUDED LOCATION
+        if (
+          await checkExcludedLocation(
+            Number(oldAddress?.split("/")[0]),
+            Number(oldAddress?.split("/")[1])
+            // address
+          )
+        ) {
+          console.log("Location Excluded....");
+          return;
+        }
         showNotification({ message: "Creating Event" });
         if (Platform.OS === "android" && !(await hasAndroidPermission())) {
           return;
@@ -156,16 +167,16 @@ const eventCreator = async (coords: string, latitude, longitude) => {
                 );
 
                 // if location is in exclusion list, it wont trigger event creation and will return from here
-                if (
-                  await checkExcludedLocation(
-                    Number(oldAddress?.split("/")[0]),
-                    Number(oldAddress?.split("/")[1]),
-                    address
-                  )
-                ) {
-                  console.log("Location Excluded....", address);
-                  return;
-                }
+                // if (
+                //   await checkExcludedLocation(
+                //     Number(oldAddress?.split("/")[0]),
+                //     Number(oldAddress?.split("/")[1]),
+                //     address
+                //   )
+                // ) {
+                //   console.log("Location Excluded....", address);
+                //   return;
+                // }
 
                 const body = {
                   event_type: EVENT_TYPES.AUTOMATIC,
