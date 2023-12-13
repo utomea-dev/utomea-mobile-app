@@ -30,6 +30,7 @@ import LocationFlyIn from "./components/LocationFlyIn";
 import { EVENT_TYPES, MONTHS } from "../../constants/constants";
 import {
   createEvent,
+  resetDate,
   resetHome,
   setDateString,
   setEndDate,
@@ -235,6 +236,7 @@ const CreateEvent = ({ navigation, route }) => {
   const handleCancel = () => {
     clearErrors();
     dispatch(resetHome());
+    dispatch(resetDate());
     navigation.navigate("Home");
   };
 
@@ -441,6 +443,7 @@ const CreateEvent = ({ navigation, route }) => {
     if (!createEventLoading && !uploadImageLoading && createEventSuccess) {
       clearErrors();
       dispatch(resetHome());
+      dispatch(resetDate());
       navigation.navigate("Home");
     }
   }, [createEventLoading, uploadImageLoading, createEventSuccess]);

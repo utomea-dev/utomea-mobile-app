@@ -168,7 +168,8 @@ const eventCreator = async (coords: string, latitude, longitude) => {
                 // CHECK FOR EXCLUDED LOCATION
                 const isExcluded = await checkExcludedLocation(
                   Number(oldAddress?.split("/")[0]),
-                  Number(oldAddress?.split("/")[1])
+                  Number(oldAddress?.split("/")[1]),
+                  address
                 );
                 console.log("exclusion:-----", isExcluded);
                 if (isExcluded) {

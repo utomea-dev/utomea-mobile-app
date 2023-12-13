@@ -67,12 +67,12 @@ const DateRange = ({ navigation }) => {
     navigation.navigate("Create/create");
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      dispatch(resetHome());
-      dispatch(resetDate());
-    }, [dispatch])
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     dispatch(resetHome());
+  //     dispatch(resetDate());
+  //   }, [dispatch])
+  // );
 
   return (
     <View style={styles.dateContainer}>
