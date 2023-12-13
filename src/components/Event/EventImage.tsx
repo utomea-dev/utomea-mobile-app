@@ -19,7 +19,6 @@ const EventImage = ({
     newUrl = imageUrl?.includes(splitter)
       ? urlParts.join(`${splitter}/fit-in/${size}x${size}`)
       : imageUrl;
-    console.log("rendering-imagessss-----", newUrl);
   }
 
   return (

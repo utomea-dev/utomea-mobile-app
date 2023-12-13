@@ -84,7 +84,7 @@ const eventCreator = async (coords: string, latitude, longitude) => {
 
       if (distance < 100) return;
 
-      // const userDetails = await useAuth();
+      const userDetails = await useAuth();
       // const eventTimer = 300000;
       const eventTimer = userDetails?.auto_entry_time * 60000;
       console.log("TIMER----", eventTimer);
@@ -100,17 +100,16 @@ const eventCreator = async (coords: string, latitude, longitude) => {
 
       // run this logic if the time elapsed at the same location more than 30 minutes
       if (startTimeStamp - Number(oldTime) > eventTimer) {
-        // CHECK FOR EXCLUDED LOCATION
-        if (
-          await checkExcludedLocation(
-            Number(oldAddress?.split("/")[0]),
-            Number(oldAddress?.split("/")[1])
-            // address
-          )
-        ) {
-          console.log("Location Excluded....");
-          return;
-        }
+        // // CHECK FOR EXCLUDED LOCATION
+        // const isExcluded = await checkExcludedLocation(
+        //   Number(oldAddress?.split("/")[0]),
+        //   Number(oldAddress?.split("/")[1])
+        // );
+        // console.log("exclusion:-----", isExcluded);
+        // if (isExcluded) {
+        //   console.log("Location Excluded....");
+        //   return;
+        // }
         showNotification({ message: "Creating Event" });
         if (Platform.OS === "android" && !(await hasAndroidPermission())) {
           return;
@@ -166,17 +165,16 @@ const eventCreator = async (coords: string, latitude, longitude) => {
                   address
                 );
 
-                // if location is in exclusion list, it wont trigger event creation and will return from here
-                // if (
-                //   await checkExcludedLocation(
-                //     Number(oldAddress?.split("/")[0]),
-                //     Number(oldAddress?.split("/")[1]),
-                //     address
-                //   )
-                // ) {
-                //   console.log("Location Excluded....", address);
-                //   return;
-                // }
+                // CHECK FOR EXCLUDED LOCATION
+                const isExcluded = await checkExcludedLocation(
+                  Number(oldAddress?.split("/")[0]),
+                  Number(oldAddress?.split("/")[1])
+                );
+                console.log("exclusion:-----", isExcluded);
+                if (isExcluded) {
+                  console.log("Location Excluded....");
+                  return;
+                }
 
                 const body = {
                   event_type: EVENT_TYPES.AUTOMATIC,
