@@ -1,5 +1,6 @@
 import { deepCloneArray } from "../utils/helpers";
 import RNFS from "react-native-fs";
+import { setUploadedImages } from "./slices/homeSlice";
 
 const isSame = (arr1 = [], arr2 = []) => {
   const arr1Element = arr1[0]?.begin_timestamp.split("T")[0].split(" ")[0];
@@ -55,4 +56,46 @@ export const convertBase64 = (file) => {
 
 export const removeSpaces = (str) => {
   return str.replace(/\s/g, "");
+};
+
+export const retryImageUpload = (
+  files: [],
+  presignedUrls: [],
+  failed: [],
+  dispatch
+) => {
+  const requests = files.map(async (item, index) => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            // success
+            dispatch(setUploadedImages());
+            console.log("Success XHR");
+            resolve();
+          } else {
+            // failure
+            // console.log("FAiled XHR");
+            failed.push({ image: item.image, index: item.index });
+            const errorMessage = xhr.responseText;
+            console.log("Failed:", errorMessage);
+            reject();
+          }
+        }
+      };
+      const fileType = "application/octet-stream";
+      // const fileType = "image/jpeg";
+      xhr.open("PUT", presignedUrls[item.index]);
+      xhr.setRequestHeader("Content-Type", fileType);
+      xhr.send({
+        uri: item.image.uri,
+        type: fileType,
+        name: item.image.fileName,
+      });
+    });
+  });
+
+  return requests;
 };
