@@ -22,6 +22,7 @@ const CalendarHeader = ({ isDisabled }) => {
   const dispatch = useDispatch();
 
   const { year, month, date: day } = useSelector((state) => state.home.endDate);
+  const { date } = useSelector((state) => state.home);
 
   const [isFlyInVisible, setIsFlyInVisible] = useState(false);
   const [localDate, setLocalDate] = useState(
@@ -34,6 +35,7 @@ const CalendarHeader = ({ isDisabled }) => {
 
   const hideFlyIn = () => {
     setIsFlyInVisible(false);
+    dispatch(resetDate());
   };
 
   const showFlyIn = () => {
@@ -42,6 +44,7 @@ const CalendarHeader = ({ isDisabled }) => {
 
   const handleContinue = () => {
     dispatch(setHomeFilter({ key: "date", value: `${year}-${month}-${day}` }));
+    dispatch(resetDate());
     setLocalDate(() => `${year}-${month}-${day}`);
     hideFlyIn();
   };
@@ -71,9 +74,9 @@ const CalendarHeader = ({ isDisabled }) => {
 
           <View style={{ marginVertical: 24 }}>
             <DatePicker
-              year={year}
-              month={month}
-              date={day}
+              year={date === "" ? year : date.split("-")[0]}
+              month={date === "" ? month : date.split("-")[1]}
+              date={date === "" ? day : date.split("-")[2]}
               setDate={setEndDate}
             />
           </View>
@@ -108,9 +111,15 @@ const CalendarHeader = ({ isDisabled }) => {
         onPress={handlePress}
       >
         <Calendar />
-        <Text style={styles.title}>{`${MONTHS[localDate.split("-")[1]]?.long} ${
-          localDate.split("-")[2]
-        }, ${localDate.split("-")[0]}`}</Text>
+        {date === "" ? (
+          <Text style={styles.title}>{`${
+            MONTHS[localDate.split("-")[1]]?.long
+          } ${localDate.split("-")[2]}, ${localDate.split("-")[0]}`}</Text>
+        ) : (
+          <Text style={styles.title}>{`${MONTHS[date.split("-")[1]]?.long} ${
+            date.split("-")[2]
+          }, ${date.split("-")[0]}`}</Text>
+        )}
       </TouchableOpacity>
     </View>
   );

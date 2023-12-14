@@ -48,7 +48,7 @@ import {
   excludeLocation,
   resetExcludeLoaders,
 } from "../../redux/slices/excludeLocationSlice";
-import { checkExcludedLocation } from "../../events/checkExcludedLocations";
+
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

@@ -29,6 +29,7 @@ import LocationFlyIn from "../createScreens/components/LocationFlyIn";
 import GeneralHeader from "../../components/Header/GeneralHeader";
 import { EVENT_TYPES, MONTHS } from "../../constants/constants";
 import {
+  resetDate,
   resetHome,
   setEndDate,
   setEndTime,
@@ -311,6 +312,7 @@ const EditEvent = ({ navigation, route }) => {
 
   const handleCancel = () => {
     clearErrors();
+    dispatch(resetDate());
     navigation.goBack();
   };
 
@@ -545,6 +547,7 @@ const EditEvent = ({ navigation, route }) => {
   useEffect(() => {
     if (uploadImageSuccess) {
       clearErrors();
+      dispatch(resetDate());
       navigation.goBack();
       return;
     }
