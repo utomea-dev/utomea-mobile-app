@@ -82,12 +82,7 @@ const eventCreator = async (coords: string, latitude, longitude) => {
         message: `distance: ${distance}`,
       });
 
-      if (distance < 100) return;
-
-      const userDetails = await useAuth();
-      // const eventTimer = 30000;
-      const eventTimer = userDetails?.auto_entry_time * 60000;
-      console.log("TIMER----", eventTimer);
+      // update time and location with new values immediately
       await AsyncStorage.setItem("currentAddress", coords);
       await AsyncStorage.setItem(
         "eventStartTime",
@@ -98,18 +93,15 @@ const eventCreator = async (coords: string, latitude, longitude) => {
         startTimeStamp - Number(oldTime)
       );
 
+      if (distance < 100) return;
+
+      const userDetails = await useAuth();
+      // const eventTimer = 30000;
+      const eventTimer = userDetails?.auto_entry_time * 60000;
+      console.log("TIMER----", eventTimer);
+
       // run this logic if the time elapsed at the same location more than 30 minutes
       if (startTimeStamp - Number(oldTime) > eventTimer) {
-        // // CHECK FOR EXCLUDED LOCATION
-        // const isExcluded = await checkExcludedLocation(
-        //   Number(oldAddress?.split("/")[0]),
-        //   Number(oldAddress?.split("/")[1])
-        // );
-        // console.log("exclusion:-----", isExcluded);
-        // if (isExcluded) {
-        //   console.log("Location Excluded....");
-        //   return;
-        // }
         showNotification({ message: "Creating Event" });
         if (Platform.OS === "android" && !(await hasAndroidPermission())) {
           return;
