@@ -99,3 +99,25 @@ export const retryImageUpload = (
 
   return requests;
 };
+
+export const removeElementById = (arr = [], id: Number) => {
+  // Find the index of the object with the specified ID
+  const indexToRemove = arr.findIndex((obj) => obj.id === id);
+
+  // Check if the element exists in the array
+  if (indexToRemove !== -1) {
+    // Remove the element at the found index
+    arr.splice(indexToRemove, 1);
+    console.log(`Element with ID ${id} removed successfully.`);
+  } else {
+    console.log(`Element with ID ${id} not found.`);
+  }
+};
+
+export const removeDuplicateObjects = (array, property) => {
+  const uniqueObjects = array.filter(
+    (obj, index, self) =>
+      index === self.findIndex((o) => o[property] === obj[property])
+  );
+  return uniqueObjects;
+};

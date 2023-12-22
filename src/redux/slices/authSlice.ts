@@ -16,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { handleError } from "../errorHandler";
 
 const initialState = {
+  network: {},
   updateUserForm: {
     name: "",
     privacy_policy_accepted: true,
@@ -229,6 +230,9 @@ const authSLice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setNetworkInfo: (state, action) => {
+      state.network = action.payload;
+    },
     updateUserForm: (state, action) => {
       state.updateUserForm[action.payload.key] = action.payload.value;
     },
@@ -383,4 +387,4 @@ const authSLice = createSlice({
 });
 
 export default authSLice.reducer;
-export const { updateUserForm, reset } = authSLice.actions;
+export const { setNetworkInfo, updateUserForm, reset } = authSLice.actions;

@@ -43,7 +43,7 @@ import {
 } from "../../redux/slices/eventDetailSlice";
 import BackDropMenu from "../../components/BackDropMenu/BackDropMenu";
 import VerifyWindow from "./components/VerifyWindow";
-import { resetHomeLoaders } from "../../redux/slices/homeSlice";
+import { resetHomeLoaders, syncImages } from "../../redux/slices/homeSlice";
 import {
   excludeLocation,
   resetExcludeLoaders,
@@ -51,11 +51,22 @@ import {
 
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Sync from "./components/Sync";
+import ProgressLoader from "../../components/Loaders/ProgressLoader";
 
 const EventDetail = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   const eventId = route.params.id;
+
+  const {
+    uploadImageLoading,
+    uploadImageSuccess,
+    uploadImageError,
+    syncImagesLoading,
+    syncImagesError,
+    syncImagesSuccess,
+  } = useSelector((state) => state.home);
 
   const {
     eventDetail: data,
@@ -75,6 +86,7 @@ const EventDetail = ({ navigation, route }) => {
   } = useSelector((state) => state.exclude);
 
   const [isVerified, setIsVerified] = useState(true);
+  const [localCache, setLocalCache] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
   const [picmodalVisible, setpicmodalVisible] = useState(false);
   const [excludeModalVisible, setExcludeModalVisible] = useState(false);
@@ -130,7 +142,6 @@ const EventDetail = ({ navigation, route }) => {
   };
 
   const handleVerify = () => {
-    // dispatch
     dispatch(
       editEvent({
         id: data?.id,
@@ -533,11 +544,47 @@ const EventDetail = ({ navigation, route }) => {
   }, [eventId]);
 
   useEffect(() => {
+    const updateCache = async () => {
+      const cache = await AsyncStorage.getItem("cached_images");
+      const parsedCache = JSON.parse(cache);
+      if (parsedCache[eventId]) {
+        delete parsedCache[eventId.toString()];
+      }
+      setLocalCache(parsedCache);
+      await AsyncStorage.setItem("cached_images", JSON.stringify(parsedCache));
+    };
+    if (uploadImageSuccess) {
+      updateCache();
+      dispatch(resetHomeLoaders());
+      dispatch(getEventDetails({ id: eventId }));
+    }
+  }, [uploadImageSuccess]);
+
+  useEffect(() => {
+    const getCache = async () => {
+      const cache = await AsyncStorage.getItem("cached_images");
+      const parsedCache = JSON.parse(cache);
+      setLocalCache(parsedCache);
+    };
+
+    getCache();
+  }, []);
+
+  // console.log("local cache----", localCache);
+  useEffect(() => {
     if (deleteEventSuccess) {
       setModalVisible(false);
       navigation.goBack();
     }
   }, [deleteEventSuccess]);
+
+  const handleSync = async () => {
+    const cache = await AsyncStorage.getItem("cached_images");
+    const parsedCache = JSON.parse(cache);
+    if (parsedCache[data.id]) {
+      dispatch(syncImages({ id: data.id, photos: parsedCache[data.id] }));
+    }
+  };
 
   if (eventDetailLoading || data === null) {
     return (
@@ -555,12 +602,25 @@ const EventDetail = ({ navigation, route }) => {
     );
   }
 
+  const renderloaderOverlay = () => {
+    return (syncImagesLoading || uploadImageLoading) && <ProgressLoader />;
+  };
+
+  const renderDisableOverlay = () => {
+    return (
+      (syncImagesLoading || uploadImageLoading) && (
+        <View style={styles.disableOverlay} />
+      )
+    );
+  };
+
   if (eventDetailError && !eventDetailLoading) {
     return <Text style={{ color: "#FFFFFF" }}>{eventDetailError}</Text>;
   }
 
   return (
     <View style={styles.container}>
+      {renderloaderOverlay()}
       {renderModal()}
       {renderExcludeModal()}
       {renderThumbanailModal()}
@@ -581,6 +641,8 @@ const EventDetail = ({ navigation, route }) => {
         {renderMenu()}
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
+        {renderDisableOverlay()}
+
         {!isVerified && (
           <VerifyWindow
             handleVerify={handleVerify}
@@ -667,6 +729,18 @@ const EventDetail = ({ navigation, route }) => {
           )}
         </View>
 
+        {/* Sync event photos */}
+        {localCache[eventId]?.length > 0 && (
+          <View>
+            <Sync
+              handleSync={handleSync}
+              syncImagesSuccess={syncImagesSuccess}
+              uploadImageSuccess={uploadImageSuccess}
+              uploadImageLoading={uploadImageLoading}
+            />
+          </View>
+        )}
+
         {/* Event photos if any */}
         {data?.photos?.length > 0 ? (
           <>
@@ -699,6 +773,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(14, 14, 14, 0.9)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  disableOverlay: {
+    zIndex: 999,
+    position: "absolute",
+    height: "100%",
+    width: "100%",
   },
   iconContainer: {
     flexDirection: "row",

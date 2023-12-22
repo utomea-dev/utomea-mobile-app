@@ -105,6 +105,9 @@ const EditEvent = ({ navigation, route }) => {
     editEventSuccess,
     editEventError,
   } = useSelector((state) => state.eventDetail);
+
+  const { syncImagesSuccess } = useSelector((state) => state.home);
+
   const { uploadImageLoading, uploadImageSuccess, uploadImageError } =
     useSelector((state) => state.home);
 
@@ -545,13 +548,15 @@ const EditEvent = ({ navigation, route }) => {
   );
 
   useEffect(() => {
-    if (uploadImageSuccess) {
+    if (syncImagesSuccess && (!uploadImageLoading || uploadImageSuccess)) {
       clearErrors();
-      dispatch(resetDate());
       navigation.goBack();
+      setTimeout(() => {
+        dispatch(resetDate());
+      }, 1000);
       return;
     }
-  }, [uploadImageSuccess]);
+  }, [syncImagesSuccess]);
 
   return (
     <KeyboardAvoidingView
@@ -598,16 +603,16 @@ const EditEvent = ({ navigation, route }) => {
         <Divider />
         <DateSection
           onPress={handleDatePress}
-          date={`${MONTHS[endDateString?.split("-")[1]]?.long} ${
-            endDateString?.split("-")[2]
-          }, ${endDateString?.split("-")[0]}`}
+          date={`${MONTHS[startDateString?.split("-")[1]]?.long} ${
+            startDateString?.split("-")[2]
+          }, ${startDateString?.split("-")[0]}`}
         />
         <Divider />
         <TimeSection
           onPress={handleTimePress}
-          time={`${endTimeString.split("-")[0]}:${
-            endTimeString.split("-")[1]
-          } ${endTimeString.split("-")[2]}`}
+          time={`${startTimeString.split("-")[0]}:${
+            startTimeString.split("-")[1]
+          } ${startTimeString.split("-")[2]}`}
         />
         <Divider />
         <LocationSection

@@ -189,7 +189,7 @@ const eventCreator = async (coords: string, latitude, longitude) => {
                 store.dispatch(
                   createEvent({
                     body,
-                    photos: images,
+                    photos: images || [],
                   })
                 );
               })
