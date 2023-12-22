@@ -35,8 +35,12 @@ const EventCard = ({ data, filtered = false }) => {
   useEffect(() => {
     const getCache = async () => {
       const cache = await AsyncStorage.getItem("cached_images");
-      const parsedCache = JSON.parse(cache);
-      setLocalCache(parsedCache);
+      if (cache === null) {
+        setLocalCache({});
+      } else {
+        const parsedCache = JSON.parse(cache);
+        setLocalCache(parsedCache);
+      }
     };
 
     getCache();

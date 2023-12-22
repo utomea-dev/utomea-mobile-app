@@ -547,7 +547,7 @@ const EventDetail = ({ navigation, route }) => {
     const updateCache = async () => {
       const cache = await AsyncStorage.getItem("cached_images");
       const parsedCache = JSON.parse(cache);
-      if (parsedCache[eventId]) {
+      if (parsedCache?.[eventId]) {
         delete parsedCache[eventId.toString()];
       }
       setLocalCache(parsedCache);
@@ -581,7 +581,7 @@ const EventDetail = ({ navigation, route }) => {
   const handleSync = async () => {
     const cache = await AsyncStorage.getItem("cached_images");
     const parsedCache = JSON.parse(cache);
-    if (parsedCache[data.id]) {
+    if (parsedCache?.[data.id]) {
       dispatch(syncImages({ id: data.id, photos: parsedCache[data.id] }));
     }
   };
@@ -730,7 +730,7 @@ const EventDetail = ({ navigation, route }) => {
         </View>
 
         {/* Sync event photos */}
-        {localCache[eventId]?.length > 0 && (
+        {localCache?.[eventId]?.length > 0 && (
           <View>
             <Sync
               handleSync={handleSync}
