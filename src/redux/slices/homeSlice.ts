@@ -21,6 +21,7 @@ import {
   convertImageToBinary,
   mergeAll,
   removeSpaces,
+  retryImageUpload,
 } from "../helpers";
 
 const currentYear = new Date().getFullYear();
@@ -153,12 +154,17 @@ export const uploadImage = createAsyncThunk(
         presignedUrlsBody,
         {}
       );
+      console.log("got presigned urls ---- ");
       let allResponse = [];
+      let failed = [];
+      let seedFiles = [];
+      let retry = 1;
       if (preSignedResponse.status === 200) {
         const presignedUrls = preSignedResponse.data.data;
         const requests = images.map(async (image, index) => {
           return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
+
             xhr.onreadystatechange = function () {
               if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
@@ -168,12 +174,15 @@ export const uploadImage = createAsyncThunk(
                   resolve();
                 } else {
                   // failure
-                  console.log("FAile XHR");
+                  failed.push({ image, index });
+                  const errorMessage = xhr.responseText;
+                  console.log("Failed:", errorMessage);
                   reject();
                 }
               }
             };
-            const fileType = "image/jpeg";
+            const fileType = "application/octet-stream";
+            // const fileType = "image/jpeg";
             xhr.open("PUT", presignedUrls[index]);
             xhr.setRequestHeader("Content-Type", fileType);
             xhr.send({ uri: image.uri, type: fileType, name: image.fileName });
@@ -181,11 +190,30 @@ export const uploadImage = createAsyncThunk(
         });
 
         allResponse = await Promise.allSettled(requests);
-        if (allResponse.length) {
-          const seedFiles = fileNames.filter(
-            (file, i) => allResponse[i].status === "fulfilled"
+        console.log("all resss---", allResponse);
+
+        while (retry <= 5) {
+          console.log("retry ----- ", retry);
+          retry++;
+          if (failed.length === 0) {
+            retry = 10;
+            break;
+          }
+          const failedImages = [...failed];
+          failed = [];
+          const requests = retryImageUpload(
+            failedImages,
+            presignedUrls,
+            failed,
+            dispatch
           );
-          const seedBody = { files: seedFiles, eventId: id };
+          const allRes = await Promise.allSettled(requests);
+        }
+        if (allResponse.length) {
+          // seedFiles = fileNames.filter(
+          //   (file, i) => allResponse[i].status === "fulfilled"
+          // );
+          const seedBody = { files: fileNames, eventId: id };
           const seedResponse = await makeRequest(
             seedUrl(),
             "POST",
