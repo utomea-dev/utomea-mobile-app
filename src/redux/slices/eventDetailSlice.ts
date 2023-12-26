@@ -9,7 +9,12 @@ import {
 } from "../../api/urls";
 
 import { handleError } from "../errorHandler";
-import { setDateString, setTimeString, uploadImage } from "./homeSlice";
+import {
+  setDateString,
+  setTimeString,
+  syncImages,
+  uploadImage,
+} from "./homeSlice";
 import { convertISOStringToTime } from "../../utils/helpers";
 
 const initialState = {
@@ -76,11 +81,11 @@ export const editEvent = createAsyncThunk(
   async (data, { getState, dispatch }) => {
     try {
       const { id, body, photos, navigation, goBack } = data;
-
+      body.images_count = photos.length;
       const response = await makeRequest(editEventUrl(id), "PUT", body, {});
 
       if (photos.length) {
-        dispatch(uploadImage({ id, photos }));
+        dispatch(syncImages({ id, photos }));
       } else {
         if (goBack) {
           navigation.goBack();

@@ -20,8 +20,8 @@ import {
   convertBase64,
   convertImageToBinary,
   mergeAll,
+  removeDuplicateObjects,
   removeSpaces,
-  retryImageUpload,
 } from "../helpers";
 
 const currentYear = new Date().getFullYear();
@@ -87,6 +87,10 @@ const initialState = {
   createEventLoading: false,
   createEventError: "",
 
+  syncImagesSuccess: "",
+  syncImagesLoading: false,
+  syncImagesError: "",
+
   uploadImageSuccess: false,
   uploadImageLoading: false,
   uploadImageError: "",
@@ -137,6 +141,49 @@ export const getMoreEvents = createAsyncThunk(
   }
 );
 
+export const syncImages = createAsyncThunk(
+  "events/syncImages",
+  async (data, { dispatch, getState }) => {
+    try {
+      const state = getState();
+      const { id, photos } = data;
+      const imagesToSync = await AsyncStorage.getItem("cached_images");
+      const parsedImagesToSync = JSON.parse(imagesToSync);
+      const network = state.auth.network.type;
+      // const network = "poor";
+      if (network !== "wifi") {
+        // cache images and return
+        let cache = {};
+
+        if (parsedImagesToSync !== null) {
+          cache = { ...parsedImagesToSync };
+        }
+
+        if (cache[id] === undefined) {
+          cache[id] = [];
+        }
+
+        cache[id] = removeDuplicateObjects(
+          [...cache[id], ...photos],
+          "fileName"
+        );
+        await AsyncStorage.setItem("cached_images", JSON.stringify(cache));
+        return {
+          message:
+            "Due to low network speed, images are cached. Please try again in better connectivity.",
+        };
+      } else if (network === "wifi") {
+        // uppload images
+        dispatch(uploadImage({ id, photos }));
+        return { message: "Photos synced successfully" };
+      }
+    } catch (e) {
+      console.log("[Syncing Error]: ", e);
+      handleError(e);
+    }
+  }
+);
+
 export const uploadImage = createAsyncThunk(
   "events/uploadImage",
   async (data, { getState, dispatch }) => {
@@ -154,17 +201,12 @@ export const uploadImage = createAsyncThunk(
         presignedUrlsBody,
         {}
       );
-      console.log("got presigned urls ---- ");
       let allResponse = [];
-      let failed = [];
-      let seedFiles = [];
-      let retry = 1;
       if (preSignedResponse.status === 200) {
         const presignedUrls = preSignedResponse.data.data;
         const requests = images.map(async (image, index) => {
           return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-
             xhr.onreadystatechange = function () {
               if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
@@ -174,7 +216,7 @@ export const uploadImage = createAsyncThunk(
                   resolve();
                 } else {
                   // failure
-                  failed.push({ image, index });
+                  // console.log("FAiled XHR");
                   const errorMessage = xhr.responseText;
                   console.log("Failed:", errorMessage);
                   reject();
@@ -190,30 +232,11 @@ export const uploadImage = createAsyncThunk(
         });
 
         allResponse = await Promise.allSettled(requests);
-        console.log("all resss---", allResponse);
-
-        while (retry <= 5) {
-          console.log("retry ----- ", retry);
-          retry++;
-          if (failed.length === 0) {
-            retry = 10;
-            break;
-          }
-          const failedImages = [...failed];
-          failed = [];
-          const requests = retryImageUpload(
-            failedImages,
-            presignedUrls,
-            failed,
-            dispatch
-          );
-          const allRes = await Promise.allSettled(requests);
-        }
         if (allResponse.length) {
-          // seedFiles = fileNames.filter(
-          //   (file, i) => allResponse[i].status === "fulfilled"
-          // );
-          const seedBody = { files: fileNames, eventId: id };
+          const seedFiles = fileNames.filter(
+            (file, i) => allResponse[i].status === "fulfilled"
+          );
+          const seedBody = { files: seedFiles, eventId: id };
           const seedResponse = await makeRequest(
             seedUrl(),
             "POST",
@@ -240,11 +263,12 @@ export const createEvent = createAsyncThunk(
     try {
       const body = data.body;
       const photos = data.photos;
+      body.images_count = photos.length;
       const response = await makeRequest(createEventUrl(), "POST", body, {});
       const id = response.data.body.id;
 
       if (photos.length) {
-        dispatch(uploadImage({ id, photos }));
+        dispatch(syncImages({ id, photos }));
       } else {
         dispatch(getEvents());
       }
@@ -274,6 +298,9 @@ const homeSlice = createSlice({
       state.createEventSuccess = false;
       state.createEventLoading = false;
       state.createEventError = "";
+      state.syncImagesSuccess = "";
+      state.syncImagesLoading = false;
+      state.syncImagesError = "";
       state.uploadImageSuccess = false;
       state.uploadImageLoading = false;
       state.uploadImageError = "";
@@ -286,6 +313,9 @@ const homeSlice = createSlice({
       state.createEventSuccess = false;
       state.createEventLoading = false;
       state.createEventError = "";
+      state.syncImagesSuccess = "";
+      state.syncImagesLoading = false;
+      state.syncImagesError = "";
       state.uploadImageSuccess = false;
       state.uploadImageLoading = false;
       state.uploadImageError = "";
@@ -459,6 +489,22 @@ const homeSlice = createSlice({
       state.createEventLoading = false;
       state.createEventSuccess = false;
       state.createEventError = action.error.message || "Some error occured";
+    });
+
+    builder.addCase(syncImages.pending, (state, action) => {
+      state.syncImagesLoading = true;
+      state.syncImagesError = "";
+      state.syncImagesSuccess = "";
+    });
+    builder.addCase(syncImages.fulfilled, (state, action) => {
+      state.syncImagesLoading = false;
+      state.syncImagesError = "";
+      state.syncImagesSuccess = action.payload?.message;
+    });
+    builder.addCase(syncImages.rejected, (state, action) => {
+      state.syncImagesLoading = false;
+      state.syncImagesSuccess = "";
+      state.syncImagesError = action.error.message || "Some error occured";
     });
 
     builder.addCase(uploadImage.pending, (state, action) => {

@@ -44,6 +44,7 @@ import TimeSection from "./components/TimeSection";
 import TimeFlyIn from "./components/TimeFlyIn";
 import { convertTimeToISOString } from "../../utils/helpers";
 import ProgressLoader from "../../components/Loaders/ProgressLoader";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const categories = [
   {
@@ -99,6 +100,9 @@ const CreateEvent = ({ navigation, route }) => {
     createEventLoading,
     createEventSuccess,
     createEventError,
+    syncImagesLoading,
+    syncImagesSuccess,
+    syncImagesError,
     uploadImageLoading,
     uploadImageSuccess,
     uploadImageError,
@@ -107,6 +111,7 @@ const CreateEvent = ({ navigation, route }) => {
     startTimeString,
     endTimeString,
   } = useSelector((state) => state.home);
+
   const { startDate, endDate } = useSelector((state) => state.home);
   const { year: startYear, month: startMonth, date: startDay } = startDate;
   const { year: endYear, month: endMonth, date: endDay } = endDate;
@@ -440,13 +445,25 @@ const CreateEvent = ({ navigation, route }) => {
   );
 
   useEffect(() => {
-    if (!createEventLoading && !uploadImageLoading && createEventSuccess) {
+    if (
+      !createEventLoading &&
+      !uploadImageLoading &&
+      !syncImagesLoading &&
+      createEventSuccess
+    ) {
       clearErrors();
       dispatch(resetHome());
-      dispatch(resetDate());
+      setTimeout(() => {
+        dispatch(resetDate());
+      }, 1000);
       navigation.navigate("Home");
     }
-  }, [createEventLoading, uploadImageLoading, createEventSuccess]);
+  }, [
+    createEventLoading,
+    uploadImageLoading,
+    syncImagesLoading,
+    createEventSuccess,
+  ]);
 
   return (
     <KeyboardAvoidingView
@@ -494,16 +511,16 @@ const CreateEvent = ({ navigation, route }) => {
         <Divider />
         <DateSection
           onPress={handleDatePress}
-          date={`${MONTHS[endDateString?.split("-")[1]]?.long} ${
-            endDateString.split("-")[2]
-          }, ${endDateString.split("-")[0]}`}
+          date={`${MONTHS[startDateString?.split("-")[1]]?.long} ${
+            startDateString.split("-")[2]
+          }, ${startDateString.split("-")[0]}`}
         />
         <Divider />
         <TimeSection
           onPress={handleTimePress}
-          time={`${endTimeString.split("-")[0]}:${
-            endTimeString.split("-")[1]
-          } ${endTimeString.split("-")[2]}`}
+          time={`${startTimeString.split("-")[0]}:${
+            startTimeString.split("-")[1]
+          } ${startTimeString.split("-")[2]}`}
         />
         <Divider />
         <LocationSection

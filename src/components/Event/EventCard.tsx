@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import EventImage from "./EventImage";
 
@@ -13,12 +13,15 @@ import {
 } from "../../utils/helpers";
 import { useNavigation } from "@react-navigation/native";
 import Divider from "../Divider/Divider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const EventCard = ({ data, filtered = false }) => {
   const navigation = useNavigation();
+  const { id } = data;
+
+  const [localCache, setLocalCache] = useState({});
 
   const gotoEventDetail = () => {
-    const { id } = data;
     if (filtered) {
       navigation.navigate("Home", {
         screen: "EventDetail",
@@ -29,12 +32,27 @@ const EventCard = ({ data, filtered = false }) => {
     navigation.navigate("EventDetail", { id });
   };
 
+  useEffect(() => {
+    const getCache = async () => {
+      const cache = await AsyncStorage.getItem("cached_images");
+      if (cache === null) {
+        setLocalCache({});
+      } else {
+        const parsedCache = JSON.parse(cache);
+        setLocalCache(parsedCache);
+      }
+    };
+
+    getCache();
+  }, []);
+
   return (
     <TouchableOpacity style={[styles.container]} onPress={gotoEventDetail}>
       {/* Event image */}
       <View style={styles.imageContainer}>
         <EventImage
           isVerified={data.verified}
+          isSynced={!localCache[id]?.length > 0}
           imageUrl={
             data.hero_image || (data.photos.length > 0 && data.photos[0].url)
           }

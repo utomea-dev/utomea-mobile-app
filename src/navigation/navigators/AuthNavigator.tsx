@@ -6,8 +6,12 @@ import { authRoutes } from "../routes/authRoutes";
 import SplashScreen from "react-native-splash-screen";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import NetInfo from "@react-native-community/netinfo";
+import { setNetworkInfo } from "../../redux/slices/authSlice";
 
 export const AuthNavigator = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const Stack = createStackNavigator();
 
@@ -21,8 +25,19 @@ export const AuthNavigator = () => {
       SplashScreen?.hide();
     }, 500);
   };
+
   useEffect(() => {
     hideSplashScreenAndRedirect();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      dispatch(setNetworkInfo(state));
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const screens = authRoutes.map((route, key) => {
