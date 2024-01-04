@@ -26,7 +26,9 @@ const CalendarHeader = ({ isDisabled }) => {
 
   const [isFlyInVisible, setIsFlyInVisible] = useState(false);
   const [localDate, setLocalDate] = useState(
-    `${currentYear}-${currentMonth}-${currentDate}`
+    `${currentYear}-${
+      currentMonth < 10 ? "0" + currentMonth : currentMonth
+    }-${currentDate}`
   );
 
   const handlePress = (entry) => {
@@ -50,7 +52,12 @@ const CalendarHeader = ({ isDisabled }) => {
   };
 
   const handleClearFilter = () => {
-    setLocalDate(() => `${currentYear}-${currentMonth}-${currentDate}`);
+    setLocalDate(
+      () =>
+        `${currentYear}-${
+          currentMonth < 10 ? "0" + currentMonth : currentMonth
+        }-${currentDate}`
+    );
     dispatch(resetDate());
     dispatch(setHomeFilter({ key: "date", value: "" }));
     hideFlyIn();
