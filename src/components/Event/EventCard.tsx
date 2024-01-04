@@ -52,7 +52,7 @@ const EventCard = ({ data, filtered = false }) => {
       <View style={styles.imageContainer}>
         <EventImage
           isVerified={data.verified}
-          isSynced={!localCache[id]?.length > 0}
+          isSynced={!localCache?.[id]?.length > 0}
           imageUrl={
             data.hero_image || (data.photos.length > 0 && data.photos[0].url)
           }
